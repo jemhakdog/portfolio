@@ -1,0 +1,251 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   shadcn semantic slots -> design.md tokens (var indirection so `.dark` can swap)
+   --------------------------------------------------------------------------- */
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+  /* no mono role in design.md — fall back to the platform stack */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+/* ---------------------------------------------------------------------------
+   Fixed brand palette — verbatim from design.md. Static hex, no indirection:
+   these colors do not change between modes.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Brand & accent */
+  --color-primary-active: #0d1218;
+
+  /* Surface */
+  --color-canvas: #ffffff;
+  --color-surface-soft: #f8fafc;
+  --color-surface-strong: #e0e2e6;
+  --color-surface-dark: #181d26;
+  --color-surface-dark-elevated: #1d1f25;
+  --color-hairline: #dddddd;
+
+  /* Text */
+  --color-ink: #181d26;
+  --color-body: #333840;
+  --color-ink-muted: #41454d;
+  --color-border-strong: #9297a0;
+
+  /* Signature card surfaces */
+  --color-signature-coral: #aa2d00;
+  --color-signature-forest: #0a2e0e;
+  --color-signature-cream: #f5e9d4;
+  --color-signature-peach: #fcab79;
+  --color-signature-mint: #a8d8c4;
+  --color-signature-yellow: #f4d35e;
+  --color-signature-mustard: #d9a441;
+
+  /* Semantic */
+  --color-link: #1b61c9;
+  --color-link-active: #1a3866;
+  --color-info: #254fad;
+  --color-info-border: #458fff;
+  --color-success: #006400;
+  --color-success-border: #39bf45;
+
+  /* -------------------------------------------------------------------------
+     Radii — design.md scale, pinned exactly (not derived from --radius)
+     ------------------------------------------------------------------------- */
+  --radius-xs: 2px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  /* {rounded.pill} and {rounded.full} are both 9999px -> use `rounded-full` */
+
+  /* -------------------------------------------------------------------------
+     Vertical rhythm — {spacing.section} 96px.
+     The rest of design.md's 4px scale maps onto Tailwind's default scale:
+     xxs=1 xs=2 sm=3 md=4 lg=6 xl=8 xxl=12 section=24
+     ------------------------------------------------------------------------- */
+  --spacing-section: 96px;
+
+  /* -------------------------------------------------------------------------
+     Typography roles — 1:1 with design.md's hierarchy table.
+     The `text-*` utility carries size + line-height + weight + tracking.
+     NOTE: `text-body` (color) and `text-body-md` (size) are different keys.
+     Calibration knob: design.md's font-substitute note says drop line-height
+     ~5% for Inter Display vs Haas. Values below are the documented ones.
+     ------------------------------------------------------------------------- */
+  --text-display-xl: 48px;
+  --text-display-xl--line-height: 1.1;
+  --text-display-xl--font-weight: 500;
+
+  --text-display-lg: 40px;
+  --text-display-lg--line-height: 1.2;
+  --text-display-lg--font-weight: 400;
+
+  --text-display-md: 32px;
+  --text-display-md--line-height: 1.2;
+  --text-display-md--font-weight: 400;
+
+  --text-title-lg: 24px;
+  --text-title-lg--line-height: 1.35;
+  --text-title-lg--letter-spacing: 0.12px;
+  --text-title-lg--font-weight: 400;
+
+  --text-title-md: 20px;
+  --text-title-md--line-height: 1.5;
+  --text-title-md--font-weight: 400;
+
+  --text-title-sm: 18px;
+  --text-title-sm--line-height: 1.4;
+  --text-title-sm--font-weight: 500;
+
+  --text-label-md: 16px;
+  --text-label-md--line-height: 1.4;
+  --text-label-md--font-weight: 500;
+
+  --text-button: 16px;
+  --text-button--line-height: 1.4;
+  --text-button--font-weight: 500;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 1.25;
+  --text-body-md--font-weight: 400;
+
+  --text-caption: 14px;
+  --text-caption--line-height: 1.35;
+  --text-caption--letter-spacing: 0.16px;
+  --text-caption--font-weight: 500;
+
+  --text-legal: 13.12px;
+  --text-legal--line-height: 1.2;
+  --text-legal--font-weight: 600;
+
+  /* Pricing sub-system — Inter Display mid-weights. Keep the trio together. */
+  --text-pricing-display: 44.8px;
+  --text-pricing-display--line-height: 1.1;
+  --text-pricing-display--font-weight: 475;
+
+  --text-pricing-section: 28px;
+  --text-pricing-section--line-height: 1.2;
+  --text-pricing-section--font-weight: 475;
+
+  --text-pricing-card-title: 20px;
+  --text-pricing-card-title--line-height: 1.3;
+  --text-pricing-card-title--font-weight: 475;
+}
+
+/* ---------------------------------------------------------------------------
+   Light mode — the default and the only mode design.md fully documents.
+   --------------------------------------------------------------------------- */
+:root {
+  --background: #ffffff; /* {colors.canvas} */
+  --foreground: #181d26; /* {colors.ink} */
+  --card: #ffffff;
+  --card-foreground: #181d26;
+  --popover: #ffffff;
+  --popover-foreground: #181d26;
+  --primary: #181d26; /* {colors.primary} — near-black, NOT link blue */
+  --primary-foreground: #ffffff; /* {colors.on-primary} */
+  --secondary: #ffffff; /* {component.button-secondary} is canvas + hairline */
+  --secondary-foreground: #181d26;
+  --muted: #f8fafc; /* {colors.surface-soft} */
+  --muted-foreground: #41454d; /* {colors.muted} */
+  --accent: #f8fafc;
+  --accent-foreground: #181d26;
+  /* design.md documents no error hue -> reuse signature coral, invent nothing */
+  --destructive: #aa2d00;
+  --destructive-foreground: #ffffff;
+  --border: #dddddd; /* {colors.hairline} */
+  --input: #dddddd;
+  --ring: #458fff; /* {colors.info-border} — focused-input outline */
+
+  --chart-1: #aa2d00;
+  --chart-2: #0a2e0e;
+  --chart-3: #d9a441;
+  --chart-4: #fcab79;
+  --chart-5: #1b61c9;
+
+  --radius: 12px; /* {rounded.lg} */
+}
+
+/* ---------------------------------------------------------------------------
+   Dark mode — DERIVED, not documented. Every value is a design.md token, so no
+   new hues are introduced, but design.md has no dark color story (its "dark"
+   surfaces are signature cards that live inside the light page). Confirm at
+   planning whether the theme toggle ships.
+   --------------------------------------------------------------------------- */
+.dark {
+  --background: #181d26; /* {colors.surface-dark} */
+  --foreground: #ffffff;
+  --card: #1d1f25; /* {colors.surface-dark-elevated} */
+  --card-foreground: #ffffff;
+  --popover: #1d1f25;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff; /* inverted action on dark */
+  --primary-foreground: #181d26;
+  --secondary: #1d1f25;
+  --secondary-foreground: #ffffff;
+  --muted: #1d1f25;
+  --muted-foreground: #9297a0; /* {colors.border-strong} as the only light gray */
+  --accent: #1d1f25;
+  --accent-foreground: #ffffff;
+  --destructive: #aa2d00;
+  --destructive-foreground: #ffffff;
+  --border: #1d1f25;
+  --input: #1d1f25;
+  --ring: #458fff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-body text-body-md;
+  }
+  /* Display type never goes bolder than 500 — size carries the emphasis. */
+  h1 {
+    @apply text-display-lg text-ink;
+  }
+  h2 {
+    @apply text-display-md text-ink;
+  }
+  h3 {
+    @apply text-title-lg text-ink;
+  }
+  a {
+    @apply text-link;
+  }
+}
