@@ -33,10 +33,10 @@ export function StickyProfilePane({
   }, []);
 
   return (
-    <aside className="lg:sticky lg:top-14 lg:flex lg:h-[calc(100vh-3.5rem)] lg:w-[420px] lg:flex-none lg:flex-col lg:justify-between lg:py-8">
+    <aside className="lg:sticky lg:top-14 lg:flex lg:max-h-[calc(100vh-3.5rem)] lg:w-[420px] lg:flex-none lg:flex-col lg:overflow-y-auto lg:py-6 scrollbar-none">
       {/* Top Section: Photo card + Persona (from image) */}
-      <div className="space-y-6">
-        <div className="relative overflow-hidden rounded-2xl border border-transparent bg-signature-coral p-6 text-canvas shadow-xl calm:bg-canvas calm:border-hairline calm:text-ink">
+      <div className="space-y-5">
+        <div className="relative overflow-hidden rounded-2xl border border-transparent bg-signature-coral p-5 sm:p-6 text-canvas shadow-xl calm:bg-canvas calm:border-hairline calm:text-ink">
           {/* Top row with Avatar + online indicator */}
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -113,68 +113,68 @@ export function StickyProfilePane({
               );
             })}
           </ul>
-        </nav>
-      </div>
 
-      {/* Bottom Column: Command Palette Button, Resume & Direct Links */}
-      <div className="hidden lg:block space-y-4 pt-6 border-t border-hairline/60">
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              sound.playChime();
-              onOpenCommandPalette?.();
-            }}
-            className="flex items-center justify-between rounded-xl border border-hairline bg-surface-soft px-3 py-2 text-xs font-mono text-ink hover:border-border-strong hover:bg-canvas transition-colors"
-          >
-            <span className="flex items-center gap-1.5">
-              <span>⚡ Search</span>
-            </span>
-            <kbd className="inline-flex items-center gap-0.5 rounded border border-hairline bg-canvas px-1.5 py-0.5 text-[10px] font-mono font-bold text-ink">
-              <span className="text-[11px] leading-none">⌘</span>
-              <span>K</span>
-            </kbd>
-          </button>
+          {/* Quick Actions directly below Contacts */}
+          <div className="mt-4 rounded-2xl border border-hairline bg-canvas/90 p-3.5 shadow-xs backdrop-blur-md space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playChime();
+                  onOpenCommandPalette?.();
+                }}
+                className="flex items-center justify-between rounded-xl border border-hairline bg-surface-soft px-3 py-2 text-xs font-mono font-semibold text-ink hover:border-border-strong hover:bg-canvas transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-1.5">
+                  <span>⚡ Search</span>
+                </span>
+                <kbd className="inline-flex items-center gap-0.5 rounded border border-hairline bg-canvas px-1.5 py-0.5 text-[10px] font-mono font-bold text-ink">
+                  <span className="text-[11px] leading-none">⌘</span>
+                  <span>K</span>
+                </kbd>
+              </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              sound.playChime();
-              onOpenResume ? onOpenResume() : window.open("/resume.pdf", "_blank");
-            }}
-            className="flex items-center justify-center gap-2 rounded-xl border border-signature-coral/30 bg-signature-coral/10 calm:bg-surface-soft calm:border-hairline px-3 py-2 text-xs font-mono font-semibold text-signature-coral calm:text-ink hover:bg-signature-coral hover:text-white transition-all cursor-pointer"
-          >
-            <span>📄 Resume</span>
-            <span className="text-[10px] opacity-75">PDF</span>
-          </button>
-        </div>
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playChime();
+                  onOpenResume ? onOpenResume() : window.open("/resume.pdf", "_blank");
+                }}
+                className="flex items-center justify-center gap-2 rounded-xl border border-transparent bg-signature-coral px-3 py-2 text-xs font-mono font-bold text-white shadow-xs hover:opacity-90 transition-all cursor-pointer"
+              >
+                <span>📄 Resume</span>
+                <span className="rounded bg-white/20 px-1 py-0.5 text-[9px] font-semibold text-white">PDF</span>
+              </button>
+            </div>
 
-        <div className="flex items-center justify-between text-legal font-mono">
-          <a
-            href={`mailto:${profile.email}`}
-            className="text-link hover:underline"
-          >
-            {profile.email}
-          </a>
-          <div className="flex items-center gap-3 text-ink-muted">
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-ink"
-            >
-              GH ↗
-            </a>
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-ink"
-            >
-              LI ↗
-            </a>
+            <div className="flex items-center justify-between border-t border-hairline/60 pt-2 text-xs font-mono font-semibold">
+              <a
+                href={`mailto:${profile.email}`}
+                className="text-ink hover:text-signature-coral transition-colors no-underline"
+              >
+                {profile.email}
+              </a>
+              <div className="flex items-center gap-3 text-ink">
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-signature-coral transition-colors no-underline"
+                >
+                  GH ↗
+                </a>
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-signature-coral transition-colors no-underline"
+                >
+                  LI ↗
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
+        </nav>
       </div>
     </aside>
   );

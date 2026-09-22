@@ -132,12 +132,12 @@ export function WorkGallery() {
                   {project.blurb}
                 </p>
               </div>
-              <div className="mt-6 flex items-end justify-between gap-3.5">
-                <span className="text-[12px] font-semibold opacity-70">
+              <div className="mt-6 flex items-end justify-between gap-3.5 text-ink">
+                <span className="text-[12px] font-semibold text-ink/75">
                   {project.meta}
                 </span>
                 <span
-                  className={`flex items-center gap-1.5 text-[13.12px] font-semibold transition-[opacity,translate] duration-300 ${
+                  className={`flex items-center gap-1.5 text-[13.12px] font-semibold text-ink transition-[opacity,translate] duration-300 ${
                     open === index
                       ? "translate-x-0 opacity-100"
                       : "-translate-x-1.5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"

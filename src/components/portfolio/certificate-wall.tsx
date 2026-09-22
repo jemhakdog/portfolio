@@ -100,10 +100,10 @@ export function CertificateWall() {
             <h3 className="mt-4 text-[19px] leading-[1.35] font-medium text-ink">
               {item.title}
             </h3>
-            <span className="mt-1.5 block text-[12px] font-semibold uppercase tracking-[1px] opacity-60">
+            <span className="mt-1.5 block text-[12px] font-semibold uppercase tracking-[1px] text-ink/70">
               {item.issuer}
             </span>
-            <span className="mt-2.5 block font-mono text-[11.5px] opacity-55">
+            <span className="mt-2.5 block font-mono text-[11.5px] text-ink/65">
               {item.id} · {item.year}
             </span>
             <button

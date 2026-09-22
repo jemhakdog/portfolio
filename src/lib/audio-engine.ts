@@ -19,6 +19,12 @@ class AudioEngine {
   private getContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
     if (!this.ctx) {
+      // Chrome refuses to start an AudioContext created outside a user gesture
+      // and logs a warning for every one it blocks. A hover or the hero typing
+      // timer is not a gesture, so hold off until the visitor clicks or types —
+      // `hasBeenActive` is sticky, so this only mutes the page until then.
+      const activation = navigator.userActivation;
+      if (activation && !activation.hasBeenActive) return null;
       const AudioCtx =
         window.AudioContext ||
         (window as unknown as { webkitAudioContext: typeof AudioContext })

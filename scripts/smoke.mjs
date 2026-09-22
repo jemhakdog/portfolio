@@ -67,11 +67,11 @@ function session(ws) {
     }
   });
 
-  const send = (method, params = {}) =>
+  const send = (method, params = {}, sessionId) =>
     new Promise((resolve, reject) => {
       const id = ++nextId;
       pending.set(id, { resolve, reject });
-      ws.send(JSON.stringify({ id, method, params }));
+      ws.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
     });
 
   const once = (method) =>
@@ -153,6 +153,9 @@ async function main() {
       "--no-first-run",
       "--no-default-browser-check",
       `--remote-debugging-port=${CDP_PORT}`,
+      // No proxy listens there, so every request for another origin fails fast.
+      // Anything the page still renders is served from the export itself.
+      "--proxy-server=http://127.0.0.1:1",
       `--user-data-dir=${profile}`,
       "about:blank",
     ],
@@ -168,8 +171,36 @@ async function main() {
 
   const cdp = session(ws);
   const pageErrors = [];
+  /* Every asset must come from the site itself: the fonts are self-hosted and
+     the JS libraries are bundled, so a request to any other origin means some
+     library reached for a CDN at runtime (troika's unicode-font-resolver is the
+     one that does, and it fires only after the 3D text syncs — hence the check
+     at the end of the run, not next to the first goto). */
+  const origin = new URL(URL_UNDER_TEST).origin;
+  const offOrigin = [];
   await cdp.send("Page.enable");
+  await cdp.send("Network.enable");
   await cdp.send("Runtime.enable");
+  /* A web worker fetches from its own session, which the page's Network domain
+     never reports — troika's typesetter is one, and it used to pull its fallback
+     fonts off a CDN. Attach to workers so the offline check below sees them. */
+  await cdp.send("Target.setAutoAttach", {
+    autoAttach: true,
+    waitForDebuggerOnStart: false,
+    flatten: true,
+  });
+  cdp.on("Target.attachedToTarget", ({ sessionId }) => {
+    cdp.send("Network.enable", {}, sessionId).catch(() => {});
+    cdp.send("Runtime.enable", {}, sessionId).catch(() => {});
+  });
+  cdp.on("Network.requestWillBeSent", ({ request }) => {
+    try {
+      const url = new URL(request.url);
+      if (url.protocol.startsWith("http") && url.origin !== origin) offOrigin.push(url.origin);
+    } catch {
+      // data: / blob: / about: — not a network fetch
+    }
+  });
   await cdp.send("Page.bringToFront");
   // Without this, headless occasionally treats the tab as backgrounded and
   // throttles requestAnimationFrame, which stalls the anime.js animations.
@@ -512,6 +543,13 @@ async function main() {
       JSON.stringify(fluid),
     );
     await cdp.send("Emulation.clearDeviceMetricsOverride");
+
+    /* -- fully offline: nothing the page renders is fetched from a CDN -- */
+    check(
+      "no request leaves the origin",
+      offOrigin.length === 0,
+      [...new Set(offOrigin)].join(" | "),
+    );
 
     /* -- anything the page logged as an error or warning is a failure -- */
     check(

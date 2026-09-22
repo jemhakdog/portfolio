@@ -36,7 +36,7 @@ export function PortfolioShell() {
       <TelemetryBar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
 
       {/* 3. Navigation Header */}
-      <TopBar />
+      <TopBar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
 
       {/* 4. Dual-Pane Architecture [Brittany Chiang Wow Factor] */}
       <div className="relative mx-auto w-full max-w-[1400px] px-4 sm:px-8 lg:flex lg:gap-10">

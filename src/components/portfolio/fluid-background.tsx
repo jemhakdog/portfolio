@@ -10,41 +10,30 @@ void main() {
 `;
 
 const FRAGMENT_SHADER = `
-precision highp float;
+precision mediump float;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform vec2 u_mouse_vel;
 uniform float u_time;
 uniform float u_dark;
 
-// Fast high-quality 2D hash
-vec2 hash(vec2 p) {
-  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-  return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+// Fast ALU polynomial noise - zero sin() transcendentals
+float hash(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
 }
 
-// Gradient noise with analytical derivatives for organic fluid flow
-float gnoise(in vec2 p) {
+float noise(vec2 p) {
   vec2 i = floor(p);
   vec2 f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(mix(dot(hash(i + vec2(0.0, 0.0)), f - vec2(0.0, 0.0)),
-                 dot(hash(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), u.x),
-             mix(dot(hash(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)),
-                 dot(hash(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0)), u.x), u.y);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
 }
 
-// 4-octave Fractional Brownian Motion (fbm) with rotational curl
-float fbm(vec2 p) {
-  float v = 0.0;
-  float a = 0.52;
-  mat2 rot = mat2(0.87, 0.50, -0.50, 0.87);
-  for (int i = 0; i < 4; ++i) {
-    v += a * gnoise(p);
-    p = rot * p * 2.06 + vec2(17.4, 31.8);
-    a *= 0.50;
-  }
-  return v;
+float fbm2(vec2 p) {
+  return 0.65 * noise(p) + 0.35 * noise(p * 2.05 + 1.6);
 }
 
 void main() {
@@ -56,7 +45,7 @@ void main() {
   vec2 mouse = u_mouse / u_resolution.xy;
   mouse.x *= aspect;
 
-  // Fluid cursor interaction: physical push + swirling eddy wake
+  // Fluid cursor interaction
   vec2 toMouse = uv - mouse;
   float dist = length(toMouse);
   float mouseWave = exp(-dist * 3.4);
@@ -65,21 +54,21 @@ void main() {
 
   float t = u_time * 0.18;
 
-  // 1st Domain Warp: broad fluid currents
+  // 1st Domain Warp: broad currents
   vec2 q = vec2(
-    fbm(uv * 1.15 + vec2(0.0, t * 0.4) + mouseWake),
-    fbm(uv * 1.15 + vec2(5.2, -t * 0.35) + mouseWake)
+    fbm2(uv * 1.15 + vec2(0.0, t * 0.4) + mouseWake),
+    fbm2(uv * 1.15 + vec2(5.2, -t * 0.35) + mouseWake)
   );
 
-  // 2nd Domain Warp: turbulent eddy vortices
+  // 2nd Domain Warp: vortices
   vec2 r = vec2(
-    fbm(uv * 1.6 + 2.2 * q + vec2(1.7, 9.2) + t * 0.5),
-    fbm(uv * 1.6 + 2.2 * q + vec2(8.3, 2.8) - t * 0.45)
+    fbm2(uv * 1.6 + 2.2 * q + vec2(1.7, 9.2) + t * 0.5),
+    fbm2(uv * 1.6 + 2.2 * q + vec2(8.3, 2.8) - t * 0.45)
   );
 
   // Parallax displacement across viewport
   vec2 parallax = (mouse - vec2(aspect * 0.5, 0.5)) * 0.28;
-  float f = fbm(uv * 1.25 + 2.6 * r + parallax);
+  float f = fbm2(uv * 1.25 + 2.6 * r + parallax);
 
   // Smoke density fields (multi-scale contrast bands)
   float smokePrimary = smoothstep(-0.45, 0.55, f);
@@ -204,16 +193,12 @@ export function FluidBackground() {
      * turns up struggling above these thresholds.
      */
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const lean =
-      window.matchMedia("(max-width: 768px)").matches ||
-      (navigator.hardwareConcurrency ?? 8) <= 4;
-    // reduced motion only needs the theme cross-fade to keep stepping.
-    const minFrameMs = reduced ? 100 : lean ? 1000 / 30 : 0;
+    const minFrameMs = reduced ? 100 : 1000 / 60;
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, lean ? 0.7 : 1.25);
-      const width = Math.floor(window.innerWidth * dpr);
-      const height = Math.floor(window.innerHeight * dpr);
+      // 10x lighter buffer: max 480px width at 0.3x DPR — GPU linear filtering keeps fluid smoke silky smooth
+      const width = Math.max(320, Math.min(480, Math.floor(window.innerWidth * 0.3)));
+      const height = Math.max(180, Math.floor((width * window.innerHeight) / window.innerWidth));
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -230,22 +215,22 @@ export function FluidBackground() {
 
     const render = (now: number) => {
       animId = requestAnimationFrame(render);
-      if (now - lastPaint < minFrameMs) return;
+      if (document.hidden || now - lastPaint < minFrameMs) return;
       lastPaint = now;
 
       const elapsed = reduced ? 0 : (now - start) * 0.001;
 
-      // Smooth mouse interpolation
-      mouseX += (targetMouseX - mouseX) * 0.08;
-      mouseY += (targetMouseY - mouseY) * 0.08;
+      // Snappy mouse interpolation (eliminated 0.08 sluggish drag)
+      mouseX += (targetMouseX - mouseX) * 0.32;
+      mouseY += (targetMouseY - mouseY) * 0.32;
 
       // Mouse velocity calculation for fluid wake
       const dx = (mouseX - lastX) / Math.max(window.innerWidth, 1);
       const dy = (mouseY - lastY) / Math.max(window.innerHeight, 1);
       lastX = mouseX;
       lastY = mouseY;
-      velX += (dx * 12.0 - velX) * 0.15;
-      velY += (dy * 12.0 - velY) * 0.15;
+      velX += (dx * 18.0 - velX) * 0.35;
+      velY += (dy * 18.0 - velY) * 0.35;
 
       const targetDark = document.documentElement.classList.contains("dark") ? 1.0 : 0.0;
       darkVal += (targetDark - darkVal) * 0.08;

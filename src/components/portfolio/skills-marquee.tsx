@@ -43,24 +43,28 @@ export function SkillsLineMarquee({
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-canvas via-canvas/80 to-transparent calm:from-canvas" />
 
       {/* Ticker Header / Live Badge */}
-      <div className="group flex overflow-hidden select-none">
-        <div className="flex shrink-0 animate-marquee items-center gap-6 group-hover:[animation-play-state:paused]">
-          {[...SKILLS_LIST, ...SKILLS_LIST, ...SKILLS_LIST].map((skill, idx) => (
-            <div
-              key={`line-${skill.name}-${idx}`}
-              onMouseEnter={() => sound.playClick()}
-              className="inline-flex items-center gap-3 shrink-0 cursor-pointer transition-transform hover:scale-105"
-            >
-              <div className="flex items-center gap-2 rounded-xl border border-hairline/80 bg-canvas px-3.5 py-1.5 shadow-xs transition-colors hover:border-signature-coral">
-                <span className="text-sm">{skill.icon}</span>
-                <span className="font-mono text-xs font-semibold text-ink">{skill.name}</span>
-                <span className="rounded bg-surface-soft px-1.5 py-0.5 font-mono text-[10px] text-ink-muted">
-                  {skill.tag}
-                </span>
-              </div>
-              <span className="text-signature-coral calm:text-ink-muted/40 font-mono text-xs opacity-60">
-                ✦
-              </span>
+      <div className="flex overflow-hidden select-none">
+        <div className="flex shrink-0 animate-marquee items-center hover:[animation-play-state:paused]">
+          {[0, 1].map((copy) => (
+            <div key={copy} aria-hidden={copy > 0 || undefined} className="flex shrink-0 items-center gap-6 pr-6">
+              {SKILLS_LIST.map((skill, idx) => (
+                <div
+                  key={`${copy}-${skill.name}-${idx}`}
+                  onMouseEnter={() => sound.playClick()}
+                  className="inline-flex items-center gap-3 shrink-0 cursor-pointer transition-transform hover:scale-105"
+                >
+                  <div className="flex items-center gap-2 rounded-xl border border-hairline/80 bg-canvas px-3.5 py-1.5 shadow-xs transition-colors hover:border-signature-coral">
+                    <span className="text-sm">{skill.icon}</span>
+                    <span className="font-mono text-xs font-semibold text-ink">{skill.name}</span>
+                    <span className="rounded bg-surface-soft px-1.5 py-0.5 font-mono text-[10px] text-ink-muted">
+                      {skill.tag}
+                    </span>
+                  </div>
+                  <span className="text-signature-coral calm:text-ink-muted/40 font-mono text-xs opacity-60">
+                    ✦
+                  </span>
+                </div>
+              ))}
             </div>
           ))}
         </div>

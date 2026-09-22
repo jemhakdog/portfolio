@@ -25,12 +25,6 @@ export function HeroTyping({
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    // If reduced motion is requested, show the first phrase statically
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setText(PHRASES[0]);
-      return;
-    }
-
     const currentPhrase = PHRASES[phraseIndex];
 
     if (isPaused) {

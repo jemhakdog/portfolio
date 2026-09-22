@@ -3,13 +3,18 @@
 import { useState } from "react";
 
 import { profile, topNav } from "@/content/portfolio";
+import { sound } from "@/lib/audio-engine";
 import { toggleDark, togglePalette, useUIState } from "@/lib/ui-state";
 
 /**
  * Sticky white bar. Theme and palette are read from lib/ui-state.ts, which owns
  * the `<html>` attributes; this component only renders the switches.
  */
-export function TopBar() {
+export function TopBar({
+  onOpenCommandPalette,
+}: {
+  onOpenCommandPalette?: () => void;
+} = {}) {
   const { calm, dark } = useUIState();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -42,6 +47,35 @@ export function TopBar() {
               GitHub
             </a>
           </span>
+
+          {/* Quick Search Button */}
+          <button
+            type="button"
+            onClick={() => {
+              sound.playClick();
+              onOpenCommandPalette?.();
+            }}
+            aria-label="Search portfolio (⌘K)"
+            className="flex min-h-[38px] cursor-pointer items-center gap-2 rounded-full border border-hairline bg-canvas px-3 py-1.5 text-[12px] font-mono font-medium text-ink-muted hover:border-border-strong hover:text-ink focus-visible:outline-2 focus-visible:outline-ring transition-colors"
+          >
+            <svg
+              aria-hidden="true"
+              className="size-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <span className="hidden sm:inline">Search</span>
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-hairline bg-surface-soft px-1 text-[10px] font-mono font-semibold text-ink">
+              <span className="text-[11px] leading-none">⌘</span>K
+            </kbd>
+          </button>
 
           <button
             type="button"
@@ -150,6 +184,30 @@ export function TopBar() {
           className="border-b border-hairline bg-canvas px-6 py-4 shadow-lift md:hidden"
         >
           <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileNavOpen(false);
+                sound.playClick();
+                onOpenCommandPalette?.();
+              }}
+              className="flex min-h-[44px] cursor-pointer items-center gap-2 text-title-sm font-medium text-ink hover:text-link text-left"
+            >
+              <svg
+                aria-hidden="true"
+                className="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <span>Search (⌘K)</span>
+            </button>
             {topNav.map((item) => (
               <a
                 key={item.id}

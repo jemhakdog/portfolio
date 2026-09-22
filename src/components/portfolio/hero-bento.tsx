@@ -6,7 +6,6 @@ import {
   currentlyBuilding,
   profile,
   record,
-  toolbox,
 } from "@/content/portfolio";
 import { hueVar, HueBar } from "@/components/portfolio/hue";
 import Scene3D from "@/components/portfolio/scene-3d";
@@ -29,8 +28,8 @@ export function HeroBento() {
         className={`${TILE} js-hero-lead flex flex-col justify-between gap-8 text-canvas lg:col-span-8 lg:min-h-[340px]`}
       >
         <HueBar />
-        <div className="flex flex-col-reverse justify-between gap-6 sm:flex-row sm:items-start">
-          <div className="max-w-[36ch] flex-1">
+        <div className="flex flex-col justify-between gap-6">
+          <div className="max-w-[46ch]">
             <span
               data-hero
               className="eyebrow js-hero-eyebrow text-canvas/85 calm:text-ink-muted"
@@ -47,21 +46,6 @@ export function HeroBento() {
             <div className="mt-4 pt-3 border-t border-canvas/20 calm:border-hairline">
               <HeroTyping />
             </div>
-          </div>
-          <div className="relative size-[104px] sm:size-[136px] lg:size-[160px] flex-none overflow-hidden rounded-2xl lg:rounded-3xl border-2 border-canvas/40 shadow-lift calm:border-hairline">
-            <Image
-              src={asset("/avatar.jpg")}
-              alt={profile.name}
-              width={160}
-              height={160}
-              className="size-full object-cover"
-              priority
-            />
-            <span
-              aria-label="Available for work"
-              title="Available for work"
-              className="absolute right-2 bottom-2 sm:right-2.5 sm:bottom-2.5 size-3.5 sm:size-4 rounded-full bg-emerald-400 ring-2 sm:ring-[2.5px] ring-canvas"
-            />
           </div>
         </div>
         <dl className="js-hero-cred flex flex-wrap gap-x-[26px] gap-y-4">
@@ -146,12 +130,18 @@ export function HeroBento() {
         data-hero
         data-hero-tile
         style={hueVar("peach")}
-        className={`${TILE} lg:col-span-4 lg:min-h-[196px]`}
+        className={`${TILE} flex flex-col justify-between gap-4 lg:col-span-4 lg:min-h-[196px]`}
       >
         <HueBar />
-        <span className="eyebrow text-ink/85 calm:text-ink-muted">Toolbox</span>
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {toolbox.map((chip) => (
+        <div>
+          <span className="eyebrow text-ink/85 calm:text-ink-muted">Specialty</span>
+          <h3 className="mt-2 text-title-md font-bold text-ink">Offline & Hardware</h3>
+          <p className="mt-1.5 text-body-md leading-[1.4] text-body">
+            Local-first software engineered for intermittent signal and thermal receipt printers.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {["IndexedDB", "Supabase Sync", "ESC/POS", "PWA"].map((chip) => (
             <span
               key={chip}
               className="chip calm:border-hairline calm:bg-surface-soft"
@@ -191,19 +181,34 @@ export function HeroBento() {
         className="js-hero-fig rounded-[20px] bg-surface-dark p-[26px] lg:col-span-12"
       >
         <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-12">
-          <div className="relative h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated shadow-md lg:col-span-3">
-            <Image
-              src={asset("/avatar.jpg")}
-              alt={profile.name}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3.5 pt-8 text-[12px] font-semibold text-white">
-              {profile.mark}
-              <span className="block text-[10px] font-normal text-white/70">
-                Developer · Pangasinan, PH
+          <div className="flex h-[250px] w-full flex-col justify-between rounded-[14px] border border-hairline/20 bg-surface-dark-elevated p-4 font-mono text-[11px] shadow-md lg:col-span-3">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                SYSTEM // LIVE
               </span>
+              <span className="text-white/40">v1.2.0</span>
+            </div>
+            <div className="space-y-2 text-white/80">
+              <div className="flex justify-between">
+                <span className="text-white/50">Runtime:</span>
+                <span className="text-white">Python 3.12</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/50">Database:</span>
+                <span className="text-white">SQLite + WAL</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/50">Offline sync:</span>
+                <span className="text-emerald-300">IndexedDB</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/50">Target HW:</span>
+                <span className="text-white">₱3k Tablet</span>
+              </div>
+            </div>
+            <div className="rounded border border-white/10 bg-black/40 px-2.5 py-1.5 text-[10px] text-white/60">
+              $ ping localhost:8000 → 0.4ms
             </div>
           </div>
           <div className="h-[250px] w-full lg:col-span-4">
@@ -221,7 +226,7 @@ export function HeroBento() {
         </div>
         <figcaption className="mt-3.5 flex flex-col justify-between gap-2 text-[13px] font-semibold text-canvas sm:flex-row sm:items-center">
           <span>
-            Fig. 01 — Jem Carlo, interactive WebGL 3D wireframe, and app.py running locally: one
+            Fig. 01 — System telemetry, interactive WebGL 3D wireframe, and app.py running locally: one
             Python service, SQLite on disk, no build step.
           </span>
           <span className="flex-none tracking-[1.1px] uppercase opacity-70">

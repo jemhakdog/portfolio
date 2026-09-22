@@ -33,25 +33,7 @@
 @utility animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 26s linear infinite;
-}
-
-@utility animate-marquee-reverse {
-  display: flex;
-  width: max-content;
-  animation: marquee-reverse 26s linear infinite;
-}
-
-@utility animate-marquee-fast {
-  display: flex;
-  width: max-content;
-  animation: marquee 14s linear infinite;
-}
-
-@utility pause-hover {
-  &:hover {
-    animation-play-state: paused;
-  }
+  animation: marquee 35s linear infinite;
 }
 
 /* ---------------------------------------------------------------------------
@@ -59,8 +41,9 @@
    Everything else on the page is a `@theme static` brand token below.
    --------------------------------------------------------------------------- */
 @theme inline {
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-inter);
+  /* latin-ext second in the stack: per-glyph fallback for ₱ etc. (see layout.tsx) */
+  --font-sans: var(--font-inter), var(--font-inter-ext);
+  --font-display: var(--font-inter), var(--font-inter-ext);
   /* no mono role in design.md — fall back to the platform stack */
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
@@ -120,22 +103,12 @@
   }
 
   /* Marquee infinite scroll keyframes */
-  --animate-marquee: marquee 30s linear infinite;
-  --animate-marquee-reverse: marquee-reverse 30s linear infinite;
   @keyframes marquee {
     from {
       transform: translateX(0%);
     }
     to {
       transform: translateX(-50%);
-    }
-  }
-  @keyframes marquee-reverse {
-    from {
-      transform: translateX(-50%);
-    }
-    to {
-      transform: translateX(0%);
     }
   }
 
@@ -284,6 +257,7 @@ html:not([data-palette="calm"]) .bg-signature-cream {
   --color-ink: #181d26;
   --color-body: #333840;
   --color-ink-muted: #41454d;
+  color: #181d26;
 }
 
 /* 3. In CALM mode under dark theme, tiles use the dark card surface */
@@ -341,12 +315,7 @@ html:not([data-palette="calm"]) .bg-signature-cream {
   }
   /* JS animations check this too — see components/portfolio/motion.tsx. */
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+    html {
       scroll-behavior: auto !important;
     }
   }

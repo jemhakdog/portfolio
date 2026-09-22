@@ -5,6 +5,15 @@ import { Float, Text } from "@react-three/drei";
 import { useSyncExternalStore, useEffect, useRef, useState } from "react";
 import type { Group, Mesh } from "three";
 import { sound } from "@/lib/audio-engine";
+import { asset } from "@/lib/asset";
+
+/**
+ * troika (behind drei's <Text>) can read WOFF but not WOFF2, so the CRT copy
+ * ships its own Inter face. Passing it explicitly is load-bearing offline:
+ * without a `font`, troika asks the unicode-font-resolver — a jsdelivr CDN — which
+ * face to use and renders nothing when that request fails.
+ */
+const TERMINAL_FONT = asset("/fonts/inter-regular.woff");
 
 const emptySubscribe = () => () => {};
 
@@ -81,6 +90,7 @@ function TerminalDesk() {
 
         {/* Floating Screen Text */}
         <Text
+          font={TERMINAL_FONT}
           position={[-0.8, 0.45, 0.62]}
           fontSize={0.14}
           color="#0d1218"
@@ -90,6 +100,7 @@ function TerminalDesk() {
           $ python app.py
         </Text>
         <Text
+          font={TERMINAL_FONT}
           position={[-0.8, 0.22, 0.62]}
           fontSize={0.11}
           color="#123d19"
