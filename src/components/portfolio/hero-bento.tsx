@@ -10,6 +10,7 @@ import {
 } from "@/content/portfolio";
 import { hueVar, HueBar } from "@/components/portfolio/hue";
 import Scene3D from "@/components/portfolio/scene-3d";
+import { HeroTyping } from "@/components/portfolio/hero-typing";
 
 /*
  * The bento IS the palette: each block owns one signature surface and carries
@@ -42,6 +43,10 @@ export function HeroBento() {
             >
               {profile.headline}
             </h1>
+            {/* Live Typing Animation */}
+            <div className="mt-4 pt-3 border-t border-canvas/20 calm:border-hairline">
+              <HeroTyping />
+            </div>
           </div>
           <div className="relative size-[104px] sm:size-[136px] lg:size-[160px] flex-none overflow-hidden rounded-2xl lg:rounded-3xl border-2 border-canvas/40 shadow-lift calm:border-hairline">
             <Image
@@ -101,7 +106,7 @@ export function HeroBento() {
             </span>
           </div>
           <a
-            className="text-legal underline underline-offset-3 text-canvas calm:text-link"
+            className="text-legal underline underline-offset-3 text-background text-canvas calm:text-link"
             href={`mailto:${profile.email}`}
           >
             {profile.email} →

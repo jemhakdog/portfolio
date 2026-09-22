@@ -198,6 +198,57 @@ export const contact = {
   cta: "Send an email",
 } as const;
 
+export const resumeInfo = {
+  pdfUrl: "/resume.pdf",
+  downloadName: "Jem_Carlo_Austria_Resume.pdf",
+  lastUpdated: "March 2026",
+  headline: "Junior Full-Stack Developer · Pangasinan, PH",
+  summary:
+    "Diligent junior developer building offline-first, resilient software engineered for low-cost hardware and real community utility. Hands-on experience architecting full-stack web apps, local government administration systems, and Android thermal printing integrations.",
+  education: {
+    degree: "Bachelor of Science in Information Technology",
+    school: "Pangasinan State University",
+    period: "2023 – 2026",
+    status: "Graduating 2026",
+    details:
+      "Core coursework: Algorithms, Data Structures, Relational Database Modeling, Operating Systems, Web Architecture.",
+  },
+  skills: [
+    { category: "Languages", items: ["Python", "TypeScript", "JavaScript", "SQL", "HTML5", "Modern CSS"] },
+    { category: "Frameworks & Web", items: ["FastAPI", "React 19", "Next.js 16", "Tailwind CSS v4", "Three.js / R3F", "Node.js"] },
+    { category: "Databases & Sync", items: ["PostgreSQL", "SQLite", "Supabase", "IndexedDB (offline-first)"] },
+    { category: "Tools & Protocols", items: ["Git / GitHub", "Linux / Bash", "ESC/POS Bluetooth", "PWA", "Vercel", "Render"] },
+  ],
+  highlights: [
+    "3 shipped real-world production projects deployed and actively serving local users.",
+    "Engineered local-first card reviewer (StudyStack) with IndexedDB & Supabase sync.",
+    "Digitized barangay municipal records, cutting certificate creation from 15m to 90s.",
+    "Built touchscreen thermal receipt POS running entirely offline on cheap ₱3k Android tablets.",
+  ],
+} as const;
+
+export const marqueeSkills = [
+  "Python",
+  "FastAPI",
+  "React 19",
+  "Next.js 16",
+  "TypeScript",
+  "PostgreSQL",
+  "SQLite",
+  "Supabase",
+  "Tailwind CSS v4",
+  "Three.js",
+  "IndexedDB",
+  "Offline-First",
+  "PWA",
+  "Bluetooth ESC/POS",
+  "Git & GitHub",
+  "Linux",
+  "REST APIs",
+  "Vercel",
+  "Render",
+] as const;
+
 /* ---------------------------------------------------------------------------
    Sections — the page's own table of contents. TopBar, StickyProfilePane,
    CommandPalette and SiteFooter all derive from this instead of each keeping
@@ -243,8 +294,17 @@ export const sections: Section[] = [
     topBar: true,
   },
   {
-    id: "lab",
+    id: "resume",
     num: "04",
+    label: "Resume",
+    title: "Curriculum Vitae / Resume",
+    subtitle: "Interactive preview and download verified PDF resume",
+    icon: "📄",
+    topBar: true,
+  },
+  {
+    id: "lab",
+    num: "05",
     label: "The Lab & Archive",
     title: "The Lab & Version Archive",
     subtitle: "Explore interactive prototypes & design history",
@@ -252,7 +312,7 @@ export const sections: Section[] = [
   },
   {
     id: "guestbook",
-    num: "05",
+    num: "06",
     label: "Guestbook",
     title: "Public Guestbook",
     subtitle: "Sign the visitor guestbook",
@@ -260,7 +320,7 @@ export const sections: Section[] = [
   },
   {
     id: "contact",
-    num: "06",
+    num: "07",
     label: "Contact",
     title: "Contact Information",
     subtitle: "Direct email and professional profiles",

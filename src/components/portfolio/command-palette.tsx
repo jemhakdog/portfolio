@@ -20,11 +20,13 @@ export function CommandPalette({
   onOpen,
   onClose,
   onOpenTerminal,
+  onOpenResume,
 }: {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
   onOpenTerminal?: () => void;
+  onOpenResume?: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -85,6 +87,36 @@ export function CommandPalette({
       icon: section.icon,
       perform: () => scrollTo(section.id),
     })),
+    {
+      id: "act-open-resume",
+      title: "Open Resume (PDF Viewer)",
+      category: "Actions",
+      subtitle: "View curriculum vitae and qualifications modal",
+      shortcut: "CV",
+      icon: "📄",
+      perform: () => {
+        onClose();
+        if (onOpenResume) {
+          onOpenResume();
+        } else {
+          window.open("/resume.pdf", "_blank");
+        }
+      },
+    },
+    {
+      id: "act-download-resume",
+      title: "Download Resume PDF",
+      category: "Actions",
+      subtitle: "Download official Jem_Carlo_Austria_Resume.pdf",
+      icon: "📥",
+      perform: () => {
+        const link = document.createElement("a");
+        link.href = "/resume.pdf";
+        link.download = "Jem_Carlo_Austria_Resume.pdf";
+        link.click();
+        onClose();
+      },
+    },
     {
       id: "act-terminal",
       title: "Open Embedded CLI Terminal",

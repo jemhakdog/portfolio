@@ -8,8 +8,10 @@ import { sound } from "@/lib/audio-engine";
 
 export function StickyProfilePane({
   onOpenCommandPalette,
+  onOpenResume,
 }: {
   onOpenCommandPalette?: () => void;
+  onOpenResume?: () => void;
 }) {
   const [activeSection, setActiveSection] = useState<string>("work");
 
@@ -116,22 +118,36 @@ export function StickyProfilePane({
 
       {/* Bottom Column: Command Palette Button, Resume & Direct Links */}
       <div className="hidden lg:block space-y-4 pt-6 border-t border-hairline/60">
-        <button
-          type="button"
-          onClick={() => {
-            sound.playChime();
-            onOpenCommandPalette?.();
-          }}
-          className="flex w-full items-center justify-between rounded-xl border border-hairline bg-surface-soft px-3.5 py-2 text-xs font-mono text-ink hover:border-border-strong hover:bg-canvas transition-colors"
-        >
-          <span className="flex items-center gap-2">
-            <span>⚡ Quick Search</span>
-          </span>
-          <kbd className="inline-flex items-center gap-0.5 rounded border border-hairline bg-canvas px-1.5 py-0.5 text-[10px] font-mono font-bold text-ink">
-            <span className="text-[11px] leading-none">⌘</span>
-            <span>K</span>
-          </kbd>
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              sound.playChime();
+              onOpenCommandPalette?.();
+            }}
+            className="flex items-center justify-between rounded-xl border border-hairline bg-surface-soft px-3 py-2 text-xs font-mono text-ink hover:border-border-strong hover:bg-canvas transition-colors"
+          >
+            <span className="flex items-center gap-1.5">
+              <span>⚡ Search</span>
+            </span>
+            <kbd className="inline-flex items-center gap-0.5 rounded border border-hairline bg-canvas px-1.5 py-0.5 text-[10px] font-mono font-bold text-ink">
+              <span className="text-[11px] leading-none">⌘</span>
+              <span>K</span>
+            </kbd>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              sound.playChime();
+              onOpenResume ? onOpenResume() : window.open("/resume.pdf", "_blank");
+            }}
+            className="flex items-center justify-center gap-2 rounded-xl border border-signature-coral/30 bg-signature-coral/10 calm:bg-surface-soft calm:border-hairline px-3 py-2 text-xs font-mono font-semibold text-signature-coral calm:text-ink hover:bg-signature-coral hover:text-white transition-all cursor-pointer"
+          >
+            <span>📄 Resume</span>
+            <span className="text-[10px] opacity-75">PDF</span>
+          </button>
+        </div>
 
         <div className="flex items-center justify-between text-legal font-mono">
           <a

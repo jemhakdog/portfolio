@@ -128,14 +128,44 @@ export function TerminalDrawer({
 
       case "cat resume":
       case "resume":
+      case "open resume":
+      case "pdf":
         result = (
-          <div className="space-y-1.5 text-[12px] text-canvas/90">
-            <p className="text-emerald-400 font-bold">BS Information Technology (2023–2026)</p>
-            <p>Pangasinan State University · Graduating 2026</p>
-            <p className="text-canvas/70">
+          <div className="space-y-2 text-[12px] text-canvas/90">
+            <div>
+              <p className="text-emerald-400 font-bold">{profile.name} — Curriculum Vitae</p>
+              <p className="text-amber-300 font-mono text-[11px]">BS Information Technology (2023–2026) · Pangasinan State University</p>
+            </div>
+            <p className="text-canvas/80 text-[11px]">
+              Specialization: Offline-first client architectures, Python (FastAPI), React 19, SQLite & PostgreSQL.
+            </p>
+            <p className="text-canvas/70 text-[11px]">
               Certifications: Responsive Web Design (freeCodeCamp), Cybersecurity (Cisco), Python Basic (HackerRank).
             </p>
-            <p className="text-amber-300">Target Role: Junior Software Engineer / Full-Stack Developer (Remote)</p>
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 rounded bg-emerald-500/20 px-2.5 py-1 text-[11px] font-mono font-bold text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30"
+              >
+                <span>[ Open resume.pdf ↗ ]</span>
+              </a>
+              <a
+                href="/resume.pdf"
+                download="Jem_Carlo_Austria_Resume.pdf"
+                className="inline-flex items-center gap-1 rounded bg-amber-500/20 px-2.5 py-1 text-[11px] font-mono font-bold text-amber-300 border border-amber-500/40 hover:bg-amber-500/30"
+              >
+                <span>[ Download PDF ↓ ]</span>
+              </a>
+              <a
+                href="#resume"
+                onClick={() => onToggle()}
+                className="inline-flex items-center gap-1 rounded bg-canvas/10 px-2 py-1 text-[11px] font-mono text-canvas/70 hover:text-canvas"
+              >
+                #view-section
+              </a>
+            </div>
           </div>
         );
         break;

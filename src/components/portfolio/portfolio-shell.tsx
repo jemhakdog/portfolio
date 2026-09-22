@@ -10,6 +10,8 @@ import { HeroBento } from "@/components/portfolio/hero-bento";
 import { LabArchive } from "@/components/portfolio/lab-archive";
 import { MilestoneRunner } from "@/components/portfolio/milestone-runner";
 import { PortfolioMotion } from "@/components/portfolio/motion";
+import { ResumeModal, ResumeSection } from "@/components/portfolio/resume-section";
+import { SkillsLineMarquee } from "@/components/portfolio/skills-marquee";
 import { StickyProfilePane } from "@/components/portfolio/sticky-profile-pane";
 import { TelemetryBar } from "@/components/portfolio/telemetry-bar";
 import { TerminalDrawer } from "@/components/portfolio/terminal-drawer";
@@ -20,6 +22,7 @@ import { initUIState } from "@/lib/ui-state";
 export function PortfolioShell() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
 
   // Theme, palette and sound live in lib/ui-state.ts; this just loads them.
   useEffect(initUIState, []);
@@ -38,7 +41,10 @@ export function PortfolioShell() {
       {/* 4. Dual-Pane Architecture [Brittany Chiang Wow Factor] */}
       <div className="relative mx-auto w-full max-w-[1400px] px-4 sm:px-8 lg:flex lg:gap-10">
         {/* Left Pane (Sticky on lg+) */}
-        <StickyProfilePane onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
+        <StickyProfilePane
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+          onOpenResume={() => setResumeModalOpen(true)}
+        />
 
         {/* Right Pane (Fluid Scrollable Feed) */}
         <main
@@ -48,6 +54,9 @@ export function PortfolioShell() {
           {/* Hero & 3D Interactive Workspace [Bruno Simon & Henry Heffernan] */}
           <HeroBento />
 
+          {/* Standalone Single-Line Skills Marquee */}
+          <SkillsLineMarquee />
+
           {/* Featured Case Studies with Tactile Spring Physics [Rauno Freiberg] */}
           <WorkGallery />
 
@@ -56,6 +65,9 @@ export function PortfolioShell() {
 
           {/* Certificate Wall */}
           <CertificateWall />
+
+          {/* Resume & Curriculum Vitae Section */}
+          <ResumeSection onOpenModal={() => setResumeModalOpen(true)} />
 
           {/* The Lab & Version Archive with Offline Sync Visualizer [Lynn Fisher] */}
           <LabArchive />
@@ -75,6 +87,7 @@ export function PortfolioShell() {
         onOpen={() => setCommandPaletteOpen(true)}
         onClose={() => setCommandPaletteOpen(false)}
         onOpenTerminal={() => setTerminalOpen(true)}
+        onOpenResume={() => setResumeModalOpen(true)}
       />
 
       {/* 6. Tamal Sen Integrated CLI Terminal Drawer */}
@@ -83,7 +96,13 @@ export function PortfolioShell() {
         onToggle={() => setTerminalOpen(!terminalOpen)}
       />
 
-      {/* 7. anime.js Motion Orchestrator */}
+      {/* 7. Curriculum Vitae Fullscreen Modal */}
+      <ResumeModal
+        isOpen={resumeModalOpen}
+        onClose={() => setResumeModalOpen(false)}
+      />
+
+      {/* 8. anime.js Motion Orchestrator */}
       <PortfolioMotion />
     </>
   );
