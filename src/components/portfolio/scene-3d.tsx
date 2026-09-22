@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Text } from "@react-three/drei";
-import { useSyncExternalStore, useRef, useState } from "react";
+import { useSyncExternalStore, useEffect, useRef, useState } from "react";
 import type { Group, Mesh } from "three";
 import { sound } from "@/lib/audio-engine";
 
@@ -143,6 +143,24 @@ function TerminalDesk() {
  */
 export default function Scene3D() {
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  /*
+   * R3F's default frameloop is "always": this canvas renders 60fps even while
+   * scrolled far off screen, competing with the fullscreen fluid shader for the
+   * same GPU. Nothing here animates on its own terms (drei <Float> is
+   * render-driven), so stopping the loop off-screen costs no visual fidelity.
+   */
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      rootMargin: "200px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [mounted]);
 
   if (!mounted) {
     return (
@@ -153,7 +171,10 @@ export default function Scene3D() {
   }
 
   return (
-    <div className="relative h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated shadow-md">
+    <div
+      ref={hostRef}
+      className="relative h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated shadow-md"
+    >
       <div className="pointer-events-none absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded bg-black/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-canvas/70 backdrop-blur-xs">
         <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
         <span>3D Sandbox (R3F)</span>
@@ -161,7 +182,8 @@ export default function Scene3D() {
 
       <Canvas
         camera={{ position: [0, 0, 4.6], fov: 42 }}
-        dpr={[1, 1.5]}
+        dpr={[1, window.matchMedia("(max-width: 768px)").matches ? 1 : 1.5]}
+        frameloop={inView ? "always" : "never"}
         gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.9} />

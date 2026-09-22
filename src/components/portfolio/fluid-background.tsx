@@ -192,8 +192,26 @@ export function FluidBackground() {
     };
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
 
+    /*
+     * This shader is fill-rate bound: 5 fbm calls x 4 octaves x 4 hash = ~80
+     * sin() per pixel, every frame, forever. On a phone that is tens of
+     * millions of transcendentals per frame and the whole page drops frames
+     * while scrolling. Two levers, both here: fewer pixels and fewer frames.
+     * The smoke drifts at 0.18 speed, so 30fps and a sub-native buffer are
+     * visually indistinguishable from full quality.
+     * ponytail: quality tier picked once from viewport width + core count, not
+     * from a live GPU benchmark. Upgrade to a measured tier if a real device
+     * turns up struggling above these thresholds.
+     */
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lean =
+      window.matchMedia("(max-width: 768px)").matches ||
+      (navigator.hardwareConcurrency ?? 8) <= 4;
+    // reduced motion only needs the theme cross-fade to keep stepping.
+    const minFrameMs = reduced ? 100 : lean ? 1000 / 30 : 0;
+
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+      const dpr = Math.min(window.devicePixelRatio || 1, lean ? 0.7 : 1.25);
       const width = Math.floor(window.innerWidth * dpr);
       const height = Math.floor(window.innerHeight * dpr);
       if (canvas.width !== width || canvas.height !== height) {
@@ -205,12 +223,16 @@ export function FluidBackground() {
     resize();
     window.addEventListener("resize", resize);
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let animId: number;
     const start = performance.now();
+    let lastPaint = 0;
     let darkVal = document.documentElement.classList.contains("dark") ? 1.0 : 0.0;
 
     const render = (now: number) => {
+      animId = requestAnimationFrame(render);
+      if (now - lastPaint < minFrameMs) return;
+      lastPaint = now;
+
       const elapsed = reduced ? 0 : (now - start) * 0.001;
 
       // Smooth mouse interpolation
@@ -239,7 +261,6 @@ export function FluidBackground() {
       gl.uniform1f(uDark, darkVal);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-      animId = requestAnimationFrame(render);
     };
 
     animId = requestAnimationFrame(render);

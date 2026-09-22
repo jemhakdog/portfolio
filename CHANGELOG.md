@@ -1,5 +1,56 @@
 # Changelog
 
+## 2026-09-22 — mobile frame drops
+
+Reported symptom: the page stutters on a phone. Cause was WebGL, but only one of
+the two contexts.
+
+`fluid-background.tsx` is a fullscreen fragment shader evaluating 5 `fbm` calls x
+4 octaves x 4 `hash` = ~80 `sin()` **per pixel, per frame, forever**. At a 390x844
+viewport and the old 1.25 DPR clamp that is ~500k pixels, so tens of millions of
+transcendentals every frame — fill-rate bound, and the frame budget is gone before
+the DOM even asks for a scroll. It was also drawing at full rate for people who
+asked for `prefers-reduced-motion`.
+
+`scene-3d.tsx` was the second order effect: R3F's `frameloop` defaults to
+`"always"`, so the hero's R3F canvas kept rendering 60fps while scrolled thousands
+of pixels off screen, competing with the shader for the same GPU.
+
+### Changed
+
+- `fluid-background.tsx` — a lean tier (viewport <= 768px, or <= 4 logical cores)
+  chosen once at mount: buffer at 0.7 DPR instead of up to 1.25, and paint at
+  30fps instead of uncapped. The smoke drifts at 0.18 speed, so neither is
+  legible as a quality loss. Frame budget and mouse-velocity smoothing are
+  unchanged on desktop (the cap is `0` there, so nothing is ever skipped).
+- `fluid-background.tsx` — `prefers-reduced-motion` now paints at 10fps rather
+  than 60fps. It cannot stop outright: the shader still has to step the
+  light/dark cross-fade when the palette toggles.
+- `scene-3d.tsx` — the R3F canvas is `frameloop="never"` while off screen (200px
+  `rootMargin`), back to `"always"` when it returns. Nothing in that scene is
+  time-driven that isn't render-driven, so it costs no fidelity. Mobile DPR clamp
+  dropped 1.5 -> 1; desktop is untouched.
+- `scripts/smoke.mjs` — 24 assertions -> 25. A 390x844 @3x emulated viewport
+  navigates fresh and asserts the fluid backbuffer is *smaller* than the CSS
+  viewport, which is the only externally visible proof the lean tier engaged.
+  Measured: 273x590 against 390x844.
+
+### Known ceiling
+
+The lean tier is picked from viewport width and `navigator.hardwareConcurrency`,
+not from a measured GPU budget — a fast phone on a wide viewport gets the desktop
+path, and a truncated desktop window gets the phone path. The live lever is
+`Math.min(devicePixelRatio, lean ? 0.7 : 1.25)` plus `minFrameMs` in
+`fluid-background.tsx`; the real upgrade is a `#define` for octave count so the
+shader itself gets cheaper, which is the only way to go below 30fps without
+losing the motion.
+
+Left alone, both second-order: `sticky-profile-pane.tsx` and `milestone-runner.tsx`
+each run an unthrottled `scroll` handler, and `getBoundingClientRect()` forces
+layout on every event. Measured as not the bottleneck here (the runner moves 1400px
+in 23%->100% without a hitch in the smoke run), so it is a find-if-measured, not a
+pre-emptive fix.
+
 ## 2026-09-22 — GitHub Pages deploy
 
 Statically exporting the site so it can run off GitHub Pages, which has no Node

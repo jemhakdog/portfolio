@@ -484,6 +484,35 @@ async function main() {
       `top=${runnerEnd.top}%`,
     );
 
+    /* -- the fluid background drops to its mobile tier on a phone viewport.
+       It is a fullscreen fragment shader, so its cost is pixels x frames; the
+       only proof the tier engaged is the backbuffer being smaller than the CSS
+       viewport. Emulated at 390x844 @3x — the tier is chosen once at mount, so
+       this has to be set before the navigation. -- */
+    await cdp.send("Emulation.setDeviceMetricsOverride", {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 3,
+      mobile: true,
+    });
+    await goto();
+    const fluid = await cdp.evaluate(`(() => {
+      const c = document.querySelector('canvas[aria-hidden="true"]');
+      return {
+        w: c?.width ?? 0,
+        h: c?.height ?? 0,
+        cssW: window.innerWidth,
+        cssH: window.innerHeight,
+        webgl: !!c?.getContext("webgl"),
+      };
+    })()`);
+    check(
+      "fluid background renders below native resolution on mobile",
+      fluid.webgl && fluid.w > 0 && fluid.w < fluid.cssW && fluid.h < fluid.cssH,
+      JSON.stringify(fluid),
+    );
+    await cdp.send("Emulation.clearDeviceMetricsOverride");
+
     /* -- anything the page logged as an error or warning is a failure -- */
     check(
       "page logged no errors or warnings",
