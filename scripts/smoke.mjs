@@ -4,7 +4,8 @@
  * into. Nothing here is unit-testable without a DOM, so it drives a real
  * headless Edge/Chrome over CDP and asserts on the live page.
  *
- *   npx next build && npx next start -p 3111   # in one shell
+ *   npm run build && npm start -- -l 3111     # in one shell (serves ./out)
+ *   node scripts/smoke.mjs                    # in another
  *   node scripts/smoke.mjs                     # in another
  *
  * Env: SMOKE_URL (default http://127.0.0.1:3111/), SMOKE_PORT (default 9222).

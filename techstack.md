@@ -19,7 +19,8 @@
 | 3D engine | **three** | 0.186.0 | The actual WebGL renderer under R3F |
 | Motion (DOM) | **anime.js** | 4.5.0 | Timelines, text splits, SVG, scroll reveals |
 | Runtime | React / React DOM | 19.3.0 | Component model |
-| Deploy | Vercel | — | Zero-config Next.js hosting |
+| Deploy | GitHub Pages | — | Static export, deployed by GitHub Actions |
+| Version control | GitHub | — | `jemhakdog/portfolio`, branch `master` |
 
 Local environment check: Node **v22.23.2**, npm **10.9.8**, git **2.54.0** — all meet requirements (Next 16 needs Node ≥ 20.9).
 
@@ -46,7 +47,7 @@ Don't tangle the last two — see "Motion vs 3D" below.
 
 ## 1. Next.js 16 — the shell
 
-**Why:** file-based routing, React Server Components, metadata API for SEO, API routes for the contact form, deploys to Vercel with no config.
+**Why:** file-based routing, React Server Components, metadata API for SEO, `output: "export"` for GitHub Pages hosting with no server.
 
 **What's new in 16 that changes how I write code:**
 
@@ -281,7 +282,7 @@ Do not animate DOM elements from inside `useFrame`, and do not drive a 3D mesh w
 5. **anime.js pass** — entrance timeline + scroll reveals. Respect `prefers-reduced-motion`.
 6. **R3F hero** — swap the 2D hero visual for the Canvas, keep the static fallback.
 7. **Polish** — Lighthouse ≥ 95, OG image, favicon, 404, `sitemap.ts`, metadata per route.
-8. **Ship** — push to GitHub, import to Vercel, custom domain, then link it from LinkedIn.
+8. **Ship** — push to GitHub, enable Pages (Settings → Pages → Source: GitHub Actions), custom domain, then link it from LinkedIn. The workflow in `.github/workflows/deploy.yml` builds `out/` and deploys it on every push to `master`; see README **Deploy** for the `basePath` caveat.
 
 ---
 
@@ -319,7 +320,7 @@ portfolio/
 - [ ] Real projects, real links, real contact method — no Lorem ipsum, no broken `#` hrefs
 - [ ] OG image + title/description per route
 - [ ] README explains the stack and what I built myself
-- [ ] Deployed on Vercel and the live URL is on LinkedIn
+- [ ] Deployed on GitHub Pages and the live URL is on LinkedIn — workflow + static build are done; Pages still has to be enabled in repo settings
 
 ---
 

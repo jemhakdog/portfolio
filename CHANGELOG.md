@@ -1,5 +1,54 @@
 # Changelog
 
+## 2026-09-22 — GitHub Pages deploy
+
+Statically exporting the site so it can run off GitHub Pages, which has no Node
+server. `npm run build` now emits `out/` instead of a `.next` server bundle, and
+`.github/workflows/deploy.yml` uploads that directory on every push to `master`
+(target URL <https://jemhakdog.github.io/portfolio/> — still needs Pages enabled
+in the repo settings, see *Known ceiling*).
+
+Because the repo is a *project* site, it is served from `/portfolio`, so the
+build takes a sub-path while local dev stays at `/`.
+
+### Added
+
+- `next.config.ts` — back after finding 12 removed it, now with what the export
+  actually needs: `output: "export"`, `images.unoptimized` (no optimizer without
+  a server), and `basePath` + `assetPrefix` derived from
+  `NEXT_PUBLIC_BASE_PATH`. Still holds the original `transpilePackages: ["three"]`
+  and stays empty when the variable is unset. The value is slash-less
+  (`portfolio`, not `/portfolio`) because MSYS shells rewrite a leading slash into
+  a Windows drive path before Next reads it.
+- `src/lib/asset.ts` — `asset()` prefixes a `public/` path with `basePath`.
+  `next/image` does not do this itself; its string `src` values were emitted
+  verbatim, so `/avatar.jpg` and `/art/*.svg` would have 404'd on Pages. Used by
+  `hero-bento`, `sticky-profile-pane` and `work-gallery`.
+- `.github/workflows/deploy.yml` — `npm ci` → `npm run build` →
+  `upload-pages-artifact` → `deploy-pages`, with `pages: write` / `id-token:
+  write` and a `pages` concurrency group. No `gh-pages` branch, no `.nojekyll`
+  (artifact deploys skip Jekyll).
+
+### Changed
+
+- `package.json` — `start` was `next start`, which refuses to run under
+  `output: "export"`. It now serves `out/` via `npx serve@latest`.
+- `README.md` — commands, a **Deploy** section, and the `basePath`/
+  `asset.ts` caveat that will bite the next person adding an image.
+- `scripts/smoke.mjs` — header comment updated to the `serve` command. Verified
+  against a static `out/`: 22/24 assertions pass. The two failures
+  (`base-layer border / outline / background resolve`, `reduced motion shows the
+  hue bar without animating it`) predate this change and are unrelated to the
+  export — they concern design tokens and `prefers-reduced-motion` CSS.
+- `techstack.md`, `PLAN.md` — the "Deploy: Vercel" rows now read GitHub Pages.
+
+### Known ceiling
+
+Static export rules out route handlers, middleware, `next/headers`, ISR and the
+image optimizer. The contact form and guestbook are client-side-only for this
+reason; they need an off-site endpoint (Formspree-style) or a host with a server
+if they are ever meant to persist.
+
 ## 2026-09-22 — over-engineering pass
 
 A repo-wide audit (ponytail-audit) of the whole tree rather than a diff, then the

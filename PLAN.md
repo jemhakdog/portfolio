@@ -122,7 +122,7 @@ static fallback for `prefers-reduced-motion`.
 - [x] 5. anime.js pass — entrance timeline + scroll reveals, `prefers-reduced-motion` respected
 - [ ] 6. R3F hero — **dropped for this variant**, not deferred (see Decisions settled #3)
 - [ ] 7. Polish — Lighthouse ≥ 95, OG image, favicon, 404, `sitemap.ts`, per-route metadata
-- [ ] 8. Ship — GitHub → Vercel → custom domain → LinkedIn
+- [ ] 8. Ship — GitHub → GitHub Pages → LinkedIn. Workflow is in place and the static build is green; blocked on enabling Pages (Settings → Pages → Source: GitHub Actions), then custom domain + LinkedIn.
 
 Steps 1–5 are done and verified in a real browser; 6 is a decision rather than a
 deferral; 7–8 are the remaining work.
