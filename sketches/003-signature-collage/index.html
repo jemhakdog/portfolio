@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sketch 003 — Signature collage · Jem Carlo G. Austria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* tokens inlined verbatim from src/app/globals.css */
+  :root{
+    --canvas:#ffffff; --surface-soft:#f8fafc; --surface-strong:#e0e2e6;
+    --surface-dark:#181d26; --surface-dark-elevated:#1d1f25; --hairline:#dddddd;
+    --ink:#181d26; --body:#333840; --ink-muted:#41454d; --border-strong:#9297a0;
+    --coral:#aa2d00; --forest:#0a2e0e; --cream:#f5e9d4; --peach:#fcab79;
+    --mint:#a8d8c4; --yellow:#f4d35e; --mustard:#d9a441;
+    --link:#1b61c9; --link-active:#1a3866; --info:#254fad; --info-border:#458fff;
+    --success:#006400; --success-border:#39bf45;
+    --r-xs:2px; --r-sm:6px; --r-md:10px; --r-lg:12px; --r-xl:16px;
+    --font-sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-sans);-webkit-font-smoothing:antialiased;background:var(--canvas);color:var(--body);font-size:14px;line-height:1.25}
+  ::selection{background:var(--ink);color:var(--canvas)}
+
+  .display-xl{font-size:clamp(34px,5vw,48px);line-height:1.1;font-weight:500;letter-spacing:-.015em}
+  .display-lg{font-size:clamp(28px,3.6vw,40px);line-height:1.2;font-weight:400}
+  .display-md{font-size:clamp(24px,3vw,32px);line-height:1.2;font-weight:400}
+  .title-lg{font-size:24px;line-height:1.35;font-weight:400;letter-spacing:.12px}
+  .title-sm{font-size:18px;line-height:1.4;font-weight:500}
+  .label-md{font-size:16px;line-height:1.4;font-weight:500}
+  .body-md{font-size:14px;line-height:1.5}
+  .caption{font-size:14px;line-height:1.35;font-weight:500;letter-spacing:.16px}
+  .legal{font-size:13.12px;line-height:1.2;font-weight:600}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;opacity:.62}
+  a{color:var(--link);text-decoration:none}
+  a:hover{text-decoration:underline;text-underline-offset:3px}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+
+  /* ---------- topbar ---------- */
+  .top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:62px}
+  .mark{font-size:13.12px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;color:var(--ink)}
+  .top nav{display:flex;gap:20px;align-items:center}
+  .top nav a{font-size:14px;font-weight:500;color:var(--ink-muted)}
+  .top nav a:hover{color:var(--ink);text-decoration:none}
+  .toggle{
+    all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:5px 6px 5px 12px;
+    border:1px solid var(--hairline);border-radius:9999px;font-size:12px;font-weight:600;color:var(--ink-muted);background:var(--canvas)
+  }
+  .toggle b{font-weight:600;color:var(--ink)}
+  .knob{position:relative;width:38px;height:20px;border-radius:9999px;background:var(--surface-strong);transition:background .3s}
+  .knob::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:9999px;background:var(--canvas);transition:transform .32s cubic-bezier(.16,.84,.24,1)}
+  body.calm .knob{background:var(--border-strong)}
+  body.calm .knob::after{transform:translateX(18px)}
+
+  /* ---------- bento ---------- */
+  .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;padding:22px 0 0}
+  .tile{
+    position:relative;border-radius:var(--r-xl);padding:30px;overflow:hidden;
+    background:var(--hue,var(--surface-soft));
+    transition:background .45s cubic-bezier(.16,.84,.24,1),box-shadow .35s,transform .45s cubic-bezier(.16,.84,.24,1),border-color .45s;
+    border:1px solid transparent;
+  }
+  .tile.on-dark{color:var(--canvas)}
+  .tile.on-dark .lead{color:rgba(255,255,255,.82)}
+  .tile.on-dark a{color:var(--canvas);text-decoration:underline;text-underline-offset:3px}
+  .tile .lead{color:var(--body)}
+  .tile.tall{display:flex;flex-direction:column;justify-content:space-between}
+
+  .hero-tile{grid-column:span 8;min-height:340px}
+  .side-a{grid-column:span 4;min-height:340px;display:flex;flex-direction:column;justify-content:space-between}
+  .side-b{grid-column:span 4;min-height:196px;display:flex;flex-direction:column;justify-content:space-between}
+  .side-c{grid-column:span 4;min-height:196px}
+  .side-d{grid-column:span 4;min-height:196px}
+
+  .hero-tile h1{max-width:18ch}
+  .cred{display:flex;gap:26px;flex-wrap:wrap;margin-top:26px}
+  .cred div{max-width:22ch}
+  .cred .k{font-size:12px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;opacity:.62;color:var(--canvas)}
+  .cred .v{margin-top:5px;font-size:14px;font-weight:500;color:var(--canvas)}
+  .avail-row{display:flex;align-items:center;gap:9px}
+  .live-dot{width:8px;height:8px;border-radius:9999px;background:var(--canvas);position:relative}
+  .live-dot::after{content:"";position:absolute;inset:-5px;border-radius:9999px;background:rgba(255,255,255,.25);animation:pulse 2.2s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.9}70%{transform:scale(1.25);opacity:0}100%{opacity:0}}
+  .fact{display:flex;align-items:baseline;gap:8px}
+  .fact .big{font-size:44px;line-height:1;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+  .fact .unit{font-size:14px;font-weight:500;color:var(--ink-muted)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .chip{font-size:12px;font-weight:600;letter-spacing:.16px;padding:4px 10px;border-radius:9999px;border:1px solid rgba(24,29,38,.16);color:var(--ink);background:rgba(255,255,255,.5)}
+
+  /* ---------- work block ---------- */
+  .band-head{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin:52px 0 16px;padding-top:20px;border-top:1px solid var(--ink)}
+  .band-head .legal{color:var(--ink-muted)}
+  .work{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .proj{
+    grid-column:span 4;position:relative;border-radius:var(--r-xl);padding:26px;min-height:280px;cursor:pointer;
+    display:flex;flex-direction:column;justify-content:space-between;
+    background:var(--hue);border:1px solid transparent;
+    transition:transform .45s cubic-bezier(.16,.84,.24,1),box-shadow .4s,background .45s,border-color .45s;
+  }
+  .proj:hover{transform:translateY(-6px);box-shadow:0 22px 44px -26px rgba(24,29,38,.45)}
+  .proj .no{font-size:12px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;opacity:.6}
+  .proj h3{margin-top:14px;max-width:16ch}
+  .proj .sub{margin-top:9px;font-size:14px;line-height:1.5;max-width:30ch}
+  .proj .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:24px}
+  .proj .meta{font-size:12px;font-weight:600;letter-spacing:.16px;opacity:.72}
+  .proj .go{
+    display:inline-flex;align-items:center;gap:6px;font-size:13.12px;font-weight:600;
+    opacity:0;transform:translateX(-6px);transition:opacity .3s,transform .35s cubic-bezier(.16,.84,.24,1)
+  }
+  .proj:hover .go,.proj[aria-expanded="true"] .go{opacity:1;transform:translateX(0)}
+  .proj[aria-expanded="true"]{box-shadow:0 22px 44px -26px rgba(24,29,38,.45)}
+
+  /* calm mode: colour becomes structure, not surface */
+  body.calm .tile,body.calm .proj{
+    background:var(--canvas);border-color:var(--hairline);color:var(--ink);
+    border-top:10px solid var(--hue);box-shadow:none
+  }
+  body.calm .tile.on-dark{color:var(--ink)}
+  body.calm .tile.on-dark .lead,body.calm .proj .sub{color:var(--body)}
+  body.calm .tile.on-dark a{color:var(--link)}
+  body.calm .cred .k{color:var(--ink-muted)}
+  body.calm .cred .v{color:var(--ink)}
+  body.calm .live-dot{background:var(--success)}
+  body.calm .live-dot::after{background:rgba(0,100,0,.22)}
+  body.calm .chip{border-color:var(--hairline);background:var(--surface-soft)}
+  body.calm .proj:hover{transform:translateY(-4px);box-shadow:0 18px 30px -28px rgba(24,29,38,.4)}
+
+  /* ---------- expanded case strip ---------- */
+  .strip{
+    grid-column:span 12;border-radius:var(--r-xl);background:var(--surface-dark);color:var(--canvas);
+    display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:30px;padding:30px;
+    max-height:0;opacity:0;overflow:hidden;padding-top:0;padding-bottom:0;margin-top:0;
+    transition:max-height .55s cubic-bezier(.16,.84,.24,1),opacity .35s,padding .45s
+  }
+  .strip.open{max-height:420px;opacity:1;padding-top:30px;padding-bottom:30px}
+  .strip h4{font-size:12px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:9px}
+  .strip p{font-size:14px;line-height:1.6;color:rgba(255,255,255,.86)}
+  .strip .title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;grid-column:span 3}
+  .strip .close{
+    all:unset;cursor:pointer;width:30px;height:30px;border-radius:9999px;border:1px solid rgba(255,255,255,.3);
+    display:grid;place-items:center;font-size:14px;color:var(--canvas);flex:none
+  }
+  .strip .close:hover{background:rgba(255,255,255,.1)}
+  .strip .stat{display:flex;gap:26px;margin-top:20px;flex-wrap:wrap}
+  .strip .stat div span{display:block;font-size:12px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+  .strip .stat div strong{font-size:15px;font-weight:500;color:var(--canvas);display:block;margin-top:4px}
+
+  /* ---------- contact ---------- */
+  .contact{margin:52px 0 0;display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .c-main{grid-column:span 8;border-radius:var(--r-xl);background:var(--surface-dark);color:var(--canvas);padding:44px 40px;display:flex;flex-direction:column;justify-content:space-between;min-height:300px}
+  .c-main .display-lg{color:var(--canvas);max-width:22ch}
+  .c-side{grid-column:span 4;border-radius:var(--r-xl);padding:30px;display:flex;flex-direction:column;justify-content:space-between}
+  .c-side .rows{border-top:1px solid rgba(24,29,38,.2);margin-top:22px}
+  .c-side .rows a{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(24,29,38,.2);font-size:13.12px;font-weight:600;color:var(--ink)}
+  .c-side .rows a:hover{text-decoration:none;opacity:.72}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;align-self:flex-start;margin-top:26px;padding:12px 20px;
+    border-radius:9999px;background:var(--canvas);color:var(--ink);font-size:16px;font-weight:500;border:1px solid var(--canvas)
+  }
+  .btn:hover{text-decoration:none;background:transparent;color:var(--canvas)}
+  .btn.dark{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+  .btn.dark:hover{background:transparent;color:var(--ink)}
+
+  footer{margin-top:44px;padding:26px 0 46px;border-top:1px solid var(--hairline);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  footer .legal{color:var(--ink-muted)}
+
+  /* ---------------- mock imagery ---------------- */
+  .shot{display:block;width:100%;height:auto;background:#fff;border-radius:12px}
+  .fig{margin:0}
+  .fig figcaption{display:flex;justify-content:space-between;gap:16px;margin-top:14px;font-size:13px;font-weight:600;opacity:.72}
+  .fig .cap-note{flex:none;letter-spacing:1.1px;text-transform:uppercase}
+  .hero-fig{grid-column:1/-1;margin-top:70px;background:var(--ink);border-radius:20px;padding:26px}
+  .hero-fig figcaption{color:var(--canvas)}
+  .hero-fig .shot{max-height:440px;max-width:100%;width:auto;margin-inline:auto;border-radius:14px}
+  .proj .thumb{margin-bottom:18px}
+  .proj .thumb .shot{max-height:230px;max-width:100%;width:auto;border-radius:10px}
+  .strip-shot{grid-column:1/-1;margin-top:24px}
+  .strip-shot .shot{max-height:340px;max-width:100%;width:auto;margin-inline:auto;border-radius:12px}
+  .certs{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px}
+  .cert{cursor:pointer;background:var(--hue,var(--cream));border-radius:18px;padding:16px;transition:transform .5s cubic-bezier(.16,.84,.24,1)}
+  .cert:hover{transform:translateY(-6px)}
+  .cert .shot{border-radius:12px}
+  .cert h3{margin-top:16px;font-size:19px;font-weight:500;color:var(--ink);line-height:1.35}
+  .cert .issuer{display:block;margin-top:6px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;opacity:.62}
+  .cert .cid{display:block;margin-top:9px;font-family:ui-monospace,monospace;font-size:11.5px;opacity:.55}
+  .lb{position:fixed;inset:0;z-index:80;background:rgba(24,29,38,.88);display:none;place-items:center;padding:38px}
+  .lb.on{display:grid}
+  .lb-in{position:relative;width:min(700px,94vw);background:#fff;border-radius:16px;padding:16px}
+  .lb-x{position:absolute;top:-13px;right:-13px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:#181d26;color:#fff;cursor:pointer;font-size:12px;line-height:1;padding:0}
+  .lb-cap{display:block;margin-top:12px;font-size:12px;color:#6b7280}
+
+  /* hero pair — sample portrait beside the work plate */
+  .hero-pair{display:flex;gap:24px;align-items:center;justify-content:center;flex-wrap:nowrap}
+  .hero-portrait{flex:0 1 264px;min-width:130px;max-width:264px}
+  .hero-portrait .shot{width:100%;border-radius:14px}
+  .hero-side{flex:1 1 340px;min-width:0;max-width:540px}
+  .hero-side .shot{width:100%;border-radius:14px}
+
+  @media (max-width:1000px){
+    .hero-tile,.side-a,.side-b,.side-c,.side-d{grid-column:span 12}
+    .proj{grid-column:span 12}
+    .proj .go{opacity:1;transform:none}
+    .strip{grid-template-columns:1fr}
+    .strip .title-row{grid-column:span 1}
+    .strip.open{max-height:760px}
+    .c-main,.c-side{grid-column:span 12}
+    .top nav{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="mark">Jem Carlo G. Austria</div>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#certs">Certificates</a>
+      <a href="#contact">Contact</a>
+      <a href="https://github.com/">GitHub</a>
+      <button class="toggle" id="modeToggle" aria-pressed="false">
+        <span><b id="modeLabel">Bold</b> palette</span>
+        <span class="knob"></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="bento">
+    <article class="tile on-dark hero-tile" style="--hue:var(--coral)">
+      <span class="eyebrow">Junior developer · Pangasinan, PH</span>
+      <h1 class="display-xl">I build small software that works offline, on cheap hardware, in real barangays.</h1>
+      <div class="cred">
+        <div><span class="k">Stack</span><span class="v">Python · React · Supabase</span></div>
+        <div><span class="k">Studying</span><span class="v">BS Information Technology 2023–2026</span></div>
+        <div><span class="k">Ships to</span><span class="v">Vercel · Render</span></div>
+      </div>
+    </article>
+
+    <article class="tile on-dark side-a" style="--hue:var(--forest)">
+      <div>
+        <span class="eyebrow">Availability</span>
+        <h2 class="display-md" style="margin-top:14px">Open to remote work — starting now.</h2>
+        <p class="lead body-md" style="margin-top:14px">UTC+08, so I overlap EU afternoons and US mornings. Happy on a team that reviews code and writes things down.</p>
+      </div>
+      <div>
+        <div class="avail-row" style="margin-bottom:14px">
+          <span class="live-dot"></span>
+          <span class="legal" style="color:var(--canvas)">Replying within a day</span>
+        </div>
+        <a class="legal" href="mailto:zani31349@gmail.com">zani31349@gmail.com →</a>
+      </div>
+    </article>
+
+    <article class="tile side-b" style="--hue:var(--cream)">
+      <span class="eyebrow" style="opacity:.55">Currently building</span>
+      <div>
+        <h3 class="title-lg">StudyStack</h3>
+        <p class="lead body-md" style="margin-top:8px">An offline-first reviewer for our BS IT coursework. IndexedDB locally, Supabase sync when there's signal.</p>
+        <div class="chips"><span class="chip">React</span><span class="chip">PWA</span><span class="chip">Supabase</span></div>
+      </div>
+    </article>
+
+    <article class="tile side-c" style="--hue:var(--peach)">
+      <span class="eyebrow" style="opacity:.55">Toolbox</span>
+      <div class="chips" style="margin-top:16px">
+        <span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">SQL / Postgres</span>
+        <span class="chip">React 19</span><span class="chip">Next.js</span><span class="chip">Tailwind</span>
+        <span class="chip">Supabase</span><span class="chip">Git / GitHub</span><span class="chip">Vercel</span>
+      </div>
+    </article>
+
+    <article class="tile side-d" style="--hue:var(--mint)">
+      <span class="eyebrow" style="opacity:.55">Record</span>
+      <div class="fact" style="margin-top:16px">
+        <span class="big">3</span><span class="unit">projects shipped,<br />all with a live URL</span>
+      </div>
+      <p class="lead body-md" style="margin-top:14px">Plus freelance work for local businesses since 2025. Three online certificates, all verifiable.</p>
+    </article>
+  <figure class="fig hero-fig">
+    <div id="heroShot"></div>
+    <figcaption><span>Fig. 01 — a sample portrait of me, and app.py running locally: one Python service, SQLite on disk, no build step.</span><span class="cap-note">Mock image</span></figcaption>
+  </figure>
+
+  </div>
+
+  <!-- work -->
+  <div class="band-head">
+    <h2 class="display-md">Selected work</h2>
+    <span class="legal">Click any tile to open the case study</span>
+  </div>
+
+  <div class="work" id="work">
+    <article class="proj" data-open="false" aria-expanded="false" style="--hue:var(--yellow)">
+      <div class="thumb"></div>
+      <div>
+        <span class="no">01 · Web app</span>
+        <h3 class="title-lg">StudyStack</h3>
+        <p class="sub">Offline-first spaced-repetition reviewer for BS IT coursework.</p>
+      </div>
+      <div class="foot">
+        <span class="meta">React · Supabase · 2026</span>
+        <span class="go">Open case study <span aria-hidden="true">→</span></span>
+      </div>
+    </article>
+
+    <article class="proj" data-open="false" aria-expanded="false" style="--hue:var(--mustard)">
+      <div class="thumb"></div>
+      <div>
+        <span class="no">02 · Internal tool</span>
+        <h3 class="title-lg">Barangay Records</h3>
+        <p class="sub">Resident registry and certificate requests, replacing six notebooks.</p>
+      </div>
+      <div class="foot">
+        <span class="meta">Python · FastAPI · 2025</span>
+        <span class="go">Open case study <span aria-hidden="true">→</span></span>
+      </div>
+    </article>
+
+    <article class="proj" data-open="false" aria-expanded="false" style="--hue:var(--surface-soft)">
+      <div class="thumb"></div>
+      <div>
+        <span class="no">03 · Desktop tool</span>
+        <h3 class="title-lg">Sari-Sari POS</h3>
+        <p class="sub">Receipt printing and credit tracking on a ₱3k Android tablet.</p>
+      </div>
+      <div class="foot">
+        <span class="meta">Python · SQLite · 2025</span>
+        <span class="go">Open case study <span aria-hidden="true">→</span></span>
+      </div>
+    </article>
+
+    <article class="strip" id="strip" aria-live="polite">
+      <div class="title-row">
+        <div>
+          <span class="eyebrow" style="color:rgba(255,255,255,.55);opacity:1" id="sCap">Case study</span>
+          <h3 class="title-lg" style="color:var(--canvas);margin-top:6px" id="sTitle">StudyStack</h3>
+        </div>
+        <button class="close" id="stripClose" aria-label="Close case study">✕</button>
+      </div>
+      <div><h4>Problem</h4><p id="sProblem"></p></div>
+      <div><h4>Approach</h4><p id="sApproach"></p></div>
+      <div>
+        <h4>Outcome</h4><p id="sOutcome"></p>
+        <div class="stat" id="sStats"></div>
+      </div>
+    </article>
+  </div>
+  <!-- certificates -->
+  <div class="band-head" style="margin-top:70px">
+    <h2 class="display-md">Certificates</h2>
+    <span class="legal">Sample data · replace with your own</span>
+  </div>
+  <div class="certs" id="certs"></div>
+
+
+  <!-- contact -->
+  <section class="contact" id="contact">
+    <article class="c-main">
+      <div>
+        <span class="eyebrow" style="color:rgba(255,255,255,.6)">Contact</span>
+        <h2 class="display-lg" style="margin-top:14px">Looking for a remote junior role where the work is real software.</h2>
+      </div>
+      <a class="btn" href="mailto:zani31349@gmail.com">Send an email →</a>
+    </article>
+    <article class="c-side" style="--hue:var(--cream);background:var(--cream)">
+      <div>
+        <span class="eyebrow" style="opacity:.55">Direct</span>
+        <div class="rows">
+          <a href="mailto:zani31349@gmail.com">Email <span>zani31349@gmail.com</span></a>
+          <a href="https://linkedin.com/in/jemcarlo-austria-45bb77421/">LinkedIn <span>/jemcarlo-austria</span></a>
+          <a href="https://github.com/">GitHub <span>/jemcarlo</span></a>
+        </div>
+      </div>
+      <a class="btn dark" href="https://linkedin.com/in/jemcarlo-austria-45bb77421/">Connect on LinkedIn</a>
+    </article>
+  </section>
+
+  <footer>
+    <span class="legal">© 2026 Jem Carlo G. Austria · Mangatarem, Pangasinan, PH</span>
+    <span class="legal">Sketch 003 — Signature collage · tokens from globals.css</span>
+  </footer>
+</main>
+
+<script>
+const cases = {
+  "StudyStack": {
+    cap:"Case study · Web app",
+    problem:"Classmates studied from screenshots and group-chat photos. Nothing was searchable, and nothing survived the bus ride home with no signal.",
+    approach:"A local-first card store in IndexedDB, synced to Supabase whenever a connection exists. Spaced-repetition intervals are computed on the client, so the app never blocks on the network.",
+    outcome:"Works fully offline after the first load. Conflicts resolve last-write-wins per card. Deployed on Vercel and used by my review group.",
+    stats:[["Hard part","Offline sync"],["Users","~40"],["Deploy","Vercel"]]
+  },
+  "Barangay Records": {
+    cap:"Case study · Internal tool",
+    problem:"Records lived in six notebooks. Issuing a barangay clearance meant reading handwriting and re-copying details by hand — slow and easy to get wrong.",
+    approach:"Typed resident records with search-as-you-type, then a request workflow that fills certificate templates from stored fields and produces a printable PDF.",
+    outcome:"Certificate issuance dropped from roughly 15 minutes to under two. Built as school work, then rebuilt as a deployable service with role-based staff access.",
+    stats:[["Hard part","Legacy data entry"],["Users","4 staff"],["Deploy","Render"]]
+  },
+  "Sari-Sari POS": {
+    cap:"Case study · Desktop tool",
+    problem:"A neighbourhood store tracked credit in a notebook, so balances were guessed at and often lost. Existing POS apps assumed a desktop and a fast connection.",
+    approach:"One SQLite file, a touch grid of products, and Bluetooth ESC/POS printing. Customer credit is tracked per person with a running ledger.",
+    outcome:"Runs on a low-end Android tablet, prints paper receipts and needs no internet. The database backs up to a shared drive nightly.",
+    stats:[["Hard type","Bluetooth on Android"],["Pilot","1 store"],["Needs","No internet"]]
+  }
+};
+
+const strip = document.getElementById("strip");
+const tiles = [...document.querySelectorAll(".proj")];
+let openName = null;
+
+tiles.forEach(tile => {
+  tile.addEventListener("click", () => {
+    const name = tile.querySelector("h3").textContent.trim();
+    if(openName === name){ closeStrip(); return; }
+    const c = cases[name];
+    document.getElementById("sCap").textContent = c.cap;
+    document.getElementById("sTitle").textContent = name;
+    document.getElementById("sProblem").textContent = c.problem;
+    document.getElementById("sApproach").textContent = c.approach;
+    document.getElementById("sOutcome").textContent = c.outcome;
+    document.getElementById("sStats").innerHTML = c.stats
+      .map(([k,v]) => `<div><span>${k}</span><strong>${v}</strong></div>`).join("");
+    tiles.forEach(t => { t.setAttribute("aria-expanded", t === tile); });
+    openName = name;
+    strip.classList.add("open");
+    requestAnimationFrame(() => strip.scrollIntoView({behavior:"smooth", block:"nearest"}));
+  });
+});
+function closeStrip(){
+  strip.classList.remove("open");
+  tiles.forEach(t => t.setAttribute("aria-expanded","false"));
+  openName = null;
+}
+document.getElementById("stripClose").addEventListener("click", e => { e.stopPropagation(); closeStrip(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeStrip(); });
+
+// palette mode: bold surfaces  <->  calm structure
+const body = document.body;
+document.getElementById("modeToggle").addEventListener("click", e => {
+  const calm = body.classList.toggle("calm");
+  document.getElementById("modeLabel").textContent = calm ? "Calm" : "Bold";
+  e.currentTarget.setAttribute("aria-pressed", String(calm));
+});
+  /* ============ MOCK IMAGERY — inline SVG placeholders, no external files ============ */
+  /* every image below is a drawing, not a screenshot of real software. */
+  const HUE = { coral:"#aa2d00", forest:"#0a2e0e", mustard:"#d9a441" };
+  const mR = (x,y,w,h,rx,f,o) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}"${o!==undefined?` opacity="${o}"`:""}/>`;
+  const mLine = (x,y,w,h,f,o) => mR(x,y,w,h,h/2,f,o);
+  const mRows = (x,y,w,n,gap,h,f,shrink) => { let o=""; for(let i=0;i<n;i++) o += mLine(x,y+i*gap,Math.max(22,w-i*(shrink||0)),h,f); return o; };
+  const mChrome = (url,inner) => `<svg class="shot" viewBox="0 0 400 300" role="img" aria-label="Mock image of ${url}">`
+    + mR(0,0,400,300,0,"#ffffff") + mR(0,0,400,26,0,"#f8fafc")
+    + `<circle cx="14" cy="13" r="3.6" fill="#e0e2e6"/><circle cx="26" cy="13" r="3.6" fill="#e0e2e6"/><circle cx="38" cy="13" r="3.6" fill="#e0e2e6"/>`
+    + `<rect x="54" y="6" width="214" height="14" rx="7" fill="#ffffff" stroke="#dddddd"/>`
+    + `<text x="63" y="16.5" font-family="ui-monospace,monospace" font-size="7.5" fill="#9297a0">${url}</text>`
+    + `<g transform="translate(0,26)">${inner}</g></svg>`;
+
+  const MOCKS = {
+    // 01.1 · local-first flashcards
+    cards(h){
+      let g = "";
+      [[104,78],[202,78],[300,78],[104,168],[202,168],[300,168]].forEach((p,i) => { const [x,y] = p;
+        g += mR(x,y,90,74,8,"#f8fafc") + mR(x+10,y+12,54,7,3.5,"#181d26")
+           + mRows(x+10,y+28,68,2,11,5,"#e0e2e6",16) + mR(x+10,y+56,28,7,3.5,h,i?0.4:1); });
+      return mChrome("studystack.app/review",
+        mR(0,0,86,274,0,"#f8fafc") + mR(14,18,50,9,4.5,"#181d26") + mRows(14,42,52,5,20,6,"#e0e2e6",6)
+        + mR(104,20,130,12,6,"#181d26") + mLine(104,42,150,6,"#e0e2e6",1)
+        + mR(292,16,92,22,11,h) + `<text x="338" y="30.5" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" fill="#ffffff">24 due</text>`
+        + mR(104,60,286,5,2.5,"#e0e2e6") + mR(104,60,168,5,2.5,h) + g);
+    },
+    // 01.2 · a records desk
+    records(h){
+      let r = "", f = "";
+      for(let i=0;i<5;i++){ const y = 80 + i*26;
+        r += mLine(16,y,12,6,"#e0e2e6") + mLine(40,y,92,6,"#dddddd") + mLine(144,y,52,6,"#e0e2e6") + mR(208,y-2,38,10,5,h,i?0.28:0.95); }
+      for(let i=0;i<3;i++) f += mR(288,46+i*26,88,16,4,"#ffffff") + `<rect x="288" y="${46+i*26}" width="88" height="16" rx="4" fill="none" stroke="#dddddd"/>`;
+      return mChrome("barangay-records.local/residents",
+        mR(16,14,130,10,5,"#181d26") + mR(296,12,88,18,9,h)
+        + mR(16,40,214,16,8,"#f8fafc") + `<rect x="16" y="40" width="214" height="16" rx="8" fill="none" stroke="#dddddd"/>`
+        + mLine(30,46,70,5,"#c9ccd2") + `<circle cx="216" cy="48" r="4" fill="none" stroke="#c9ccd2"/>`
+        + mR(16,68,246,1,0,"#dddddd") + r
+        + mR(276,14,112,214,10,"#f8fafc") + mR(288,28,58,7,3.5,"#181d26") + f + mR(288,150,88,20,10,h));
+    },
+    // 01.3 · offline POS
+    pos(h){
+      let g = "";
+      for(let j=0;j<3;j++) for(let i=0;i<4;i++){ const x = 16+i*72, y = 44+j*62;
+        g += mR(x,y,64,52,8,"#f8fafc") + mLine(x+8,y+10,34,5,"#dddddd") + mR(x+8,y+34,26,9,4.5,h,0.85); }
+      return mChrome("sari-sari-pos.local/sale",
+        mR(16,14,110,10,5,"#181d26") + g
+        + mR(312,14,80,238,10,"#f8fafc") + mLine(322,30,56,6,"#181d26") + mRows(322,48,56,4,26,5,"#e0e2e6",12)
+        + mR(322,168,60,20,10,h) + mLine(322,200,44,5,"#e0e2e6") + mLine(322,214,30,5,"#e0e2e6"));
+    },
+    // hero · the editor these were written in (dark surface)
+    editor(){
+      const C = { p:"#fcab79", g:"#5b616e", m:"#a8d8c4", y:"#f4d35e", c:"#f5e9d4" };
+      const CODE = [[0,"pc"],[1,"mg"],[1,"g"],[0,"py"],[1,"g"],[1,"mg"],[0,"p"],[1,"yg"],[0,"g"],[1,"mc"],[0,"g"],[0,"p"]];
+      let lines = "";
+      CODE.forEach(([ind,tok],i) => { const y = 44 + i*15; let x = 128 + ind*13;
+        for(const ch of tok){ const w = ch === "g" ? 46 : 28; lines += mLine(x,y,w,5,C[ch]); x += w + 7; }
+        lines += `<text x="104" y="${y+4.5}" font-family="ui-monospace,monospace" font-size="6.5" fill="#4a4f5a">${i+1}</text>`; });
+      return `<svg class="shot" viewBox="0 0 400 300" role="img" aria-label="Mock image of a code editor">
+        ${mR(0,0,400,300,0,"#1d1f25")}${mR(0,0,400,24,0,"#181d26")}
+        <circle cx="14" cy="12" r="3.6" fill="#4a4f5a"/><circle cx="26" cy="12" r="3.6" fill="#4a4f5a"/><circle cx="38" cy="12" r="3.6" fill="#4a4f5a"/>
+        <text x="56" y="15.5" font-family="ui-monospace,monospace" font-size="8" fill="#9297a0">portfolio/app.py</text>
+        ${mR(0,24,96,276,0,"#181d26")}${mR(12,38,40,4,2,"#9297a0")}${mRows(12,56,58,5,14,4,"#4a4f5a",8)}${mR(12,132,58,4,2,"#fcab79")}
+        ${mR(0,232,400,1,0,"#2a2e37")}
+        <text x="104" y="252" font-family="ui-monospace,monospace" font-size="8" fill="#a8d8c4">$ python app.py</text>
+        <text x="104" y="268" font-family="ui-monospace,monospace" font-size="8" fill="#9297a0">serving on 127.0.0.1:8000</text>
+        <text x="104" y="284" font-family="ui-monospace,monospace" font-size="8" fill="#f4d35e">2 tests passed</text>
+        ${lines}</svg>`;
+    }
+  };
+
+  // --- mock e-certificates (sample data — replace with your own) ---
+
+/* ---------------- mock imagery wiring ---------------- */
+  /* ---- sample portrait: an illustration of me, explicitly not a photograph ---- */
+  const mPortrait = () => `<svg class="shot portrait" viewBox="0 0 300 380" role="img" aria-label="Mock portrait of Jem Carlo G. Austria — an illustration, not a real photograph">
+    <defs><linearGradient id="mpBgC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbfaf8"/><stop offset="1" stop-color="#e9e6df"/></linearGradient></defs>
+    <rect x="0" y="0" width="300" height="380" fill="url(#mpBgC)"/>
+    <circle cx="150" cy="158" r="106" fill="#d9a441" opacity="0.22"/>
+    <circle cx="88" cy="158" r="11" fill="#c98a5e"/><circle cx="212" cy="158" r="11" fill="#c98a5e"/>
+    <path d="M38 380 C42 302 92 268 150 268 C208 268 258 302 262 380 Z" fill="#1b1f27"/>
+    <path d="M126 268 L150 308 L174 268" fill="none" stroke="#d9a441" stroke-width="7" stroke-linecap="round"/>
+    <path d="M132 224 h36 v46 a18 18 0 0 1 -36 0 Z" fill="#a86c44"/>
+    <ellipse cx="150" cy="152" rx="62" ry="72" fill="#c98a5e"/>
+    <path d="M86 148 C82 88 112 58 150 58 C188 58 218 88 214 148 C214 116 200 96 150 96 C100 96 86 116 86 148 Z" fill="#171a20"/>
+    <path d="M110 132 h22" stroke="#171a20" stroke-width="5" stroke-linecap="round"/>
+    <path d="M168 132 h22" stroke="#171a20" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="122" cy="152" rx="5.5" ry="6.5" fill="#2b2118"/><ellipse cx="178" cy="152" rx="5.5" ry="6.5" fill="#2b2118"/>
+    <g fill="none" stroke="#242a33" stroke-width="4">
+      <rect x="98" y="136" width="48" height="36" rx="13"/><rect x="154" y="136" width="48" height="36" rx="13"/>
+      <path d="M146 152 h8"/><path d="M98 150 h-11"/><path d="M202 150 h11"/>
+    </g>
+    <path d="M150 160 v12 q0 6 6 7" fill="none" stroke="#a86c44" stroke-width="4" stroke-linecap="round"/>
+    <path d="M131 192 q19 16 38 0" fill="none" stroke="#8d4a32" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="124" cy="178" rx="15" ry="9" fill="#ffffff" opacity="0.10"/>
+    <rect x="0" y="314" width="300" height="66" fill="#101418" opacity="0.88"/>
+    <text x="18" y="341" font-family="Inter,Segoe UI,sans-serif" font-size="15" font-weight="600" fill="#ffffff">Jem Carlo G. Austria</text>
+    <text x="18" y="359" font-family="ui-monospace,monospace" font-size="10" fill="#c8ccd4">BS IT 2023–2026 · Pangasinan, PH</text>
+    <rect x="12" y="12" width="86" height="20" rx="10" fill="#101418" opacity="0.8"/>
+    <text x="55" y="26" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8.5" letter-spacing="1.2" fill="#ffffff">MOCK PHOTO</text>
+  </svg>`;
+  document.getElementById("heroShot").innerHTML =
+    `<div class="hero-pair"><div class="hero-portrait">${mPortrait()}</div><div class="hero-side">${MOCKS.editor()}</div></div>`;
+const THUMBS = ["cards","records","pos"];
+document.querySelectorAll(".proj .thumb").forEach((el,i) => { el.innerHTML = MOCKS[THUMBS[i]](); });
+document.querySelectorAll(".proj").forEach((tile,i) => tile.addEventListener("click", () => {
+  const el = document.getElementById("sShot");
+  if(el) el.innerHTML = MOCKS[THUMBS[i]]();
+}));
+const CERTS = [
+  { t:"Responsive Web Design", i:"freeCodeCamp", y:"2024", id:"fcc-rwd-2024-8842", hue:HUE.coral, bg:"--cream" },
+  { t:"Introduction to Cybersecurity", i:"Cisco Networking Academy", y:"2025", id:"cisco-cyber-2025-3310", hue:HUE.forest, bg:"--mint" },
+  { t:"Python (Basic) Certificate", i:"HackerRank", y:"2025", id:"hr-py-2025-7719", hue:HUE.mustard, bg:"--peach" }
+];
+document.getElementById("certs").innerHTML = CERTS.map((c,i) =>
+  `<figure class="cert" data-i="${i}" tabindex="0" role="button" aria-label="Open certificate: ${c.t}" style="--hue:var(${c.bg})">${mCert(c)}<figcaption><h3>${c.t}</h3><span class="issuer">${c.i}</span><span class="cid">${c.id} · ${c.y}</span></figcaption></figure>`).join("");
+const lb = document.createElement("div");
+lb.className = "lb";
+lb.innerHTML = `<div class="lb-in"><button class="lb-x" aria-label="Close">✕</button><div id="lbArt"></div><span class="lb-cap" id="lbCap"></span></div>`;
+document.body.appendChild(lb);
+function openCert(i){
+  const c = CERTS[i];
+  document.getElementById("lbArt").innerHTML = mCert(c);
+  document.getElementById("lbCap").textContent = "Sample certificate · mock image, not a real credential — " + c.i + " " + c.y;
+  lb.classList.add("on");
+}
+const certsWrap = document.getElementById("certs");
+certsWrap.addEventListener("click", ev => { const f = ev.target.closest(".cert"); if(f) openCert(+f.dataset.i); });
+certsWrap.addEventListener("keydown", ev => { if(ev.key === "Enter" || ev.key === " "){ const f = ev.target.closest(".cert"); if(f){ ev.preventDefault(); openCert(+f.dataset.i); } } });
+lb.addEventListener("click", ev => { if(ev.target === lb || ev.target.closest(".lb-x")) lb.classList.remove("on"); });
+document.addEventListener("keydown", ev => { if(ev.key === "Escape") lb.classList.remove("on"); });
+
+</script>
+</body>
+</html>

@@ -14,14 +14,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Jem Carlo G. Austria — Developer",
+  title: "Jem Carlo G. Austria — Junior Developer",
   description:
-    "Junior developer building web apps with Python, React, and Supabase.",
+    "Junior developer in Pangasinan, PH. I build small software that works offline, on cheap hardware — Python, React, Supabase.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-palette="bold"
+      className={`${inter.variable} font-sans h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

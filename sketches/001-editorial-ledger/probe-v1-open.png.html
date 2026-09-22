@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sketch 001 — Editorial ledger · Jem Carlo G. Austria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     Tokens inlined verbatim from src/app/globals.css (design.md values).
+     Self-contained on purpose: opens straight from the filesystem.
+     ------------------------------------------------------------------ */
+  :root{
+    --canvas:#ffffff; --surface-soft:#f8fafc; --surface-strong:#e0e2e6;
+    --surface-dark:#181d26; --surface-dark-elevated:#1d1f25; --hairline:#dddddd;
+    --ink:#181d26; --body:#333840; --ink-muted:#41454d; --border-strong:#9297a0;
+    --coral:#aa2d00; --forest:#0a2e0e; --cream:#f5e9d4; --peach:#fcab79;
+    --mint:#a8d8c4; --yellow:#f4d35e; --mustard:#d9a441;
+    --link:#1b61c9; --link-active:#1a3866; --info:#254fad; --info-border:#458fff;
+    --success:#006400; --success-border:#39bf45;
+
+    --r-xs:2px; --r-sm:6px; --r-md:10px; --r-lg:12px; --r-xl:16px;
+    --section:96px;
+
+    --font-sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-sans);
+    -webkit-font-smoothing:antialiased;
+    color:var(--body);
+    background:var(--canvas);
+    font-size:14px; line-height:1.25;
+  }
+  ::selection{background:var(--ink);color:var(--canvas)}
+
+  /* type roles 1:1 with design.md's hierarchy table */
+  .display-xl{font-size:clamp(34px,5.4vw,48px);line-height:1.1;font-weight:500;letter-spacing:-.015em;color:var(--ink)}
+  .display-lg{font-size:clamp(30px,4.2vw,40px);line-height:1.2;font-weight:400;color:var(--ink)}
+  .display-md{font-size:clamp(25px,3.2vw,32px);line-height:1.2;font-weight:400;color:var(--ink)}
+  .title-lg{font-size:24px;line-height:1.35;font-weight:400;letter-spacing:.12px;color:var(--ink)}
+  .title-sm{font-size:18px;line-height:1.4;font-weight:500;color:var(--ink)}
+  .label-md{font-size:16px;line-height:1.4;font-weight:500;color:var(--ink)}
+  .body-md{font-size:14px;line-height:1.5;color:var(--body)}
+  .caption{font-size:14px;line-height:1.35;font-weight:500;letter-spacing:.16px;color:var(--ink-muted)}
+  .legal{font-size:13.12px;line-height:1.2;font-weight:600;color:var(--ink-muted)}
+
+  a{color:var(--link);text-decoration:none}
+  a:hover{color:var(--link-active);text-decoration:underline;text-underline-offset:3px}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+  .rule{border-top:1px solid var(--hairline)}
+
+  /* ---------------- masthead ---------------- */
+  .masthead{
+    position:sticky;top:0;z-index:20;background:rgba(255,255,255,.86);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--hairline);
+  }
+  .masthead .wrap{display:flex;align-items:baseline;justify-content:space-between;gap:24px;height:60px}
+  .mark{font-size:13.12px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;color:var(--ink)}
+  nav{display:flex;gap:22px;align-items:center}
+  nav a{font-size:14px;font-weight:500;color:var(--ink-muted)}
+  nav a:hover{color:var(--ink);text-decoration:none}
+  nav a .n{color:var(--border-strong);font-weight:400;margin-right:5px}
+  .avail{display:inline-flex;align-items:center;gap:7px;font-size:13.12px;font-weight:600;color:var(--ink-muted)}
+  .dot{width:6px;height:6px;border-radius:9999px;background:var(--success);box-shadow:0 0 0 3px rgba(0,57,0,.10)}
+
+  /* ---------------- hero (document opening) ---------------- */
+  .opening{padding:var(--section) 0 56px}
+  .kicker{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-bottom:14px}
+  .kicker .legal{letter-spacing:1.1px;text-transform:uppercase;color:var(--ink)}
+  .lede{display:grid;grid-template-columns:1.6fr 1fr;gap:48px;align-items:end;padding-top:28px}
+  .lede p{font-size:16px;line-height:1.55;color:var(--body);max-width:34ch}
+  .meta-rows{border-top:1px solid var(--hairline)}
+  .meta-row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--hairline)}
+  .meta-row dt{font-size:13.12px;font-weight:600;color:var(--ink-muted)}
+  .meta-row dd{font-size:13.12px;font-weight:600;color:var(--ink)}
+  .swatches{display:flex;gap:6px;margin-top:22px}
+  .sw{width:26px;height:26px;border-radius:var(--r-xs);border:1px solid rgba(24,29,38,.08);cursor:default;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .sw:hover{transform:translateY(-4px)}
+  .sw span{display:none}
+
+  /* ---------------- numbered sections ---------------- */
+  section{padding:0 0 var(--section)}
+  .sec-head{display:flex;align-items:baseline;gap:20px;padding:18px 0 26px;border-top:1px solid var(--ink)}
+  .sec-head .num{font-size:13.12px;font-weight:600;color:var(--ink);min-width:34px}
+  .sec-head h2{flex:1}
+  .sec-head .note{font-size:13.12px;font-weight:600;color:var(--ink-muted);text-align:right}
+
+  /* ---------------- work ledger ---------------- */
+  .ledger{border-top:1px solid var(--hairline)}
+  .entry{border-bottom:1px solid var(--hairline);position:relative;overflow:hidden;cursor:pointer}
+  .entry .fill{
+    position:absolute;inset:0;transform:translateY(101%);
+    transition:transform .5s cubic-bezier(.16,.84,.24,1);
+  }
+  .entry:hover .fill,.entry.open .fill{transform:translateY(0)}
+  .entry .row{
+    position:relative;z-index:1;display:grid;grid-template-columns:52px 1fr 200px 92px 22px;
+    gap:20px;align-items:baseline;padding:26px 0;transition:padding .35s cubic-bezier(.16,.84,.24,1),color .3s;
+  }
+  .entry:hover .row,.entry.open .row{padding-left:24px;padding-right:24px}
+  .entry .idx{font-size:13.12px;font-weight:600;color:var(--ink-muted)}
+  .entry .name{font-size:clamp(20px,2.4vw,24px);line-height:1.3;font-weight:400;color:var(--ink)}
+  .entry .stack,.entry .yr{font-size:13.12px;font-weight:600;color:var(--ink-muted)}
+  .entry .yr{text-align:right}
+  .entry .chev{font-size:13px;color:var(--ink-muted);transition:transform .35s cubic-bezier(.16,.84,.24,1)}
+  .entry.open .chev{transform:rotate(45deg)}
+
+  /* invert: text flips to canvas when the signature fill is a dark hue */
+  .entry.invert:hover .row,.entry.invert.open .row{color:var(--canvas)}
+  .entry.invert:hover .idx,.entry.invert.open .idx,
+  .entry.invert:hover .name,.entry.invert.open .name,
+  .entry.invert:hover .stack,.entry.invert.open .stack,
+  .entry.invert:hover .yr,.entry.invert.open .yr,
+  .entry.invert:hover .chev,.entry.invert.open .chev{color:var(--canvas)}
+
+  .detail{
+    position:relative;z-index:1;display:grid;grid-template-columns:1.45fr 1.05fr 1fr 1fr;gap:26px;
+    max-height:0;opacity:0;overflow:hidden;
+    transition:max-height .55s cubic-bezier(.16,.84,.24,1),opacity .35s;
+  }
+  .entry.open .detail{max-height:460px;opacity:1}
+  .detail-inner{padding:0 24px 30px}
+  .detail h4{font-size:13.12px;font-weight:600;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px}
+  .detail p{font-size:14px;line-height:1.55;color:var(--body)}
+  .entry.invert.open .detail h4{color:rgba(255,255,255,.66)}
+  .entry.invert.open .detail p{color:rgba(255,255,255,.9)}
+  .detail .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .tag{
+    font-size:12px;font-weight:600;letter-spacing:.16px;padding:3px 9px;border-radius:9999px;
+    border:1px solid var(--hairline);color:var(--ink-muted);background:var(--canvas);
+  }
+  .entry.invert.open .tag{border-color:rgba(255,255,255,.34);background:transparent;color:var(--canvas)}
+
+  /* ---------------- experience ---------------- */
+  .exp{border-top:1px solid var(--hairline)}
+  .exp-row{display:grid;grid-template-columns:150px 1fr 170px;gap:28px;padding:24px 0;border-bottom:1px solid var(--hairline)}
+  .exp-row .when{font-size:13.12px;font-weight:600;color:var(--ink-muted)}
+  .exp-row .what h3{font-size:18px;font-weight:500;color:var(--ink)}
+  .exp-row .what p{margin-top:6px;font-size:14px;line-height:1.55;color:var(--body);max-width:52ch}
+  .exp-row .where{font-size:13.12px;font-weight:600;color:var(--ink-muted);text-align:right}
+
+  /* ---------------- contact ---------------- */
+  .contact{background:var(--surface-dark);color:var(--canvas);border-radius:var(--r-xl);padding:60px 48px}
+  .contact .display-lg{color:var(--canvas)}
+  .contact .caption{color:rgba(255,255,255,.7)}
+  .contact-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:end;margin-top:16px}
+  .contact .lines{border-top:1px solid rgba(255,255,255,.22)}
+  .contact .lines a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.22);color:var(--canvas);font-size:14px;font-weight:500}
+  .contact .lines a:hover{text-decoration:none;padding-left:6px;transition:padding .3s cubic-bezier(.16,.84,.24,1)}
+  .contact .lines a span:last-child{color:rgba(255,255,255,.55)}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;margin-top:26px;padding:12px 20px;border-radius:9999px;
+    background:var(--canvas);color:var(--ink);font-size:16px;font-weight:500;border:1px solid var(--canvas);
+  }
+  .btn:hover{text-decoration:none;background:transparent;color:var(--canvas)}
+  footer{padding:34px 0 46px;display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--hairline)}
+
+  /* ---------------- mock imagery (inline SVG placeholders) ---------------- */
+  .shot{display:block;width:100%;height:auto;border:1px solid var(--hairline);border-radius:var(--r-xs);background:var(--canvas)}
+  figure.fig{margin:0}
+  .fig figcaption{display:flex;justify-content:space-between;gap:18px;margin-top:13px;font-size:13.12px;font-weight:600;color:var(--ink-muted)}
+  .fig .cap-note{letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-muted);flex:none}
+  .hero-fig figcaption{margin-top:15px}
+  .hero-fig{margin-top:44px}
+  .hero-fig .shot{border-radius:var(--r-sm)}
+  .detail-shot{padding:0 6px 30px 24px}
+  .detail-shot .shot{border-radius:var(--r-sm)}
+  .certs{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+  .cert{cursor:pointer;border-top:1px solid var(--ink);padding-top:16px;transition:transform .45s cubic-bezier(.16,.84,.24,1)}
+  .cert:hover{transform:translateY(-5px)}
+  .cert:focus-visible{outline:2px solid var(--link);outline-offset:4px}
+  .cert .shot{border-radius:var(--r-sm)}
+  .cert h3{margin-top:18px;font-size:18px;line-height:1.4;font-weight:500;color:var(--ink)}
+  .cert .issuer{display:block;margin-top:7px;font-size:13.12px;font-weight:600;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-muted)}
+  .cert .cid{display:block;margin-top:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--border-strong)}
+  .lb{position:fixed;inset:0;z-index:60;background:rgba(24,29,38,.9);display:none;place-items:center;padding:40px}
+  .lb.on{display:grid}
+  .lb-in{position:relative;width:min(720px,94vw);background:var(--canvas);border-radius:var(--r-lg);padding:20px}
+  .lb-in .shot{border-radius:var(--r-xs)}
+  .lb-in .legal{display:block;margin-top:14px;padding-top:12px;border-top:1px solid var(--hairline)}
+  .lb-x{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border:0;border-radius:9999px;background:var(--canvas);color:var(--ink);font-size:15px;cursor:pointer;box-shadow:0 6px 18px -8px rgba(0,0,0,.5)}
+
+  @media (max-width:900px){
+    .lede,.contact-grid{grid-template-columns:1fr;gap:28px}
+    .entry .row{grid-template-columns:38px 1fr 26px;row-gap:6px}
+    .entry .stack,.entry .yr{grid-column:2;text-align:left}
+    .entry .chev{grid-column:3;grid-row:1}
+    .detail,.entry.open .detail{grid-template-columns:1fr;max-height:520px}
+    nav .n{display:none}
+    .contact{padding:40px 24px}
+    .exp-row{grid-template-columns:1fr;gap:8px}
+    .exp-row .where{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="mark">Jem Carlo G. Austria</div>
+    <nav>
+      <a href="#index"><span class="n">01</span>Index</a>
+      <a href="#work"><span class="n">02</span>Work</a>
+      <a href="#certificates"><span class="n">03</span>Certificates</a>
+      <a href="#experience"><span class="n">04</span>Record</a>
+      <a href="#contact"><span class="n">05</span>Contact</a>
+      <span class="avail"><span class="dot"></span>Open to remote</span>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- 00 · opening -->
+  <div class="wrap opening" id="index">
+    <div class="kicker">
+      <span class="legal">Portfolio — Edition 2026</span>
+      <span class="legal">Mangatarem, Pangasinan · PH</span>
+    </div>
+    <div class="rule"></div>
+    <div class="lede">
+      <div>
+        <h1 class="display-xl">Jem Carlo G. Austria — junior developer, building small software that has to work offline, on cheap hardware, in real barangays.</h1>
+      </div>
+      <div>
+        <p>I write Python services and React interfaces, and I keep the stack short: Supabase for data, Vercel or Render for shipping, GitHub for everything else.</p>
+        <dl class="meta-rows" style="margin-top:26px">
+          <div class="meta-row"><dt>Focus</dt><dd>Web apps · data · tooling</dd></div>
+          <div class="meta-row"><dt>Studying</dt><dd>BS Information Technology, 2023–2026</dd></div>
+          <div class="meta-row"><dt>Timezone</dt><dd>UTC+08 — overlaps EU &amp; US mornings</dd></div>
+          <div class="meta-row"><dt>Status</dt><dd>Available now</dd></div>
+        </dl>
+        <div class="swatches" aria-hidden="true">
+          <span class="sw" style="background:var(--coral)"></span>
+          <span class="sw" style="background:var(--forest)"></span>
+          <span class="sw" style="background:var(--cream)"></span>
+          <span class="sw" style="background:var(--peach)"></span>
+          <span class="sw" style="background:var(--mint)"></span>
+          <span class="sw" style="background:var(--yellow)"></span>
+          <span class="sw" style="background:var(--mustard)"></span>
+        </div>
+      </div>
+    </div>
+    <figure class="fig hero-fig">
+      <div id="heroShot"></div>
+      <figcaption>
+        <span>Fig. 01 — the editor I ship from: one Python service, local-first data, no build step.</span>
+        <span class="cap-note">Mock image</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- 01 · work -->
+  <section class="wrap" id="work">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2 class="display-md">Selected work</h2>
+      <span class="note">Three entries · click to open</span>
+    </div>
+    <div class="ledger" id="ledger">
+      <article class="entry invert" data-open="false">
+        <div class="fill" style="background:var(--coral)"></div>
+        <div class="row">
+          <span class="idx">01.1</span>
+          <span class="name">StudyStack — offline reviewer for BS&nbsp;IT coursework</span>
+          <span class="stack">React · Supabase · PWA</span>
+          <span class="yr">2026</span>
+          <span class="chev">→</span>
+        </div>
+        <div class="detail">
+          <div class="detail-shot"></div>
+          <div class="detail-inner">
+            <h4>Problem</h4>
+            <p>Classmates studied from screenshots and group-chat photos. Nothing was searchable, nothing survived the bus ride home with no signal.</p>
+          </div>
+          <div class="detail-inner">
+            <h4>Approach</h4>
+            <p>A local-first card store in IndexedDB, synced to Supabase when a connection exists. Spaced-repetition intervals computed on the client, so the app never blocks on the network.</p>
+          </div>
+          <div class="detail-inner">
+            <h4>Outcome</h4>
+            <p>Working fully offline after first load; sync conflicts resolved last-write-wins per card. Deployed on Vercel, used by my review group.</p>
+            <div class="tags"><span class="tag">IndexedDB</span><span class="tag">Supabase</span><span class="tag">React 19</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="entry invert" data-open="false">
+        <div class="fill" style="background:var(--forest)"></div>
+        <div class="row">
+          <span class="idx">01.2</span>
+          <span class="name">Barangay Records — resident registry &amp; certificate requests</span>
+          <span class="stack">Python · FastAPI · Postgres</span>
+          <span class="yr">2025</span>
+          <span class="chev">→</span>
+        </div>
+        <div class="detail">
+          <div class="detail-shot"></div>
+          <div class="detail-inner">
+            <h4>Problem</h4>
+            <p>Records lived in six notebooks. Issuing a barangay clearance meant reading handwriting and re-copying details by hand — slow, and easy to get wrong.</p>
+          </div>
+          <div class="detail-inner">
+            <h4>Approach</h4>
+            <p>Typed resident records with search-as-you-type, then a request workflow that fills a certificate template from stored fields and produces a printable PDF.</p>
+          </div>
+          <div class="detail-inner">
+            <h4>Outcome</h4>
+            <p>Certificate issuance went from ~15 minutes to under two. Built as a school project, then rebuilt as a real deployable service with role-based access for staff.</p>
+            <div class="tags"><span class="tag">FastAPI</span><span class="tag">Postgres</span><span class="tag">PDF gen</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="entry" data-open="false">
+        <div class="fill" style="background:var(--mustard)"></div>
+        <div class="row">
+          <span class="idx">01.3</span>
+          <span class="name">Sari-Sari POS — a receipt printer that runs on a ₱3k tablet</span>
+          <span class="stack">Python · SQLite · Bluetooth</span>
+          <span class="yr">2025</span>
+          <span class="chev">→</span>
+        </div>
+        <div class="detail">
+          <div class="detail-shot"></div>
+          <div class="detail-inner">
+            <h4>Problem</h4>
+            <p>A neighbourhood store tracked credit ("lista") in a notebook, so balances were guessed at and lost. Existing POS apps assumed a desktop and a fast connection.</p>
+          </div>
+          <div class="detail-inner">
+            <h4>Approach</h4>
+            <p>One SQLite file, a touch grid of products, and Bluetooth ESC/POS printing. Utang balances tracked per customer with a running ledger.</p>
+          </div>
+          <div class="detail-inner">
+            <h4>Outcome</h4>
+            <p>Runs on a low-end Android tablet, prints paper receipts, and needs no internet. Automated backup of the database to a shared drive nightly.</p>
+            <div class="tags"><span class="tag">SQLite</span><span class="tag">ESC/POS</span><span class="tag">Kivy</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 02 · certificates -->
+  <section class="wrap" id="certificates">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2 class="display-md">Certificates</h2>
+      <span class="note">Sample data · replace with your own</span>
+    </div>
+    <div class="certs" id="certs"></div>
+  </section>
+
+  <!-- 03 · record -->
+  <section class="wrap" id="experience">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2 class="display-md">Record</h2>
+      <span class="note">2023 — present</span>
+    </div>
+    <div class="exp">
+      <div class="exp-row">
+        <span class="when">2025 — now</span>
+        <div class="what">
+          <h3>Freelance web work</h3>
+          <p>Small business sites and internal tools for local clients: menu pages, booking forms, a records system. Scoped, built, deployed and handed over on my own.</p>
+        </div>
+        <span class="where">Remote / local</span>
+      </div>
+      <div class="exp-row">
+        <span class="when">2023 — 2026</span>
+        <div class="what">
+          <h3>BS Information Technology</h3>
+          <p>Coursework in databases, networking and software engineering. Capstone and side projects built on Python, SQL and web technologies.</p>
+        </div>
+        <span class="where">Pangasinan, PH</span>
+      </div>
+      <div class="exp-row">
+        <span class="when">Ongoing</span>
+        <div class="what">
+          <h3>Self-directed building</h3>
+          <p>I ship the projects in the list above in public — commits dated, READMEs written, live URLs on Vercel. The portfolio is the evidence.</p>
+        </div>
+        <span class="where">GitHub</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · contact -->
+  <section class="wrap" id="contact">
+    <div class="sec-head" style="border-color:var(--ink)">
+      <span class="num">04</span>
+      <h2 class="display-md">Contact</h2>
+      <span class="note">Replies within a day</span>
+    </div>
+    <div class="contact">
+      <span class="caption">Hiring, or something to build?</span>
+      <div class="contact-grid">
+        <h2 class="display-lg">I'm looking for a remote junior role where the work is real software, not slide decks.</h2>
+        <div>
+          <div class="lines">
+            <a href="mailto:zani31349@gmail.com">Email <span>zani31349@gmail.com</span></a>
+            <a href="https://linkedin.com/in/jemcarlo-austria-45bb77421/">LinkedIn <span>/jemcarlo-austria</span></a>
+            <a href="https://github.com/">GitHub <span>/jemcarlo</span></a>
+          </div>
+          <a class="btn" href="mailto:zani31349@gmail.com">Send an email →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <span class="legal">© 2026 Jem Carlo G. Austria</span>
+      <span class="legal">Sketch 001 — Editorial ledger · tokens from globals.css</span>
+    </footer>
+  </div>
+</main>
+
+<script>
+  // accordion — one open entry at a time
+  const ledger = document.getElementById("ledger");
+  ledger.addEventListener("click", (e) => {
+    const entry = e.target.closest(".entry");
+    if (!entry) return;
+    const wasOpen = entry.classList.contains("open");
+    ledger.querySelectorAll(".entry").forEach((el) => el.classList.remove("open"));
+    if (!wasOpen) entry.classList.add("open");
+  });
+  // keyboard: hit the section links, then Enter opens the first entry
+  ledger.querySelector(".entry").focus?.();
+
+  /* ============ MOCK IMAGERY — inline SVG placeholders, no external files ============ */
+  /* every image below is a drawing, not a screenshot of real software. */
+  const HUE = { coral:"#aa2d00", forest:"#0a2e0e", mustard:"#d9a441" };
+  const mR = (x,y,w,h,rx,f,o) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}"${o!==undefined?` opacity="${o}"`:""}/>`;
+  const mLine = (x,y,w,h,f,o) => mR(x,y,w,h,h/2,f,o);
+  const mRows = (x,y,w,n,gap,h,f,shrink) => { let o=""; for(let i=0;i<n;i++) o += mLine(x,y+i*gap,Math.max(22,w-i*(shrink||0)),h,f); return o; };
+  const mChrome = (url,inner) => `<svg class="shot" viewBox="0 0 400 300" role="img" aria-label="Mock image of ${url}">`
+    + mR(0,0,400,300,0,"#ffffff") + mR(0,0,400,26,0,"#f8fafc")
+    + `<circle cx="14" cy="13" r="3.6" fill="#e0e2e6"/><circle cx="26" cy="13" r="3.6" fill="#e0e2e6"/><circle cx="38" cy="13" r="3.6" fill="#e0e2e6"/>`
+    + `<rect x="54" y="6" width="214" height="14" rx="7" fill="#ffffff" stroke="#dddddd"/>`
+    + `<text x="63" y="16.5" font-family="ui-monospace,monospace" font-size="7.5" fill="#9297a0">${url}</text>`
+    + `<g transform="translate(0,26)">${inner}</g></svg>`;
+
+  const MOCKS = {
+    // 01.1 · local-first flashcards
+    cards(h){
+      let g = "";
+      [[104,78],[202,78],[300,78],[104,168],[202,168],[300,168]].forEach((p,i) => { const [x,y] = p;
+        g += mR(x,y,90,74,8,"#f8fafc") + mR(x+10,y+12,54,7,3.5,"#181d26")
+           + mRows(x+10,y+28,68,2,11,5,"#e0e2e6",16) + mR(x+10,y+56,28,7,3.5,h,i?0.4:1); });
+      return mChrome("studystack.app/review",
+        mR(0,0,86,274,0,"#f8fafc") + mR(14,18,50,9,4.5,"#181d26") + mRows(14,42,52,5,20,6,"#e0e2e6",6)
+        + mR(104,20,130,12,6,"#181d26") + mLine(104,42,150,6,"#e0e2e6",1)
+        + mR(292,16,92,22,11,h) + `<text x="338" y="30.5" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" fill="#ffffff">24 due</text>`
+        + mR(104,60,286,5,2.5,"#e0e2e6") + mR(104,60,168,5,2.5,h) + g);
+    },
+    // 01.2 · a records desk
+    records(h){
+      let r = "", f = "";
+      for(let i=0;i<5;i++){ const y = 80 + i*26;
+        r += mLine(16,y,12,6,"#e0e2e6") + mLine(40,y,92,6,"#dddddd") + mLine(144,y,52,6,"#e0e2e6") + mR(208,y-2,38,10,5,h,i?0.28:0.95); }
+      for(let i=0;i<3;i++) f += mR(288,46+i*26,88,16,4,"#ffffff") + `<rect x="288" y="${46+i*26}" width="88" height="16" rx="4" fill="none" stroke="#dddddd"/>`;
+      return mChrome("barangay-records.local/residents",
+        mR(16,14,130,10,5,"#181d26") + mR(296,12,88,18,9,h)
+        + mR(16,40,214,16,8,"#f8fafc") + `<rect x="16" y="40" width="214" height="16" rx="8" fill="none" stroke="#dddddd"/>`
+        + mLine(30,46,70,5,"#c9ccd2") + `<circle cx="216" cy="48" r="4" fill="none" stroke="#c9ccd2"/>`
+        + mR(16,68,246,1,0,"#dddddd") + r
+        + mR(276,14,112,214,10,"#f8fafc") + mR(288,28,58,7,3.5,"#181d26") + f + mR(288,150,88,20,10,h));
+    },
+    // 01.3 · offline POS
+    pos(h){
+      let g = "";
+      for(let j=0;j<3;j++) for(let i=0;i<4;i++){ const x = 16+i*72, y = 44+j*62;
+        g += mR(x,y,64,52,8,"#f8fafc") + mLine(x+8,y+10,34,5,"#dddddd") + mR(x+8,y+34,26,9,4.5,h,0.85); }
+      return mChrome("sari-sari-pos.local/sale",
+        mR(16,14,110,10,5,"#181d26") + g
+        + mR(312,14,80,238,10,"#f8fafc") + mLine(322,30,56,6,"#181d26") + mRows(322,48,56,4,26,5,"#e0e2e6",12)
+        + mR(322,168,60,20,10,h) + mLine(322,200,44,5,"#e0e2e6") + mLine(322,214,30,5,"#e0e2e6"));
+    },
+    // hero · the editor these were written in (dark surface)
+    editor(){
+      const C = { p:"#fcab79", g:"#5b616e", m:"#a8d8c4", y:"#f4d35e", c:"#f5e9d4" };
+      const CODE = [[0,"pc"],[1,"mg"],[1,"g"],[0,"py"],[1,"g"],[1,"mg"],[0,"p"],[1,"yg"],[0,"g"],[1,"mc"],[0,"g"],[0,"p"]];
+      let lines = "";
+      CODE.forEach(([ind,tok],i) => { const y = 44 + i*15; let x = 128 + ind*13;
+        for(const ch of tok){ const w = ch === "g" ? 46 : 28; lines += mLine(x,y,w,5,C[ch]); x += w + 7; }
+        lines += `<text x="104" y="${y+4.5}" font-family="ui-monospace,monospace" font-size="6.5" fill="#4a4f5a">${i+1}</text>`; });
+      return `<svg class="shot" viewBox="0 0 400 300" role="img" aria-label="Mock image of a code editor">
+        ${mR(0,0,400,300,0,"#1d1f25")}${mR(0,0,400,24,0,"#181d26")}
+        <circle cx="14" cy="12" r="3.6" fill="#4a4f5a"/><circle cx="26" cy="12" r="3.6" fill="#4a4f5a"/><circle cx="38" cy="12" r="3.6" fill="#4a4f5a"/>
+        <text x="56" y="15.5" font-family="ui-monospace,monospace" font-size="8" fill="#9297a0">portfolio/app.py</text>
+        ${mR(0,24,96,276,0,"#181d26")}${mR(12,38,40,4,2,"#9297a0")}${mRows(12,56,58,5,14,4,"#4a4f5a",8)}${mR(12,132,58,4,2,"#fcab79")}
+        ${mR(0,232,400,1,0,"#2a2e37")}
+        <text x="104" y="252" font-family="ui-monospace,monospace" font-size="8" fill="#a8d8c4">$ python app.py</text>
+        <text x="104" y="268" font-family="ui-monospace,monospace" font-size="8" fill="#9297a0">serving on 127.0.0.1:8000</text>
+        <text x="104" y="284" font-family="ui-monospace,monospace" font-size="8" fill="#f4d35e">2 tests passed</text>
+        ${lines}</svg>`;
+    }
+  };
+
+  // --- mock e-certificates (sample data — replace with your own) ---
+  const CERTS = [
+    { t:"Responsive Web Design",          i:"freeCodeCamp",             y:"2024", id:"fcc-rwd-2024-8842",   h:HUE.coral   },
+    { t:"Introduction to Cybersecurity",  i:"Cisco Networking Academy", y:"2025", id:"netacad-2025-3310",   h:HUE.forest  },
+    { t:"Python (Basic) Certificate",     i:"HackerRank",               y:"2025", id:"hr-python-2025-7719", h:HUE.mustard }
+  ];
+  const mCert = (c) => `<svg class="shot" viewBox="0 0 400 300" role="img" aria-label="Mock certificate: ${c.t}">
+    ${mR(0,0,400,300,0,"#ffffff")}
+    <rect x="10.5" y="10.5" width="379" height="279" fill="none" stroke="#dddddd"/>
+    <rect x="16.5" y="16.5" width="367" height="267" fill="none" stroke="${c.h}" stroke-width="1"/>
+    ${mR(16,16,367,9,0,c.h)}
+    <text x="200" y="74" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8.5" letter-spacing="3" fill="#9297a0">CERTIFICATE OF COMPLETION</text>
+    <text x="200" y="114" text-anchor="middle" font-family="Inter,sans-serif" font-size="19" font-weight="500" fill="#181d26">${c.t}</text>
+    <text x="200" y="140" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#41454d">awarded by ${c.i}</text>
+    ${mR(96,158,208,1,0,"#dddddd")}
+    <text x="200" y="196" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="500" fill="#181d26">Jem Carlo G. Austria</text>
+    <text x="200" y="214" text-anchor="middle" font-family="ui-monospace,monospace" font-size="7.5" fill="#9297a0">${c.id} · ${c.y}</text>
+    <path d="M62 246 c9,-11 21,7 30,-1 c7,-6 15,5 24,1" fill="none" stroke="#181d26" stroke-width="1.3"/>
+    ${mR(62,254,80,1,0,"#9297a0")}
+    <text x="62" y="268" font-family="ui-monospace,monospace" font-size="6.5" fill="#9297a0">SIGNATURE</text>
+    <circle cx="330" cy="240" r="27" fill="${c.h}"/><circle cx="330" cy="240" r="20" fill="#ffffff"/>
+    <circle cx="330" cy="240" r="14" fill="${c.h}" opacity="0.85"/>
+    <text x="330" y="244.5" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#ffffff">S</text>
+  </svg>`;
+
+  document.getElementById("heroShot").innerHTML = MOCKS.editor();
+  const HUES = [HUE.coral, HUE.forest, HUE.mustard], KINDS = ["cards","records","pos"];
+  document.querySelectorAll("#ledger .entry .detail-shot").forEach((el,i) => { el.innerHTML = MOCKS[KINDS[i]](HUES[i]); });
+
+  const certsWrap = document.getElementById("certs");
+  certsWrap.innerHTML = CERTS.map((c,i) =>
+    `<figure class="cert" data-i="${i}" tabindex="0" role="button" aria-label="Open certificate: ${c.t}">
+       ${mCert(c)}
+       <figcaption>
+         <h3>${c.t}</h3>
+         <span class="issuer">${c.i}</span>
+         <span class="cid">${c.id} · ${c.y}</span>
+       </figcaption>
+     </figure>`).join("");
+
+  const lb = document.createElement("div");
+  lb.className = "lb";
+  lb.innerHTML = `<div class="lb-in"><button class="lb-x" aria-label="Close">&#10005;</button><div id="lbArt"></div><span class="legal" id="lbCap"></span></div>`;
+  document.body.appendChild(lb);
+  const openCert = (i) => { const c = CERTS[i];
+    document.getElementById("lbArt").innerHTML = mCert(c);
+    document.getElementById("lbCap").textContent = "Sample certificate — mock image, not a real credential. " + c.i + ", " + c.y + ".";
+    lb.classList.add("on"); };
+  certsWrap.addEventListener("click", (e) => { const f = e.target.closest(".cert"); if(f) openCert(+f.dataset.i); });
+  certsWrap.addEventListener("keydown", (e) => { const f = e.target.closest(".cert");
+    if(f && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); openCert(+f.dataset.i); } });
+  lb.addEventListener("click", (e) => { if(e.target === lb || e.target.closest(".lb-x")) lb.classList.remove("on"); });
+  document.addEventListener("keydown", (e) => { if(e.key === "Escape") lb.classList.remove("on"); });
+</script>
+<script>document.querySelectorAll('#ledger .entry').forEach(e=>e.classList.add('open'));</script>
+</body>
+</html>

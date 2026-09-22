@@ -4,6 +4,33 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Palette mode from sketches/003. `data-palette="calm"` on <html> drops the
+ * saturated signature surfaces back to paper + hairlines so the same grid
+ * reads as structure instead of colour.
+ */
+@custom-variant calm (&:is([data-palette="calm"] *));
+
+/* 12px uppercase meta label — repeated on every tile, so it earns a utility. */
+@utility eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* Pill tag. Used on the light signature tiles, where ink reads on every hue. */
+@utility chip {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--color-ink) 16%, transparent);
+  color: var(--color-ink);
+  background: color-mix(in oklab, #ffffff 50%, transparent);
+}
+
 /* ---------------------------------------------------------------------------
    shadcn semantic slots -> design.md tokens (var indirection so `.dark` can swap)
    --------------------------------------------------------------------------- */
@@ -43,8 +70,14 @@
 /* ---------------------------------------------------------------------------
    Fixed brand palette — verbatim from design.md. Static hex, no indirection:
    these colors do not change between modes.
+
+   `static` is load-bearing: tiles reference these tokens dynamically
+   (`style="--hue: var(--color-signature-*)"` -> `bg-[var(--hue)]`), and Tailwind
+   cannot see a token name that only exists inside a runtime string. Without it
+   the unused hues are tree-shaken out of the CSS and those tiles render
+   transparent.
    --------------------------------------------------------------------------- */
-@theme {
+@theme static {
   /* Brand & accent */
   --color-primary-active: #0d1218;
 
@@ -70,6 +103,25 @@
   --color-signature-mint: #a8d8c4;
   --color-signature-yellow: #f4d35e;
   --color-signature-mustard: #d9a441;
+
+  /* Availability pulse on the green/white live dot */
+  --animate-live-pulse: live-pulse 2.2s ease-out infinite;
+  @keyframes live-pulse {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    70% {
+      transform: scale(1.25);
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* Hover lift on work tiles — colour-block first, this is only an affordance. */
+  --shadow-lift: 0 22px 44px -26px color-mix(in oklab, var(--color-ink) 45%, transparent);
 
   /* Semantic */
   --color-link: #1b61c9;
@@ -204,25 +256,63 @@
    planning whether the theme toggle ships.
    --------------------------------------------------------------------------- */
 .dark {
-  --background: #181d26; /* {colors.surface-dark} */
-  --foreground: #ffffff;
-  --card: #1d1f25; /* {colors.surface-dark-elevated} */
+  --background: #0b0e14;
+  --foreground: #f8fafc;
+  --color-canvas: #0b0e14;
+  --color-ink: #f8fafc;
+  --color-body: #cbd5e1;
+  --color-ink-muted: #94a3b8;
+  --color-hairline: #262d38;
+  --color-surface-soft: #151a23;
+  --color-surface-strong: #222936;
+  --color-surface-dark: #12161f;
+  --color-surface-dark-elevated: #1a202c;
+
+  --card: #151a23;
   --card-foreground: #ffffff;
-  --popover: #1d1f25;
+  --popover: #151a23;
   --popover-foreground: #ffffff;
-  --primary: #ffffff; /* inverted action on dark */
-  --primary-foreground: #181d26;
-  --secondary: #1d1f25;
+  --primary: #ffffff;
+  --primary-foreground: #0b0e14;
+  --secondary: #151a23;
   --secondary-foreground: #ffffff;
-  --muted: #1d1f25;
-  --muted-foreground: #9297a0; /* {colors.border-strong} as the only light gray */
-  --accent: #1d1f25;
+  --muted: #151a23;
+  --muted-foreground: #94a3b8;
+  --accent: #151a23;
   --accent-foreground: #ffffff;
   --destructive: #aa2d00;
   --destructive-foreground: #ffffff;
-  --border: #1d1f25;
-  --input: #1d1f25;
+  --border: #262d38;
+  --input: #262d38;
   --ring: #458fff;
+}
+
+/* 1. Dark signature tiles and containers always keep crisp white text */
+.bg-surface-dark,
+.js-hero-fig,
+[style*="signature-coral"],
+[style*="signature-forest"] {
+  --color-canvas: #ffffff;
+  color: #ffffff;
+}
+
+/* 2. In BOLD mode, pastel tiles retain their light background and must have dark text */
+html:not([data-palette="calm"]) [style*="signature-cream"],
+html:not([data-palette="calm"]) [style*="signature-peach"],
+html:not([data-palette="calm"]) [style*="signature-mint"],
+html:not([data-palette="calm"]) [style*="signature-yellow"],
+html:not([data-palette="calm"]) [style*="signature-mustard"],
+html:not([data-palette="calm"]) .bg-signature-cream {
+  --color-ink: #181d26;
+  --color-body: #333840;
+  --color-ink-muted: #41454d;
+  --background: #ffffff;
+}
+
+/* 3. In CALM mode under dark theme, tiles use the dark card surface */
+.dark[data-palette="calm"] .calm\:bg-canvas,
+.dark [data-palette="calm"] .calm\:bg-canvas {
+  background-color: #151a23 !important;
 }
 
 @layer base {
@@ -233,7 +323,7 @@
     @apply font-sans;
   }
   body {
-    @apply bg-background text-body text-body-md;
+    @apply bg-transparent text-body text-body-md;
   }
   /* Display type never goes bolder than 500 — size carries the emphasis. */
   h1 {
@@ -247,5 +337,40 @@
   }
   a {
     @apply text-link;
+  }
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-canvas);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  /*
+   * Elements anime.js animates in. Hidden before the effect runs so there is no
+   * flash of the finished layout; anime.js owns opacity/transform from there on.
+   */
+  [data-hero],
+  [data-reveal],
+  [data-reveal-child] {
+    opacity: 0;
+  }
+  /* No JS at all: never hide content behind an animation that cannot run. */
+  @media (scripting: none) {
+    [data-hero],
+    [data-reveal],
+    [data-reveal-child] {
+      opacity: 1 !important;
+    }
+  }
+  /* JS animations check this too — see components/portfolio/motion.tsx. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
