@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger, utils } from "animejs";
 
 import { projects } from "@/content/portfolio";
+import { asset } from "@/lib/asset";
 import { hueVar, HueBar } from "@/components/portfolio/hue";
-import { MockArt } from "@/components/portfolio/mock-art";
 import { SpringCard } from "@/components/portfolio/spring-card";
 
 /** Rendered height of an element that is currently sized to `auto`. */
@@ -112,9 +113,13 @@ export function WorkGallery() {
               className="group relative flex h-full min-h-[280px] flex-col justify-between gap-3.5 overflow-hidden rounded-xl border border-transparent bg-[var(--hue)] p-[26px] transition-[background-color,border-color,box-shadow] duration-300 hover:shadow-lift calm:border-hairline calm:bg-canvas focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring cursor-pointer"
             >
               <HueBar />
-              <MockArt
-                name={project.art}
-                className="[&_svg]:block [&_svg]:w-full [&_svg]:rounded-md"
+              {/* Mock screenshot — an inline SVG illustration, not a real capture */}
+              <Image
+                src={asset(`/art/${project.art}.svg`)}
+                alt={`Mock image of the ${project.name} interface`}
+                width={400}
+                height={300}
+                className="block w-full rounded-md"
               />
               <div>
                 <span className="eyebrow text-ink/80">

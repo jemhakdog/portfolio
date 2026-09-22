@@ -1,4 +1,4 @@
-import { contact, profile } from "@/content/portfolio";
+import { contact, profile, topNav } from "@/content/portfolio";
 import { hueVar, HueBar } from "@/components/portfolio/hue";
 
 const LINK_ROWS = [
@@ -58,7 +58,7 @@ export function ContactBand() {
           href={profile.linkedin}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center self-start rounded-lg bg-ink px-6 py-3 text-button font-medium text-background no-underline hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center self-start rounded-lg bg-ink px-6 py-3 text-button font-medium text-canvas no-underline hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           Connect on LinkedIn
         </a>
@@ -93,21 +93,16 @@ export function SiteFooter() {
         <div className="md:col-span-3">
           <span className="eyebrow text-ink-muted">Navigation</span>
           <ul className="mt-3.5 flex flex-col gap-2.5 text-body-md">
-            <li>
-              <a href="#work" className="text-ink-muted hover:text-ink no-underline">
-                Selected Work
-              </a>
-            </li>
-            <li>
-              <a href="#certs" className="text-ink-muted hover:text-ink no-underline">
-                Certificates
-              </a>
-            </li>
-            <li>
-              <a href="#contact" className="text-ink-muted hover:text-ink no-underline">
-                Contact & Direct
-              </a>
-            </li>
+            {topNav.map((section) => (
+              <li key={section.id}>
+                <a
+                  href={`#${section.id}`}
+                  className="text-ink-muted hover:text-ink no-underline"
+                >
+                  {section.label}
+                </a>
+              </li>
+            ))}
             <li>
               <a href="#" className="text-ink-muted hover:text-ink no-underline">
                 Back to top ↑

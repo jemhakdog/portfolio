@@ -11,9 +11,11 @@ import {
   utils,
 } from "animejs";
 
+import { useUIState } from "@/lib/ui-state";
+
 /**
- * The single owner of every DOM animation on the page (anime.js only — the 3D
- * canvas from techstack.md is not in this design).
+ * The single owner of every DOM animation on the page (anime.js only; the
+ * separate WebGL/R3F layers are scene-3d.tsx and fluid-background.tsx).
  *
  * Contract with the markup:
  *   [data-hero]          above-the-fold elements, revealed by the entrance timeline
@@ -29,6 +31,8 @@ import {
  * dev, and splitText would otherwise leave ghost spans behind.
  */
 export function PortfolioMotion() {
+  const { calm } = useUIState();
+
   useEffect(() => {
     const root = document.getElementById("portfolio");
     if (!root) return;
@@ -132,31 +136,35 @@ export function PortfolioMotion() {
         .querySelectorAll<HTMLElement>("[data-reveal],[data-reveal-group]")
         .forEach((el) => observer.observe(el));
 
-      /* ---------------- palette mode ---------------- */
-      const onPalette = (event: Event) => {
-        if (!(event as CustomEvent<boolean>).detail) return;
-        const bars = [...root.querySelectorAll<HTMLElement>("[data-hue-bar]")];
-        if (!bars.length) return;
-        // scale is motion: in fade-only mode the bar appears through CSS opacity.
-        if (reduced) return;
-        utils.set(bars, { scaleY: 0 });
-        animate(bars, {
-          scaleY: 1,
-          duration: 520,
-          delay: stagger(45),
-          ease: "out(3)",
-        });
-      };
-      window.addEventListener("palettechange", onPalette);
-
-      return () => {
-        observer.disconnect();
-        window.removeEventListener("palettechange", onPalette);
-      };
+      return () => observer.disconnect();
     });
 
     return () => scope.revert();
   }, []);
+
+  /* ---------------- palette mode ----------------
+     The hue bars are already opacity-1 under `calm:`; anime.js only supplies the
+     scaleY stagger, so reduced-motion users get the bar without the sweep. */
+  useEffect(() => {
+    if (!calm) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const root = document.getElementById("portfolio");
+    const bars = root
+      ? [...root.querySelectorAll<HTMLElement>("[data-hue-bar]")]
+      : [];
+    if (!bars.length) return;
+
+    utils.set(bars, { scaleY: 0 });
+    const anim = animate(bars, {
+      scaleY: 1,
+      duration: 520,
+      delay: stagger(45),
+      ease: "out(3)",
+    });
+    return () => {
+      anim.revert();
+    };
+  }, [calm]);
 
   return null;
 }

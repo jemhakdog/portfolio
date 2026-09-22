@@ -1,53 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { profile } from "@/content/portfolio";
-
-const NAV = [
-  { href: "#work", label: "Work" },
-  { href: "#certs", label: "Certificates" },
-  { href: "#contact", label: "Contact" },
-];
+import { profile, topNav } from "@/content/portfolio";
+import { toggleDark, togglePalette, useUIState } from "@/lib/ui-state";
 
 /**
- * Sticky white bar. The only stateful thing here is the palette mode, which
- * writes `data-palette` on <html> and announces the change so the motion layer
- * can stagger the hue bars in.
+ * Sticky white bar. Theme and palette are read from lib/ui-state.ts, which owns
+ * the `<html>` attributes; this component only renders the switches.
  */
 export function TopBar() {
-  const [calm, setCalm] = useState(false);
-  const [dark, setDark] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem("theme") === "dark" ||
-        (!("theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      );
-    }
-    return false;
-  });
+  const { calm, dark } = useUIState();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
-  useEffect(() => {
-    if (dark) {
-      document.documentElement.classList.add("dark");
-    }
-  }, [dark]);
-
-  const togglePalette = () => {
-    const next = !calm;
-    setCalm(next);
-    document.documentElement.dataset.palette = next ? "calm" : "bold";
-    window.dispatchEvent(new CustomEvent("palettechange", { detail: next }));
-  };
-
-  const toggleDark = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  };
 
   return (
     <header className="sticky top-0 z-20 border-b border-hairline bg-canvas/92 backdrop-blur-md">
@@ -60,10 +24,10 @@ export function TopBar() {
         </a>
         <nav className="flex items-center gap-2 md:gap-4">
           <span className="hidden items-center gap-5 md:flex">
-            {NAV.map((item) => (
+            {topNav.map((item) => (
               <a
-                key={item.href}
-                href={item.href}
+                key={item.id}
+                href={`#${item.id}`}
                 className="text-body-md font-medium text-ink-muted hover:text-ink hover:no-underline"
               >
                 {item.label}
@@ -152,36 +116,29 @@ export function TopBar() {
             aria-label={mobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
             className="flex size-11 items-center justify-center rounded-lg text-ink md:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
-            {mobileNavOpen ? (
-              <svg
-                aria-hidden="true"
-                className="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-              </svg>
-            ) : (
-              <svg
-                aria-hidden="true"
-                className="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4 12h16" />
-                <path d="M4 6h16" />
-                <path d="M4 18h16" />
-              </svg>
-            )}
+            <svg
+              aria-hidden="true"
+              className="size-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {mobileNavOpen ? (
+                <>
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </>
+              ) : (
+                <>
+                  <path d="M4 12h16" />
+                  <path d="M4 6h16" />
+                  <path d="M4 18h16" />
+                </>
+              )}
+            </svg>
           </button>
         </nav>
       </div>
@@ -193,10 +150,10 @@ export function TopBar() {
           className="border-b border-hairline bg-canvas px-6 py-4 shadow-lift md:hidden"
         >
           <div className="flex flex-col gap-3">
-            {NAV.map((item) => (
+            {topNav.map((item) => (
               <a
-                key={item.href}
-                href={item.href}
+                key={item.id}
+                href={`#${item.id}`}
                 onClick={() => setMobileNavOpen(false)}
                 className="flex min-h-[44px] items-center text-title-sm font-medium text-ink hover:text-link hover:no-underline"
               >

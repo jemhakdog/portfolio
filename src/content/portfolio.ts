@@ -13,7 +13,7 @@ export type Hue =
   | "mustard"
   | "soft";
 
-/** Art keys map to the inline SVG mockups in components/portfolio/mock-art.tsx */
+/** Art keys map to the mock screenshots in public/art/<key>.svg */
 export type ArtName = "cards" | "records" | "pos";
 
 export type CaseStudy = {
@@ -197,3 +197,221 @@ export const contact = {
     "Looking for a remote junior role where the work is real software.",
   cta: "Send an email",
 } as const;
+
+/* ---------------------------------------------------------------------------
+   Sections — the page's own table of contents. TopBar, StickyProfilePane,
+   CommandPalette and SiteFooter all derive from this instead of each keeping
+   their own copy of the same six ids.
+   --------------------------------------------------------------------------- */
+export type Section = {
+  id: string;
+  num: string;
+  label: string;
+  /** Command-palette wording, which is longer than the nav wording. */
+  title: string;
+  subtitle: string;
+  icon: string;
+  /** Shown in the top bar and footer as well as the rail. */
+  topBar?: boolean;
+};
+
+export const sections: Section[] = [
+  {
+    id: "work",
+    num: "01",
+    label: "Selected Work",
+    title: "Selected Work & Projects",
+    subtitle: "Jump to 3 shipped real-world projects",
+    icon: "💼",
+    topBar: true,
+  },
+  {
+    id: "journey",
+    num: "02",
+    label: "Career Journey",
+    title: "Career Milestones & Journey",
+    subtitle: "Scroll to 2023–2026 timeline",
+    icon: "🗺️",
+  },
+  {
+    id: "certs",
+    num: "03",
+    label: "Certifications",
+    title: "Certificates",
+    subtitle: "Three verifiable online certificates",
+    icon: "🏅",
+    topBar: true,
+  },
+  {
+    id: "lab",
+    num: "04",
+    label: "The Lab & Archive",
+    title: "The Lab & Version Archive",
+    subtitle: "Explore interactive prototypes & design history",
+    icon: "🧪",
+  },
+  {
+    id: "guestbook",
+    num: "05",
+    label: "Guestbook",
+    title: "Public Guestbook",
+    subtitle: "Sign the visitor guestbook",
+    icon: "✍️",
+  },
+  {
+    id: "contact",
+    num: "06",
+    label: "Contact",
+    title: "Contact Information",
+    subtitle: "Direct email and professional profiles",
+    icon: "📬",
+    topBar: true,
+  },
+];
+
+/** The subset the top bar and footer show. */
+export const topNav = sections.filter((section) => section.topBar);
+
+/* ---------------------------------------------------------------------------
+   The Journey — scroll-driven milestone runner.
+   --------------------------------------------------------------------------- */
+export type Milestone = {
+  year: string;
+  role: string;
+  title: string;
+  desc: string;
+  tags: string[];
+  icon: string;
+};
+
+export const milestones: Milestone[] = [
+  {
+    year: "2023",
+    role: "Foundations",
+    title: "Enrolled in BS Information Technology",
+    desc: "Started degree at Pangasinan State University. Focused deeply on Python data structures, algorithms, and relational database modeling.",
+    tags: ["Python", "SQL", "Linux", "Data Structures"],
+    icon: "🌱",
+  },
+  {
+    year: "2024",
+    role: "Front-End & Offline Web",
+    title: "Responsive Web Design & Web APIs",
+    desc: "Completed freeCodeCamp certification. Experimented with IndexedDB, Service Workers, and client-side state architectures that don't depend on constant 5G connection.",
+    tags: ["React", "IndexedDB", "PWA", "Tailwind"],
+    icon: "⚡",
+  },
+  {
+    year: "2025",
+    role: "Real-World Deployments",
+    title: "Shipped Barangay Records & Sari-Sari POS",
+    desc: "Built and deployed internal software for local organizations in Pangasinan. Replaced six paper notebooks with a FastAPI search system and built a Bluetooth-enabled POS on an affordable Android tablet.",
+    tags: ["FastAPI", "SQLite", "Bluetooth ESC/POS", "Render"],
+    icon: "🚀",
+  },
+  {
+    year: "2026",
+    role: "Production & Ready for Hire",
+    title: "StudyStack & Remote Junior Roles",
+    desc: "Created StudyStack spaced-repetition offline reviewer. Graduating in 2026 with verified project deployments, ready to contribute to high-standards remote engineering teams.",
+    tags: ["React 19", "Supabase", "Next.js", "Remote Ready"],
+    icon: "🎯",
+  },
+];
+
+/* ---------------------------------------------------------------------------
+   The Lab — the site's own architecture changelog.
+   --------------------------------------------------------------------------- */
+export type SiteVersion = {
+  version: string;
+  codename: string;
+  year: string;
+  theme: string;
+  desc: string;
+  highlights: string[];
+  status: "Archived" | "Current";
+};
+
+export const siteVersions: SiteVersion[] = [
+  {
+    version: "v3.0",
+    codename: "Signature Collage",
+    year: "2026",
+    theme: "Philippine Terracotta & Reactive Bento",
+    desc: "The current architectural evolution. Integrates dual-pane layout, tactile spring physics, R3F 3D workstation, and Web Audio API feedback.",
+    highlights: ["React 19 & Next 16", "Three.js / WebGL", "Web Audio API", "Cmd+K Palette"],
+    status: "Current",
+  },
+  {
+    version: "v2.0",
+    codename: "Console Split",
+    year: "2026 (Early)",
+    theme: "Terminal Workbench & Index Rail",
+    desc: "Fixed 280px navigation rail with real-time table filtering, high information density, and breadcrumb-driven workspace for engineering recruiters.",
+    highlights: ["Split layout", "Keyboard filters (1-4)", "Monospace telemetry"],
+    status: "Archived",
+  },
+  {
+    version: "v1.0",
+    codename: "Editorial Ledger",
+    year: "2025",
+    theme: "Monochrome Broadside & Paper Tabulation",
+    desc: "Minimalist publication style inspired by vintage technical documents. Focused on legibility, strict typographic hierarchies, and zero JavaScript dependencies.",
+    highlights: ["Editorial typography", "Paper texture grid", "Zero build bloat"],
+    status: "Archived",
+  },
+];
+
+/* ---------------------------------------------------------------------------
+   Guestbook — the three seeded notes. Visitors can only add to these.
+   --------------------------------------------------------------------------- */
+export type GuestbookEntry = {
+  id: string;
+  name: string;
+  role: string;
+  message: string;
+  date: string;
+  avatarColor: string;
+};
+
+export const guestbookEntries: GuestbookEntry[] = [
+  {
+    id: "g-1",
+    name: "Teresa Morales",
+    role: "Local Sari-Sari Store Owner, Mangatarem",
+    message:
+      "Kuya Jem, the Bluetooth POS app on our tablet hasn't lost a single credit record or crashed once in six months. Maraming salamat!",
+    date: "Aug 2025",
+    avatarColor: "bg-emerald-600",
+  },
+  {
+    id: "g-2",
+    name: "Mark Villanueva",
+    role: "BS IT Classmate & StudyStack User",
+    message:
+      "Being able to review reviewer flashcards on the long bus commute with zero signal saved our finals grade. The offline sync is magic.",
+    date: "Dec 2025",
+    avatarColor: "bg-amber-600",
+  },
+  {
+    id: "g-3",
+    name: "Danilo Santos",
+    role: "Barangay Admin Staff",
+    message:
+      "Issuing clearances used to take 15 minutes of paging through handwritten books. With Jem's system, we print in 90 seconds. Solid software!",
+    date: "Jan 2026",
+    avatarColor: "bg-blue-600",
+  },
+];
+
+/** `[command, what it prints]` — rendered as the terminal's `help` grid. */
+export const terminalHelp: [string, string][] = [
+  ["about", "Developer ethos & location"],
+  ["projects / ls", "Shipped real-world apps"],
+  ["skills", "Core technical stack"],
+  ["cat resume", "Education & experience"],
+  ["contact", "Email & LinkedIn links"],
+  ["sudo hire", "Technical recruiter fast-track"],
+  ["clear", "Clear screen"],
+  ["exit", "Close terminal drawer"],
+];

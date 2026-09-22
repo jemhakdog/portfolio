@@ -2,46 +2,7 @@
 
 import { useState } from "react";
 import { sound } from "@/lib/audio-engine";
-
-interface VersionItem {
-  version: string;
-  codename: string;
-  year: string;
-  theme: string;
-  desc: string;
-  highlights: string[];
-  status: "Archived" | "Current";
-}
-
-const VERSIONS: VersionItem[] = [
-  {
-    version: "v3.0",
-    codename: "Signature Collage",
-    year: "2026",
-    theme: "Philippine Terracotta & Reactive Bento",
-    desc: "The current architectural evolution. Integrates dual-pane layout, tactile spring physics, R3F 3D workstation, and Web Audio API feedback.",
-    highlights: ["React 19 & Next 16", "Three.js / WebGL", "Web Audio API", "Cmd+K Palette"],
-    status: "Current",
-  },
-  {
-    version: "v2.0",
-    codename: "Console Split",
-    year: "2026 (Early)",
-    theme: "Terminal Workbench & Index Rail",
-    desc: "Fixed 280px navigation rail with real-time table filtering, high information density, and breadcrumb-driven workspace for engineering recruiters.",
-    highlights: ["Split layout", "Keyboard filters (1-4)", "Monospace telemetry"],
-    status: "Archived",
-  },
-  {
-    version: "v1.0",
-    codename: "Editorial Ledger",
-    year: "2025",
-    theme: "Monochrome Broadside & Paper Tabulation",
-    desc: "Minimalist publication style inspired by vintage technical documents. Focused on legibility, strict typographic hierarchies, and zero JavaScript dependencies.",
-    highlights: ["Editorial typography", "Paper texture grid", "Zero build bloat"],
-    status: "Archived",
-  },
-];
+import { siteVersions } from "@/content/portfolio";
 
 export function LabArchive() {
   const [online, setOnline] = useState(false);
@@ -159,7 +120,7 @@ export function LabArchive() {
           </div>
 
           <div className="space-y-3">
-            {VERSIONS.map((v) => (
+            {siteVersions.map((v) => (
               <div
                 key={v.version}
                 className={`rounded-xl border p-4 transition-colors ${

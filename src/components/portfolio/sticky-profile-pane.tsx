@@ -2,17 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { profile } from "@/content/portfolio";
+import { profile, sections } from "@/content/portfolio";
+import { asset } from "@/lib/asset";
 import { sound } from "@/lib/audio-engine";
-
-const NAV_LINKS = [
-  { href: "#work", label: "01 // Selected Work" },
-  { href: "#journey", label: "02 // Career Journey" },
-  { href: "#certs", label: "03 // Certifications" },
-  { href: "#lab", label: "04 // The Lab & Archive" },
-  { href: "#guestbook", label: "05 // Guestbook" },
-  { href: "#contact", label: "06 // Contact" },
-];
 
 export function StickyProfilePane({
   onOpenCommandPalette,
@@ -23,15 +15,13 @@ export function StickyProfilePane({
 
   useEffect(() => {
     const handleScroll = () => {
-      const sectionIds = ["work", "journey", "certs", "lab", "guestbook", "contact"];
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 200 && rect.bottom >= 100) {
-            setActiveSection(id);
-            break;
-          }
+      for (const section of sections) {
+        const el = document.getElementById(section.id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 200 && rect.bottom >= 100) {
+          setActiveSection(section.id);
+          break;
         }
       }
     };
@@ -58,7 +48,7 @@ export function StickyProfilePane({
 
             <div className="relative size-[76px] flex-none overflow-hidden rounded-2xl border-2 border-canvas/40 shadow-md calm:border-hairline">
               <Image
-                src="/avatar.jpg"
+                src={asset("/avatar.jpg")}
                 alt={profile.name}
                 width={80}
                 height={80}
@@ -78,32 +68,29 @@ export function StickyProfilePane({
           </p>
 
           {/* Quick Credential Grid from image */}
-          <div className="mt-6 grid grid-cols-1 gap-3 border-t border-canvas/20 pt-4 text-[12px] calm:border-hairline sm:grid-cols-3">
-            <div>
-              <div className="eyebrow text-canvas/70 calm:text-ink-muted">Stack</div>
-              <div className="font-semibold text-canvas calm:text-ink mt-0.5">Python · React · Supabase</div>
-            </div>
-            <div>
-              <div className="eyebrow text-canvas/70 calm:text-ink-muted">Studying</div>
-              <div className="font-semibold text-canvas calm:text-ink mt-0.5">BS IT 2023–2026</div>
-            </div>
-            <div>
-              <div className="eyebrow text-canvas/70 calm:text-ink-muted">Ships To</div>
-              <div className="font-semibold text-canvas calm:text-ink mt-0.5">Vercel · Render</div>
-            </div>
-          </div>
+          <dl className="mt-6 grid grid-cols-1 gap-3 border-t border-canvas/20 pt-4 text-[12px] calm:border-hairline sm:grid-cols-3">
+            {profile.credits.map((credit) => (
+              <div key={credit.k}>
+                <dt className="eyebrow text-canvas/70 calm:text-ink-muted">
+                  {credit.k}
+                </dt>
+                <dd className="mt-0.5 font-semibold text-canvas calm:text-ink">
+                  {credit.v}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
         {/* Sticky Section Navigation */}
         <nav aria-label="Section navigation" className="hidden lg:block">
           <ul className="space-y-1.5 font-mono text-[12px]">
-            {NAV_LINKS.map((link) => {
-              const id = link.href.replace("#", "");
-              const isActive = activeSection === id;
+            {sections.map((section) => {
+              const isActive = activeSection === section.id;
               return (
-                <li key={link.href}>
+                <li key={section.id}>
                   <a
-                    href={link.href}
+                    href={`#${section.id}`}
                     onClick={() => sound.playClick()}
                     className={`group flex items-center gap-3 py-1.5 transition-all no-underline ${
                       isActive
@@ -118,7 +105,7 @@ export function StickyProfilePane({
                           : "w-4 bg-hairline group-hover:w-6 group-hover:bg-ink-muted"
                       }`}
                     />
-                    <span>{link.label}</span>
+                    <span>{`${section.num} // ${section.label}`}</span>
                   </a>
                 </li>
               );
@@ -140,8 +127,9 @@ export function StickyProfilePane({
           <span className="flex items-center gap-2">
             <span>⚡ Quick Search</span>
           </span>
-          <kbd className="rounded border border-hairline bg-canvas px-1.5 py-0.5 text-[10px] font-bold text-ink">
-            ⌘K
+          <kbd className="inline-flex items-center gap-0.5 rounded border border-hairline bg-canvas px-1.5 py-0.5 text-[10px] font-mono font-bold text-ink">
+            <span className="text-[11px] leading-none">⌘</span>
+            <span>K</span>
           </kbd>
         </button>
 

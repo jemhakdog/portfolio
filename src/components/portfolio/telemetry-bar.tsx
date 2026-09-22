@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { sound } from "@/lib/audio-engine";
+import { toggleSound, useUIState } from "@/lib/ui-state";
 
 export function TelemetryBar({
   onOpenCommandPalette,
@@ -9,17 +10,11 @@ export function TelemetryBar({
   onOpenCommandPalette?: () => void;
 }) {
   const [time, setTime] = useState<string>("");
-  const [soundActive, setSoundActive] = useState<boolean>(() => sound.isEnabled());
+  const { sound: soundActive } = useUIState();
 
   useEffect(() => {
-    const handleSoundToggle = (e: Event) => {
-      setSoundActive((e as CustomEvent<boolean>).detail);
-    };
-    window.addEventListener("soundtoggle", handleSoundToggle);
-
     const updateTime = () => {
       try {
-        const now = new Date();
         const options: Intl.DateTimeFormatOptions = {
           timeZone: "Asia/Manila",
           hour: "2-digit",
@@ -27,7 +22,7 @@ export function TelemetryBar({
           second: "2-digit",
           hour12: false,
         };
-        setTime(now.toLocaleTimeString("en-GB", options));
+        setTime(new Date().toLocaleTimeString("en-GB", options));
       } catch {
         setTime("PH (UTC+08)");
       }
@@ -35,17 +30,8 @@ export function TelemetryBar({
 
     updateTime();
     const interval = setInterval(updateTime, 1000);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener("soundtoggle", handleSoundToggle);
-    };
+    return () => clearInterval(interval);
   }, []);
-
-  const handleSoundClick = () => {
-    const next = sound.toggle();
-    setSoundActive(next);
-  };
 
   return (
     <aside
@@ -78,7 +64,7 @@ export function TelemetryBar({
           {/* Sound Toggle */}
           <button
             type="button"
-            onClick={handleSoundClick}
+            onClick={toggleSound}
             aria-pressed={soundActive}
             title={soundActive ? "Mute UI sounds" : "Enable tactile UI sounds"}
             className="flex items-center gap-1.5 rounded-full border border-hairline bg-canvas px-2.5 py-0.5 text-[11px] font-medium text-ink transition-colors hover:bg-surface-strong/40 focus-visible:outline-2 focus-visible:outline-ring"
@@ -114,8 +100,9 @@ export function TelemetryBar({
             className="hidden sm:flex items-center gap-1.5 rounded-md border border-hairline bg-canvas px-2 py-0.5 text-[11px] font-mono text-ink-muted hover:text-ink hover:border-border-strong transition-colors focus-visible:outline-2 focus-visible:outline-ring"
           >
             <span>Search</span>
-            <kbd className="rounded border border-hairline bg-surface-soft px-1 text-[10px] font-sans font-semibold text-ink">
-              ⌘K
+            <kbd className="inline-flex items-center gap-0.5 rounded border border-hairline bg-surface-soft px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ink">
+              <span className="text-[11px] leading-none">⌘</span>
+              <span>K</span>
             </kbd>
           </button>
         </div>

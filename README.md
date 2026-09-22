@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio — Jem Carlo G. Austria
 
-## Getting Started
-
-First, run the development server:
+Personal site. Next.js 16 (App Router, Turbopack) + Tailwind v4, anime.js for
+the DOM motion layer, R3F for one 3D card, a raw WebGL shader for the
+background, and Web Audio for the UI sounds.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # http://localhost:3000
+npm run build
+npm start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`npm run smoke` drives the built site in headless Edge/Chrome over CDP and
+asserts the interactive layer — theme/palette/sound state, the command palette,
+the case-study strip, the certificate dialog and the milestone runner. Run it
+against a server that was started *after* the last build:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build && npx next start -p 3111   # one shell
+npm run smoke                             # another
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Layout
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Path | What lives there |
+| --- | --- |
+| `src/app/globals.css` | Every design token from `design.md`, plus the `calm` / `dark` variants |
+| `src/content/portfolio.ts` | All page copy, the section list and every data table |
+| `src/components/portfolio/` | One file per page section; `motion.tsx` owns every DOM animation |
+| `src/lib/` | `audio-engine.ts` (synthesized SFX), `ui-state.ts` (theme / palette / sound) |
+| `scripts/smoke.mjs` | Headless-browser check of the interactive layer (`npm run smoke`) |
+| `CHANGELOG.md` | What the 2026-09-22 over-engineering pass removed and why |
+| `public/art/` | Mock screenshots: one static SVG per project, plus the code editor |
+| `sketches/`, `design.md`, `techstack.md`, `PLAN.md` | Design source material; the code cites these |

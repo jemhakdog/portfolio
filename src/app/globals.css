@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -32,7 +31,8 @@
 }
 
 /* ---------------------------------------------------------------------------
-   shadcn semantic slots -> design.md tokens (var indirection so `.dark` can swap)
+   The three mode-dependent roles (var indirection so `.dark` can swap).
+   Everything else on the page is a `@theme static` brand token below.
    --------------------------------------------------------------------------- */
 @theme inline {
   --font-sans: var(--font-inter);
@@ -41,30 +41,8 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
-  --color-input: var(--input);
   --color-ring: var(--ring);
-
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
 }
 
 /* ---------------------------------------------------------------------------
@@ -78,9 +56,6 @@
    transparent.
    --------------------------------------------------------------------------- */
 @theme static {
-  /* Brand & accent */
-  --color-primary-active: #0d1218;
-
   /* Surface */
   --color-canvas: #ffffff;
   --color-surface-soft: #f8fafc;
@@ -125,9 +100,6 @@
 
   /* Semantic */
   --color-link: #1b61c9;
-  --color-link-active: #1a3866;
-  --color-info: #254fad;
-  --color-info-border: #458fff;
   --color-success: #006400;
   --color-success-border: #39bf45;
 
@@ -219,34 +191,9 @@
    Light mode — the default and the only mode design.md fully documents.
    --------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff; /* {colors.canvas} */
-  --foreground: #181d26; /* {colors.ink} */
-  --card: #ffffff;
-  --card-foreground: #181d26;
-  --popover: #ffffff;
-  --popover-foreground: #181d26;
-  --primary: #181d26; /* {colors.primary} — near-black, NOT link blue */
-  --primary-foreground: #ffffff; /* {colors.on-primary} */
-  --secondary: #ffffff; /* {component.button-secondary} is canvas + hairline */
-  --secondary-foreground: #181d26;
-  --muted: #f8fafc; /* {colors.surface-soft} */
-  --muted-foreground: #41454d; /* {colors.muted} */
-  --accent: #f8fafc;
-  --accent-foreground: #181d26;
-  /* design.md documents no error hue -> reuse signature coral, invent nothing */
-  --destructive: #aa2d00;
-  --destructive-foreground: #ffffff;
+  --background: #ffffff; /* {colors.canvas} — the one mode-dependent surface */
   --border: #dddddd; /* {colors.hairline} */
-  --input: #dddddd;
   --ring: #458fff; /* {colors.info-border} — focused-input outline */
-
-  --chart-1: #aa2d00;
-  --chart-2: #0a2e0e;
-  --chart-3: #d9a441;
-  --chart-4: #fcab79;
-  --chart-5: #1b61c9;
-
-  --radius: 12px; /* {rounded.lg} */
 }
 
 /* ---------------------------------------------------------------------------
@@ -257,34 +204,19 @@
    --------------------------------------------------------------------------- */
 .dark {
   --background: #0b0e14;
-  --foreground: #f8fafc;
+  --border: #262d38;
+  --ring: #458fff;
+
   --color-canvas: #0b0e14;
   --color-ink: #f8fafc;
   --color-body: #cbd5e1;
   --color-ink-muted: #94a3b8;
   --color-hairline: #262d38;
+
   --color-surface-soft: #151a23;
   --color-surface-strong: #222936;
   --color-surface-dark: #12161f;
   --color-surface-dark-elevated: #1a202c;
-
-  --card: #151a23;
-  --card-foreground: #ffffff;
-  --popover: #151a23;
-  --popover-foreground: #ffffff;
-  --primary: #ffffff;
-  --primary-foreground: #0b0e14;
-  --secondary: #151a23;
-  --secondary-foreground: #ffffff;
-  --muted: #151a23;
-  --muted-foreground: #94a3b8;
-  --accent: #151a23;
-  --accent-foreground: #ffffff;
-  --destructive: #aa2d00;
-  --destructive-foreground: #ffffff;
-  --border: #262d38;
-  --input: #262d38;
-  --ring: #458fff;
 }
 
 /* 1. Dark signature tiles and containers always keep crisp white text */
@@ -303,10 +235,11 @@ html:not([data-palette="calm"]) [style*="signature-mint"],
 html:not([data-palette="calm"]) [style*="signature-yellow"],
 html:not([data-palette="calm"]) [style*="signature-mustard"],
 html:not([data-palette="calm"]) .bg-signature-cream {
+  --background: #ffffff;
+  --color-canvas: #ffffff;
   --color-ink: #181d26;
   --color-body: #333840;
   --color-ink-muted: #41454d;
-  --background: #ffffff;
 }
 
 /* 3. In CALM mode under dark theme, tiles use the dark card surface */

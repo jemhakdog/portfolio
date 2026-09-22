@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
-import { profile, projects } from "@/content/portfolio";
+import { useEffect, useRef, useState } from "react";
+import { profile, projects, sections } from "@/content/portfolio";
 import { sound } from "@/lib/audio-engine";
+import { toggleDark, togglePalette, toggleSound } from "@/lib/ui-state";
 
 interface CommandItem {
   id: string;
@@ -16,16 +17,14 @@ interface CommandItem {
 
 export function CommandPalette({
   isOpen,
+  onOpen,
   onClose,
   onOpenTerminal,
-  onTogglePalette,
-  onToggleDark,
 }: {
   isOpen: boolean;
+  onOpen: () => void;
   onClose: () => void;
   onOpenTerminal?: () => void;
-  onTogglePalette?: () => void;
-  onToggleDark?: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -39,9 +38,7 @@ export function CommandPalette({
         if (isOpen) {
           onClose();
         } else {
-          sound.playChime();
-          // Open handled by parent or custom event
-          window.dispatchEvent(new CustomEvent("opencommandpalette"));
+          onOpen();
         }
       }
       if (e.key === "Escape" && isOpen) {
@@ -52,196 +49,140 @@ export function CommandPalette({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onOpen, onClose]);
 
   useEffect(() => {
-    if (isOpen) {
-      sound.playChime();
-      const timer = setTimeout(() => inputRef.current?.focus(), 50);
-      return () => clearTimeout(timer);
-    }
+    if (!isOpen) return;
+    sound.playChime();
+    const timer = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
-  const items: CommandItem[] = useMemo(() => {
-    const list: CommandItem[] = [
-      // Navigation
-      {
-        id: "nav-top",
-        title: "Go to Top / Hero",
-        category: "Navigation",
-        subtitle: "Return to header & introduction",
-        icon: "🏠",
-        perform: () => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          onClose();
-        },
-      },
-      {
-        id: "nav-work",
-        title: "Selected Work & Projects",
-        category: "Navigation",
-        subtitle: "Jump to 3 shipped real-world projects",
-        icon: "💼",
-        perform: () => {
-          document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
-          onClose();
-        },
-      },
-      {
-        id: "nav-journey",
-        title: "Career Milestones & Journey",
-        category: "Navigation",
-        subtitle: "Scroll to 2023–2026 timeline",
-        icon: "🗺️",
-        perform: () => {
-          document.getElementById("journey")?.scrollIntoView({ behavior: "smooth" });
-          onClose();
-        },
-      },
-      {
-        id: "nav-lab",
-        title: "The Lab & Version Archive",
-        category: "Navigation",
-        subtitle: "Explore interactive prototypes & design history",
-        icon: "🧪",
-        perform: () => {
-          document.getElementById("lab")?.scrollIntoView({ behavior: "smooth" });
-          onClose();
-        },
-      },
-      {
-        id: "nav-guestbook",
-        title: "Public Guestbook",
-        category: "Navigation",
-        subtitle: "Sign the visitor guestbook",
-        icon: "✍️",
-        perform: () => {
-          document.getElementById("guestbook")?.scrollIntoView({ behavior: "smooth" });
-          onClose();
-        },
-      },
-      {
-        id: "nav-contact",
-        title: "Contact Information",
-        category: "Navigation",
-        subtitle: "Direct email and professional profiles",
-        icon: "📬",
-        perform: () => {
-          document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-          onClose();
-        },
-      },
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    onClose();
+  };
 
-      // Actions
-      {
-        id: "act-terminal",
-        title: "Open Embedded CLI Terminal",
-        category: "Actions",
-        subtitle: "Interactive developer command line",
-        shortcut: ">_",
-        icon: "💻",
-        perform: () => {
-          onClose();
-          onOpenTerminal?.();
-        },
+  // Rebuilt every render on purpose: `perform` closes over the current props,
+  // and the list is a dozen objects — cheaper than memoising it correctly.
+  const items: CommandItem[] = [
+    {
+      id: "nav-top",
+      title: "Go to Top / Hero",
+      category: "Navigation",
+      subtitle: "Return to header & introduction",
+      icon: "🏠",
+      perform: () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        onClose();
       },
-      {
-        id: "act-copy-email",
-        title: "Copy Email Address",
-        category: "Actions",
-        subtitle: profile.email,
-        icon: "📋",
-        perform: () => {
-          navigator.clipboard?.writeText(profile.email);
-          alert(`Copied ${profile.email} to clipboard!`);
-          onClose();
-        },
+    },
+    ...sections.map((section) => ({
+      id: `nav-${section.id}`,
+      title: section.title,
+      category: "Navigation" as const,
+      subtitle: section.subtitle,
+      icon: section.icon,
+      perform: () => scrollTo(section.id),
+    })),
+    {
+      id: "act-terminal",
+      title: "Open Embedded CLI Terminal",
+      category: "Actions",
+      subtitle: "Interactive developer command line",
+      shortcut: ">_",
+      icon: "💻",
+      perform: () => {
+        onClose();
+        onOpenTerminal?.();
       },
-      {
-        id: "act-toggle-sound",
-        title: "Toggle Tactical Audio Effects",
-        category: "Actions",
-        subtitle: "Mechanical switch and synthesized clicks",
-        icon: "🔊",
-        perform: () => {
-          sound.toggle();
-          onClose();
-        },
+    },
+    {
+      id: "act-copy-email",
+      title: "Copy Email Address",
+      category: "Actions",
+      subtitle: profile.email,
+      icon: "📋",
+      perform: () => {
+        navigator.clipboard?.writeText(profile.email);
+        alert(`Copied ${profile.email} to clipboard!`);
+        onClose();
       },
-      {
-        id: "act-toggle-palette",
-        title: "Toggle Palette (Bold / Calm)",
-        category: "Actions",
-        subtitle: "Switch between Philippine terracotta and calm paper grid",
-        icon: "🎨",
-        perform: () => {
-          onTogglePalette?.();
-          onClose();
-        },
+    },
+    {
+      id: "act-toggle-sound",
+      title: "Toggle Tactical Audio Effects",
+      category: "Actions",
+      subtitle: "Mechanical switch and synthesized clicks",
+      icon: "🔊",
+      perform: () => {
+        toggleSound();
+        onClose();
       },
-      {
-        id: "act-toggle-dark",
-        title: "Toggle Dark / Light Theme",
-        category: "Actions",
-        subtitle: "Flip UI contrast mode",
-        icon: "🌓",
-        perform: () => {
-          onToggleDark?.();
-          onClose();
-        },
+    },
+    {
+      id: "act-toggle-palette",
+      title: "Toggle Palette (Bold / Calm)",
+      category: "Actions",
+      subtitle: "Switch between Philippine terracotta and calm paper grid",
+      icon: "🎨",
+      perform: () => {
+        togglePalette();
+        onClose();
       },
+    },
+    {
+      id: "act-toggle-dark",
+      title: "Toggle Dark / Light Theme",
+      category: "Actions",
+      subtitle: "Flip UI contrast mode",
+      icon: "🌓",
+      perform: () => {
+        toggleDark();
+        onClose();
+      },
+    },
+    ...projects.map((p) => ({
+      id: `proj-${p.no}`,
+      title: `${p.name} — ${p.kind}`,
+      category: "Projects" as const,
+      subtitle: `${p.blurb} (${p.meta})`,
+      icon: "📦",
+      perform: () => scrollTo("work"),
+    })),
+    {
+      id: "link-linkedin",
+      title: "LinkedIn Profile",
+      category: "Links",
+      subtitle: "Connect with Jem Carlo Austria",
+      icon: "🔗",
+      perform: () => {
+        window.open(profile.linkedin, "_blank");
+        onClose();
+      },
+    },
+    {
+      id: "link-github",
+      title: "GitHub Profile",
+      category: "Links",
+      subtitle: "Inspect open-source repositories",
+      icon: "🐙",
+      perform: () => {
+        window.open(profile.github, "_blank");
+        onClose();
+      },
+    },
+  ];
 
-      // Shipped Projects
-      ...projects.map((p) => ({
-        id: `proj-${p.no}`,
-        title: `${p.name} — ${p.kind}`,
-        category: "Projects" as const,
-        subtitle: `${p.blurb} (${p.meta})`,
-        icon: "📦",
-        perform: () => {
-          document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
-          onClose();
-        },
-      })),
-
-      // External Links
-      {
-        id: "link-linkedin",
-        title: "LinkedIn Profile",
-        category: "Links",
-        subtitle: "Connect with Jem Carlo Austria",
-        icon: "🔗",
-        perform: () => {
-          window.open(profile.linkedin, "_blank");
-          onClose();
-        },
-      },
-      {
-        id: "link-github",
-        title: "GitHub Profile",
-        category: "Links",
-        subtitle: "Inspect open-source repositories",
-        icon: "🐙",
-        perform: () => {
-          window.open(profile.github, "_blank");
-          onClose();
-        },
-      },
-    ];
-
-    return list;
-  }, [onClose, onOpenTerminal, onTogglePalette, onToggleDark]);
-
-  const filtered = useMemo(() => {
-    if (!query.trim()) return items;
-    const q = query.toLowerCase();
-    return items.filter(
-      (item) =>
-        item.title.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q) ||
-        item.subtitle?.toLowerCase().includes(q)
-    );
-  }, [items, query]);
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? items.filter(
+        (item) =>
+          item.title.toLowerCase().includes(q) ||
+          item.category.toLowerCase().includes(q) ||
+          item.subtitle?.toLowerCase().includes(q),
+      )
+    : items;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {

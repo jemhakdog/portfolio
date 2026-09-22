@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { profile, projects, toolbox } from "@/content/portfolio";
+import { profile, projects, terminalHelp, toolbox } from "@/content/portfolio";
 import { sound } from "@/lib/audio-engine";
 
 interface HistoryEntry {
@@ -58,14 +58,12 @@ export function TerminalDrawer({
       case "help":
         result = (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[12px]">
-            <div><span className="text-amber-300 font-bold">about</span> : Developer ethos & location</div>
-            <div><span className="text-amber-300 font-bold">projects</span> / <span className="text-amber-300 font-bold">ls</span> : Shipped real-world apps</div>
-            <div><span className="text-amber-300 font-bold">skills</span> : Core technical stack</div>
-            <div><span className="text-amber-300 font-bold">cat resume</span> : Education & experience</div>
-            <div><span className="text-amber-300 font-bold">contact</span> : Email & LinkedIn links</div>
-            <div><span className="text-amber-300 font-bold">sudo hire</span> : Technical recruiter fast-track</div>
-            <div><span className="text-amber-300 font-bold">clear</span> : Clear screen</div>
-            <div><span className="text-amber-300 font-bold">exit</span> : Close terminal drawer</div>
+            {terminalHelp.map(([command, description]) => (
+              <div key={command}>
+                <span className="text-amber-300 font-bold">{command}</span> :{" "}
+                {description}
+              </div>
+            ))}
           </div>
         );
         break;

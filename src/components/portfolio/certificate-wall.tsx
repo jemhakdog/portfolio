@@ -3,9 +3,43 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, utils } from "animejs";
 
-import { certificates } from "@/content/portfolio";
+import { type Certificate, certificates } from "@/content/portfolio";
 import { hueVar } from "@/components/portfolio/hue";
-import { CertificateArt } from "@/components/portfolio/mock-art";
+
+/** A sample credential sheet. Mock imagery: every certificate on this page is drawn. */
+function CertSheet({ cert }: { cert: Certificate }) {
+  return (
+    <svg
+      viewBox="0 0 400 300"
+      role="img"
+      aria-label={`Mock certificate sheet for ${cert.title}`}
+      className="block w-full rounded-lg"
+    >
+      <rect width="400" height="300" fill="#ffffff" />
+      <rect x="22" y="22" width="356" height="256" rx="10" fill="#ffffff" stroke="#dddddd" />
+      <rect x="56" y="52" width="96" height="8" rx="4" fill={cert.ink} />
+      <text x="56" y="94" fontFamily="Inter,Segoe UI,sans-serif" fontSize="18" fontWeight="500" fill="#181d26">
+        {cert.title}
+      </text>
+      <text x="56" y="118" fontFamily="Inter,Segoe UI,sans-serif" fontSize="11" fill="#41454d">
+        awarded to Jem Carlo G. Austria
+      </text>
+      <rect x="56" y="134" width="288" height="1" fill="#dddddd" />
+      <text x="56" y="158" fontFamily="ui-monospace,monospace" fontSize="9" fill="#41454d">
+        {cert.issuer.toUpperCase()} · {cert.year}
+      </text>
+      <text x="56" y="176" fontFamily="ui-monospace,monospace" fontSize="9" fill="#9297a0">
+        {cert.id}
+      </text>
+      <rect x="56" y="216" width="132" height="1" fill="#dddddd" />
+      <text x="56" y="234" fontFamily="ui-monospace,monospace" fontSize="8.5" fill="#9297a0">
+        SIGNATURE
+      </text>
+      <circle cx="320" cy="218" r="28" fill="none" stroke={cert.ink} strokeWidth="2" />
+      <path d="M307 218 l9 9 l18 -21" fill="none" stroke={cert.ink} strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 export function CertificateWall() {
   const [shown, setShown] = useState(0);
@@ -60,9 +94,9 @@ export function CertificateWall() {
             key={item.id}
             data-reveal-child
             style={hueVar(item.hue)}
-            className="group relative rounded-[18px] bg-[var(--hue)] p-4 transition-[translate] duration-500 ease-[cubic-bezier(.16,.84,.24,1)] hover:-translate-y-1.5 calm:bg-canvas calm:border calm:border-hairline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring [&_svg]:rounded-lg"
+            className="group relative rounded-[18px] bg-[var(--hue)] p-4 transition-[translate] duration-500 ease-[cubic-bezier(.16,.84,.24,1)] hover:-translate-y-1.5 calm:bg-canvas calm:border calm:border-hairline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring"
           >
-            <CertificateArt cert={item} />
+            <CertSheet cert={item} />
             <h3 className="mt-4 text-[19px] leading-[1.35] font-medium text-ink">
               {item.title}
             </h3>
@@ -106,7 +140,7 @@ export function CertificateWall() {
           ✕
         </button>
         <div data-cert-art>
-          <CertificateArt cert={cert} />
+          <CertSheet cert={cert} />
         </div>
         <p className="mt-3 text-[12px] text-ink-muted">
           Sample certificate · mock image, not a real credential —{" "}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { asset } from "@/lib/asset";
 import {
   availability,
   currentlyBuilding,
@@ -8,7 +9,6 @@ import {
   toolbox,
 } from "@/content/portfolio";
 import { hueVar, HueBar } from "@/components/portfolio/hue";
-import { EditorArt } from "@/components/portfolio/mock-art";
 import Scene3D from "@/components/portfolio/scene-3d";
 
 /*
@@ -45,7 +45,7 @@ export function HeroBento() {
           </div>
           <div className="relative size-[104px] sm:size-[136px] lg:size-[160px] flex-none overflow-hidden rounded-2xl lg:rounded-3xl border-2 border-canvas/40 shadow-lift calm:border-hairline">
             <Image
-              src="/avatar.jpg"
+              src={asset("/avatar.jpg")}
               alt={profile.name}
               width={160}
               height={160}
@@ -188,7 +188,7 @@ export function HeroBento() {
         <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-12">
           <div className="relative h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated shadow-md lg:col-span-3">
             <Image
-              src="/avatar.jpg"
+              src={asset("/avatar.jpg")}
               alt={profile.name}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -204,8 +204,14 @@ export function HeroBento() {
           <div className="h-[250px] w-full lg:col-span-4">
             <Scene3D />
           </div>
-          <div className="h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated md:col-span-2 lg:col-span-5 [&_svg]:h-full [&_svg]:w-full [&_svg]:object-cover">
-            <EditorArt />
+          <div className="h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated md:col-span-2 lg:col-span-5">
+            <Image
+              src={asset("/art/editor.svg")}
+              alt="Mock image of a code editor running app.py"
+              width={400}
+              height={300}
+              className="size-full object-cover"
+            />
           </div>
         </div>
         <figcaption className="mt-3.5 flex flex-col justify-between gap-2 text-[13px] font-semibold text-canvas sm:flex-row sm:items-center">
