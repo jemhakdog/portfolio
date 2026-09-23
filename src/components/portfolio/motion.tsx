@@ -126,7 +126,6 @@ export function PortfolioMotion() {
         (entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
-            observer.unobserve(entry.target);
             reveal(entry.target as HTMLElement);
           });
         },

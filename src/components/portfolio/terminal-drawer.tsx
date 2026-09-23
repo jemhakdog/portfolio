@@ -134,7 +134,7 @@ export function TerminalDrawer({
           <div className="space-y-2 text-[12px] text-canvas/90">
             <div>
               <p className="text-emerald-400 font-bold">{profile.name} — Curriculum Vitae</p>
-              <p className="text-amber-300 font-mono text-[11px]">BS Information Technology (2023–2026) · Pangasinan State University</p>
+              <p className="text-amber-300 font-mono text-[11px]">BS Information Technology (2024–present) · Binalatongan Community College</p>
             </div>
             <p className="text-canvas/80 text-[11px]">
               Specialization: Offline-first client architectures, Python (FastAPI), React 19, SQLite & PostgreSQL.
@@ -175,6 +175,7 @@ export function TerminalDrawer({
         result = (
           <div className="space-y-1 text-[12px]">
             <p>Email: <a href={`mailto:${profile.email}`} className="text-emerald-400 underline">{profile.email}</a></p>
+            <p>Phone: <a href={`tel:+63${profile.phone.slice(1)}`} className="text-emerald-400 underline">{profile.phone}</a></p>
             <p>LinkedIn: <a href={profile.linkedin} target="_blank" rel="noreferrer" className="text-emerald-400 underline">{profile.linkedin}</a></p>
             <p>GitHub: <a href={profile.github} target="_blank" rel="noreferrer" className="text-emerald-400 underline">{profile.github}</a></p>
           </div>

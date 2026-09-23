@@ -3,8 +3,9 @@ import { hueVar, HueBar } from "@/components/portfolio/hue";
 
 const LINK_ROWS = [
   { label: "Email", href: `mailto:${profile.email}`, value: profile.email },
+  { label: "Phone", href: `tel:+63${profile.phone.slice(1)}`, value: profile.phone },
   { label: "LinkedIn", href: profile.linkedin, value: "/jemcarlo-austria" },
-  { label: "GitHub", href: profile.github, value: "/jemcarlo" },
+  { label: "GitHub", href: profile.github, value: "/jemhakdog" },
 ];
 
 export function ContactBand() {

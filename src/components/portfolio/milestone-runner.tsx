@@ -14,7 +14,10 @@ export function MilestoneRunner() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    // One measurement per paint — scroll fires faster than React renders.
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
       const el = containerRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
@@ -23,10 +26,18 @@ export function MilestoneRunner() {
         Math.min(Math.max(visible / (rect.height + window.innerHeight * 0.5), 0), 1),
       );
     };
+    const handleScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   const activeStep = Math.min(
@@ -54,12 +65,13 @@ export function MilestoneRunner() {
         {/* Progress track — the runner rides inside it, so it can use percentages. */}
         <div className="absolute left-5 sm:left-7 -translate-x-1/2 top-4 bottom-8 w-[3px]">
           <div className="absolute inset-0 rounded-full bg-hairline" />
+          {/* Scroll-driven values render 1:1 — no transition, or the bar trails the scroll. */}
           <div
-            className="absolute inset-x-0 top-0 rounded-full bg-signature-coral transition-all duration-300"
+            className="absolute inset-x-0 top-0 rounded-full bg-gradient-to-b from-signature-peach to-signature-coral shadow-[0_0_10px_var(--color-signature-coral)]"
             style={{ height: `${pct}%` }}
           />
           <div
-            className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex size-[19px] items-center justify-center rounded-full border-2 border-canvas bg-signature-coral text-[10px] text-white shadow-md transition-all duration-300"
+            className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex size-[19px] items-center justify-center rounded-full border-2 border-canvas bg-signature-coral text-[10px] text-white shadow-[0_0_0_4px_var(--color-signature-cream),0_0_14px_var(--color-signature-peach)]"
             style={{ top: `${pct}%` }}
             title="Milestone Runner"
           >
@@ -73,7 +85,7 @@ export function MilestoneRunner() {
             const isPassed = activeStep >= idx;
             return (
               <div
-                key={item.year}
+                key={`${item.year}-${idx}`}
                 className={`relative rounded-xl border p-5 sm:p-6 transition-all duration-300 ${
                   isPassed
                     ? "border-hairline bg-canvas shadow-xs"

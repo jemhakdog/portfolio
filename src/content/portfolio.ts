@@ -51,14 +51,14 @@ export const profile = {
   role: "Junior developer · Pangasinan, PH",
   headline:
     "I build small software that works offline, on cheap hardware, in real barangays.",
-  email: "zani31349@gmail.com",
-  linkedin: "https://linkedin.com/in/jemcarlo-austria-45bb77421/",
-  /* TODO: replace with your GitHub profile URL */
-  github: "https://github.com/",
+  email: "jemcarlo46@gmail.com",
+  phone: "09538563123",
+  linkedin: "https://www.linkedin.com/in/jemcarlo-austria-45bb77421/",
+  github: "https://github.com/jemhakdog",
   location: "Mangatarem, Pangasinan, PH",
   credits: [
     { k: "Stack", v: "Python · React · Supabase" },
-    { k: "Studying", v: "BS Information Technology 2023–2026" },
+    { k: "Studying", v: "BS Information Technology 2024–present" },
     { k: "Ships to", v: "Vercel · Render" },
   ],
 } as const;
@@ -201,29 +201,28 @@ export const contact = {
 export const resumeInfo = {
   pdfUrl: "/resume.pdf",
   downloadName: "Jem_Carlo_Austria_Resume.pdf",
-  lastUpdated: "March 2026",
+  lastUpdated: "June 2026",
   headline: "Junior Full-Stack Developer · Pangasinan, PH",
   summary:
-    "Diligent junior developer building offline-first, resilient software engineered for low-cost hardware and real community utility. Hands-on experience architecting full-stack web apps, local government administration systems, and Android thermal printing integrations.",
+    "Motivated BSIT student with a strong foundation in backend development and web technologies — Python, FastAPI, Supabase, and SQLite. Led database design and system architecture for my capstone digital cultural map, and completed an internship at the Local Civil Registry. Eager to start my career and contribute as a junior developer.",
   education: {
     degree: "Bachelor of Science in Information Technology",
-    school: "Pangasinan State University",
-    period: "2023 – 2026",
-    status: "Graduating 2026",
-    details:
-      "Core coursework: Algorithms, Data Structures, Relational Database Modeling, Operating Systems, Web Architecture.",
+    school: "Binalatongan Community College",
+    period: "2024 – Present",
+    status: "BSIT Student",
+    details: "Secondary: Mangatarem National High School (2022). Primary: Mangatarem I Central School (2016).",
   },
   skills: [
-    { category: "Languages", items: ["Python", "TypeScript", "JavaScript", "SQL", "HTML5", "Modern CSS"] },
-    { category: "Frameworks & Web", items: ["FastAPI", "React 19", "Next.js 16", "Tailwind CSS v4", "Three.js / R3F", "Node.js"] },
-    { category: "Databases & Sync", items: ["PostgreSQL", "SQLite", "Supabase", "IndexedDB (offline-first)"] },
-    { category: "Tools & Protocols", items: ["Git / GitHub", "Linux / Bash", "ESC/POS Bluetooth", "PWA", "Vercel", "Render"] },
+    { category: "Languages & Backend", items: ["Python", "FastAPI", "SQL", "HTML5", "CSS", "Bootstrap"] },
+    { category: "Frameworks & Web", items: ["React", "Next.js (learning)", "Tailwind CSS"] },
+    { category: "Databases & Data", items: ["Supabase", "SQLite", "MySQL", "Data management & record-keeping"] },
+    { category: "Tools & Automation", items: ["Git / GitHub", "VSCode", "n8n (AI automation)"] },
   ],
   highlights: [
-    "3 shipped real-world production projects deployed and actively serving local users.",
-    "Engineered local-first card reviewer (StudyStack) with IndexedDB & Supabase sync.",
-    "Digitized barangay municipal records, cutting certificate creation from 15m to 90s.",
-    "Built touchscreen thermal receipt POS running entirely offline on cheap ₱3k Android tablets.",
+    "Led capstone: Interactive Digital Cultural Map & Local Tourism Information System — database design and system architecture.",
+    "IT internship at the Local Government Unit (Feb 2026): data management and digital record-keeping for the Civil Registry.",
+    "Shipped 3 real-world projects — StudyStack, Barangay Records, and Sari-Sari POS — deployed and serving local users.",
+    "Built custom AI agents (n8n) to automate planning, documentation, and coding.",
   ],
 } as const;
 
@@ -281,7 +280,7 @@ export const sections: Section[] = [
     num: "02",
     label: "Career Journey",
     title: "Career Milestones & Journey",
-    subtitle: "Scroll to 2023–2026 timeline",
+    subtitle: "Scroll to 2024–2026 timeline",
     icon: "🗺️",
   },
   {
@@ -346,20 +345,12 @@ export type Milestone = {
 
 export const milestones: Milestone[] = [
   {
-    year: "2023",
+    year: "2024",
     role: "Foundations",
     title: "Enrolled in BS Information Technology",
-    desc: "Started degree at Pangasinan State University. Focused deeply on Python data structures, algorithms, and relational database modeling.",
-    tags: ["Python", "SQL", "Linux", "Data Structures"],
+    desc: "Started my degree at Binalatongan Community College and earned the freeCodeCamp Responsive Web Design certification. Experimented with IndexedDB, service workers, and offline client-side state that doesn't need a constant connection.",
+    tags: ["Python", "React", "IndexedDB", "PWA"],
     icon: "🌱",
-  },
-  {
-    year: "2024",
-    role: "Front-End & Offline Web",
-    title: "Responsive Web Design & Web APIs",
-    desc: "Completed freeCodeCamp certification. Experimented with IndexedDB, Service Workers, and client-side state architectures that don't depend on constant 5G connection.",
-    tags: ["React", "IndexedDB", "PWA", "Tailwind"],
-    icon: "⚡",
   },
   {
     year: "2025",
@@ -371,10 +362,18 @@ export const milestones: Milestone[] = [
   },
   {
     year: "2026",
-    role: "Production & Ready for Hire",
-    title: "StudyStack & Remote Junior Roles",
-    desc: "Created StudyStack spaced-repetition offline reviewer. Graduating in 2026 with verified project deployments, ready to contribute to high-standards remote engineering teams.",
-    tags: ["React 19", "Supabase", "Next.js", "Remote Ready"],
+    role: "On the Job",
+    title: "IT Intern, Local Government Unit",
+    desc: "Data management at the Local Civil Registry — encoding important records like marriage certificates and keeping the office's digital files organized and accurate.",
+    tags: ["Data Management", "Record-Keeping", "Python"],
+    icon: "🏛️",
+  },
+  {
+    year: "2026",
+    role: "Capstone & Ready for Hire",
+    title: "Digital Cultural Map & StudyStack",
+    desc: "Led database design and system architecture for an Interactive Digital Cultural Map & Local Tourism Information System capstone, and shipped StudyStack. Ready to contribute to a remote engineering team.",
+    tags: ["React", "Supabase", "Capstone", "Remote Ready"],
     icon: "🎯",
   },
 ];
