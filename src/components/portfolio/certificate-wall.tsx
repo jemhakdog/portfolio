@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { animate, utils } from "animejs";
 
 import { type Certificate, certificates } from "@/content/portfolio";
+import { asset } from "@/lib/asset";
 import { hueVar } from "@/components/portfolio/hue";
 
 /** A sample credential sheet. Mock imagery: every certificate on this page is drawn. */
@@ -105,7 +106,7 @@ export function CertificateWall() {
             </span>
             {item.pdfUrl ? (
               <a
-                href={item.pdfUrl}
+                href={asset(item.pdfUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="absolute inset-0 cursor-pointer rounded-[18px]"
@@ -158,7 +159,7 @@ export function CertificateWall() {
           </p>
           {cert.pdfUrl && (
             <a
-              href={cert.pdfUrl}
+              href={asset(cert.pdfUrl)}
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium text-ink underline hover:text-ink/80"

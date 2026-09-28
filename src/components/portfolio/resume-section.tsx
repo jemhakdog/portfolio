@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { profile, resumeInfo } from "@/content/portfolio";
+import { asset } from "@/lib/asset";
 import { sound } from "@/lib/audio-engine";
 
 export function ResumeModal({
@@ -52,7 +53,7 @@ export function ResumeModal({
 
           <div className="flex items-center gap-2">
             <a
-              href={resumeInfo.pdfUrl}
+              href={asset(resumeInfo.pdfUrl)}
               target="_blank"
               rel="noreferrer"
               onClick={() => sound.playClick()}
@@ -62,7 +63,7 @@ export function ResumeModal({
               <span aria-hidden="true">↗</span>
             </a>
             <a
-              href={resumeInfo.pdfUrl}
+              href={asset(resumeInfo.pdfUrl)}
               download={resumeInfo.downloadName}
               onClick={() => sound.playChime()}
               className="inline-flex items-center gap-1.5 rounded-lg bg-signature-coral px-3 py-1.5 text-xs font-mono font-bold text-white hover:opacity-90 transition-opacity"
@@ -87,7 +88,7 @@ export function ResumeModal({
         {/* Modal PDF Viewer Body */}
         <div className="relative flex-1 bg-surface-dark p-2">
           <iframe
-            src={`${resumeInfo.pdfUrl}#toolbar=1&navpanes=0`}
+            src={`${asset(resumeInfo.pdfUrl)}#toolbar=1&navpanes=0`}
             title="Resume PDF Preview"
             className="size-full rounded-lg border border-hairline/20 bg-white"
           />
@@ -145,7 +146,7 @@ export function ResumeSection({
               <span>📄 Open Fullscreen Resume</span>
             </button>
             <a
-              href={resumeInfo.pdfUrl}
+              href={asset(resumeInfo.pdfUrl)}
               target="_blank"
               rel="noreferrer"
               onClick={() => sound.playClick()}
@@ -154,7 +155,7 @@ export function ResumeSection({
               <span>PDF Tab ↗</span>
             </a>
             <a
-              href={resumeInfo.pdfUrl}
+              href={asset(resumeInfo.pdfUrl)}
               download={resumeInfo.downloadName}
               onClick={() => sound.playChime()}
               className="inline-flex items-center gap-1.5 rounded-xl border border-hairline bg-surface-soft px-3.5 py-2.5 text-xs font-mono text-ink hover:bg-canvas transition-colors"
@@ -299,7 +300,7 @@ export function ResumeSection({
 
                 <div className="mt-5 flex items-center gap-3">
                   <a
-                    href={resumeInfo.pdfUrl}
+                    href={asset(resumeInfo.pdfUrl)}
                     download={resumeInfo.downloadName}
                     onClick={() => sound.playChime()}
                     className="flex-1 rounded-xl bg-signature-yellow px-4 py-2.5 text-center text-xs font-mono font-bold text-black hover:opacity-95 transition-opacity"
@@ -333,7 +334,7 @@ export function ResumeSection({
               </button>
             </div>
             <iframe
-              src={`${resumeInfo.pdfUrl}#toolbar=1`}
+              src={`${asset(resumeInfo.pdfUrl)}#toolbar=1`}
               title="Resume PDF Embed"
               className="size-full rounded-xl border border-hairline bg-white"
             />
