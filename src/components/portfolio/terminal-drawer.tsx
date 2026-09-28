@@ -88,7 +88,7 @@ export function TerminalDrawer({
         result = (
           <div className="space-y-2">
             <div className="text-canvas/60 text-[11px] pb-1 border-b border-hairline/20">
-              DIRECTORY: /var/www/projects (3 deployed)
+              DIRECTORY: /var/www/projects ({projects.length} systems)
             </div>
             {projects.map((p) => (
               <div key={p.no} className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 text-[12px]">

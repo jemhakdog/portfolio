@@ -110,7 +110,11 @@ export function WorkGallery() {
             <article
               data-reveal-child
               style={hueVar(project.hue)}
-              className="group relative flex h-full min-h-[280px] flex-col justify-between gap-3.5 overflow-hidden rounded-xl border border-transparent bg-[var(--hue)] p-[26px] transition-[background-color,border-color,box-shadow] duration-300 hover:shadow-lift calm:border-hairline calm:bg-canvas focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring cursor-pointer"
+              className={`group relative flex h-full min-h-[280px] flex-col justify-between gap-3.5 overflow-hidden rounded-xl border border-transparent bg-[var(--hue)] p-[26px] transition-[background-color,border-color,box-shadow] duration-300 hover:shadow-lift calm:border-hairline calm:bg-canvas focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring cursor-pointer ${
+                project.hue === "forest" || project.hue === "coral"
+                  ? "text-canvas calm:text-ink"
+                  : "text-ink"
+              }`}
             >
               <HueBar />
               {/* Mock screenshot — an inline SVG illustration, not a real capture */}
@@ -122,22 +126,46 @@ export function WorkGallery() {
                 className="block w-full rounded-md"
               />
               <div>
-                <span className="eyebrow text-ink/80">
+                <span
+                  className={`eyebrow ${
+                    project.hue === "forest" || project.hue === "coral"
+                      ? "text-canvas/80 calm:text-ink/80"
+                      : "text-ink/80"
+                  }`}
+                >
                   {project.no} · {project.kind}
                 </span>
-                <h3 className="mt-3.5 max-w-[16ch] text-title-lg text-ink">
+                <h3
+                  className={`mt-3.5 max-w-[16ch] text-title-lg ${
+                    project.hue === "forest" || project.hue === "coral"
+                      ? "text-canvas calm:text-ink"
+                      : "text-ink"
+                  }`}
+                >
                   {project.name}
                 </h3>
-                <p className="mt-2.5 max-w-[30ch] text-body-md leading-[1.5] text-body">
+                <p
+                  className={`mt-2.5 max-w-[30ch] text-body-md leading-[1.5] ${
+                    project.hue === "forest" || project.hue === "coral"
+                      ? "text-canvas/85 calm:text-body"
+                      : "text-body"
+                  }`}
+                >
                   {project.blurb}
                 </p>
               </div>
-              <div className="mt-6 flex items-end justify-between gap-3.5 text-ink">
-                <span className="text-[12px] font-semibold text-ink/75">
+              <div className="mt-6 flex items-end justify-between gap-3.5">
+                <span
+                  className={`text-[12px] font-semibold ${
+                    project.hue === "forest" || project.hue === "coral"
+                      ? "text-canvas/75 calm:text-ink/75"
+                      : "text-ink/75"
+                  }`}
+                >
                   {project.meta}
                 </span>
                 <span
-                  className={`flex items-center gap-1.5 text-[13.12px] font-semibold text-ink transition-[opacity,translate] duration-300 ${
+                  className={`flex items-center gap-1.5 text-[13.12px] font-semibold transition-[opacity,translate] duration-300 ${
                     open === index
                       ? "translate-x-0 opacity-100"
                       : "-translate-x-1.5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"

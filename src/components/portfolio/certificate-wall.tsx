@@ -79,9 +79,6 @@ export function CertificateWall() {
         className="mt-[70px] mb-4 flex flex-wrap items-baseline justify-between gap-4 border-t border-ink pt-5"
       >
         <h2 className="text-display-md">Certificates</h2>
-        <span className="text-legal text-ink-muted">
-          Sample data · replace with your own
-        </span>
       </div>
 
       <div
@@ -106,18 +103,31 @@ export function CertificateWall() {
             <span className="mt-2.5 block font-mono text-[11.5px] text-ink/65">
               {item.id} · {item.year}
             </span>
-            <button
-              type="button"
-              onClick={() => {
-                setShown(index);
-                setOpen(true);
-              }}
-              className="absolute inset-0 cursor-pointer rounded-[18px]"
-            >
-              <span className="sr-only">
-                Open the {item.title} certificate
-              </span>
-            </button>
+            {item.pdfUrl ? (
+              <a
+                href={item.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute inset-0 cursor-pointer rounded-[18px]"
+              >
+                <span className="sr-only">
+                  Open the {item.title} PDF
+                </span>
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setShown(index);
+                  setOpen(true);
+                }}
+                className="absolute inset-0 cursor-pointer rounded-[18px]"
+              >
+                <span className="sr-only">
+                  Open the {item.title} certificate
+                </span>
+              </button>
+            )}
           </figure>
         ))}
       </div>
@@ -142,10 +152,21 @@ export function CertificateWall() {
         <div data-cert-art>
           <CertSheet cert={cert} />
         </div>
-        <p className="mt-3 text-[12px] text-ink-muted">
-          Sample certificate · mock image, not a real credential —{" "}
-          {cert.issuer} {cert.year}
-        </p>
+        <div className="mt-3 flex items-center justify-between text-[12px] text-ink-muted">
+          <p>
+            {cert.issuer} · {cert.year}
+          </p>
+          {cert.pdfUrl && (
+            <a
+              href={cert.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-ink underline hover:text-ink/80"
+            >
+              Open PDF ↗
+            </a>
+          )}
+        </div>
       </dialog>
     </section>
   );

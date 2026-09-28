@@ -14,7 +14,7 @@ export type Hue =
   | "soft";
 
 /** Art keys map to the mock screenshots in public/art/<key>.svg */
-export type ArtName = "cards" | "records" | "pos";
+export type ArtName = "cards" | "records" | "pos" | "editor";
 
 export type CaseStudy = {
   cap: string;
@@ -43,6 +43,7 @@ export type Certificate = {
   hue: Hue;
   /** signature-palette hex, used to draw the mock sheet */
   ink: string;
+  pdfUrl?: string;
 };
 
 export const profile = {
@@ -88,15 +89,38 @@ export const toolbox = [
 ] as const;
 
 export const record = {
-  count: 3,
-  unit: "projects shipped, all with a live URL",
-  note: "Plus freelance work for local businesses since 2025. Three online certificates, all verifiable.",
+  count: 11,
+  unit: "production & prototype systems shipped",
+  note: "Consolidated platforms spanning municipal civic tools, AI gateways, offline systems, and academic capstones.",
 } as const;
 
 export const projects: Project[] = [
   {
     no: "01",
-    kind: "Web app",
+    kind: "Capstone Platform",
+    name: "Mangatarem Cultural Map",
+    blurb: "Interactive digital cultural map & local tourism information system.",
+    meta: "React · Python · GIS · 2026",
+    hue: "coral",
+    art: "records",
+    cs: {
+      cap: "Case study · Capstone Platform",
+      problem:
+        "Local cultural landmarks and tourism registries lacked an accessible digital platform, making heritage data and travel information difficult for visitors and municipal officers to discover.",
+      approach:
+        "Designed comprehensive system architecture and relational schemas connecting geotagged landmarks, historical archives, and tourism submission workflows with interactive map layers.",
+      outcome:
+        "Served as capstone flagship project for Mangatarem, Pangasinan. Unified tourism data collection, municipal verification, and public engagement in one portal.",
+      stats: [
+        ["Role", "Lead Architect"],
+        ["Domain", "GIS & Heritage"],
+        ["Location", "Mangatarem, PH"],
+      ],
+    },
+  },
+  {
+    no: "02",
+    kind: "EdTech & Offline",
     name: "StudyStack",
     blurb: "Offline-first spaced-repetition reviewer for BS IT coursework.",
     meta: "React · Supabase · 2026",
@@ -118,12 +142,81 @@ export const projects: Project[] = [
     },
   },
   {
-    no: "02",
-    kind: "Internal tool",
+    no: "03",
+    kind: "Internship & Tracking",
+    name: "MapMyOJT & Placement Suite",
+    blurb: "OJT opportunity mapping, supervisor appointments, and work logs.",
+    meta: "Flask · Leaflet · Gemini AI · 2025",
+    hue: "forest",
+    art: "records",
+    cs: {
+      cap: "Case study · Placement Suite",
+      problem:
+        "Students struggled to discover accredited OJT partner companies, while coordinators managed appointments, company slot quotas, and paper work-logs manually across multiple sheets.",
+      approach:
+        "Unified student application portals and coordinator dashboards with an interactive geospatial map to locate verified employers, submit digital attendance logs, and generate career insights via Gemini AI.",
+      outcome:
+        "Streamlined end-to-end college internship lifecycle—from appointment booking and slot approval to real-time progress reviews and verified completion tracking.",
+      stats: [
+        ["Features", "Map + Logs + AI"],
+        ["Audience", "College OJT"],
+        ["Stack", "Flask & Maps"],
+      ],
+    },
+  },
+  {
+    no: "04",
+    kind: "AI Infrastructure",
+    name: "Multi-Model AI Gateway & MCP",
+    blurb: "OpenAI-compatible AI proxy with Playwright browser bridge and FastAPI MCP server.",
+    meta: "FastAPI · Playwright · MCP · 2026",
+    hue: "peach",
+    art: "editor",
+    cs: {
+      cap: "Case study · AI Infrastructure",
+      problem:
+        "AI agents and client applications required a unified interface to coordinate across disparate providers (Gemini, Qwen, Z.ai) while generating backend system scaffolds automatically.",
+      approach:
+        "Engineered an OpenAI-compatible API gateway managing browser sessions via Playwright alongside an MCP toolchain implementing a strict Plan → Prompt → Write workflow for FastAPI/Supabase.",
+      outcome:
+        "Enabled seamless dynamic model switching, deep reasoning routing, bridge caching, and autonomous code generation workflows through standard AI agent protocols.",
+      stats: [
+        ["Protocol", "MCP & OpenAI API"],
+        ["Engines", "Gemini / Qwen"],
+        ["Automation", "Playwright"],
+      ],
+    },
+  },
+  {
+    no: "05",
+    kind: "AI Web Studio",
+    name: "AI Learning & Media Studio",
+    blurb: "Suite of AI-powered applications: image editor, language tutor, flashcards & quiz simulator.",
+    meta: "React · TypeScript · Gemini API · 2026",
+    hue: "mustard",
+    art: "cards",
+    cs: {
+      cap: "Case study · AI Applications",
+      problem:
+        "Learners needed focused, interactive tools for image editing, conversational language retention, and automated study assessments without navigating complex standalone software.",
+      approach:
+        "Consolidated modular AI applications (ID_Genius, LingoLoop, FlashcardAI, ExamSimulatorAI) into a cohesive suite of typed React components powered by prompt-engineered Gemini API services.",
+      outcome:
+        "Delivered responsive study tools with instant dynamic card generation, simulated exams with instant feedback, conversational drills, and studio-grade image transformations.",
+      stats: [
+        ["Modules", "4 Integrated Tools"],
+        ["Frontend", "React 19 & TS"],
+        ["AI Service", "Gemini 2.5/Flash"],
+      ],
+    },
+  },
+  {
+    no: "06",
+    kind: "Civic Internal Tool",
     name: "Barangay Records",
     blurb: "Resident registry and certificate requests, replacing six notebooks.",
     meta: "Python · FastAPI · 2025",
-    hue: "mustard",
+    hue: "mint",
     art: "records",
     cs: {
       cap: "Case study · Internal tool",
@@ -141,12 +234,12 @@ export const projects: Project[] = [
     },
   },
   {
-    no: "03",
-    kind: "Desktop tool",
+    no: "07",
+    kind: "Offline POS & Hardware",
     name: "Sari-Sari POS",
     blurb: "Receipt printing and credit tracking on a ₱3k Android tablet.",
     meta: "Python · SQLite · 2025",
-    hue: "mint",
+    hue: "cream",
     art: "pos",
     cs: {
       cap: "Case study · Desktop tool",
@@ -163,32 +256,253 @@ export const projects: Project[] = [
       ],
     },
   },
+  {
+    no: "08",
+    kind: "Hospitality Backend",
+    name: "Hotel Management System",
+    blurb: "Full operations backend for reservations, room inventory, housekeeping, and billing.",
+    meta: "FastAPI · PostgreSQL · 2025",
+    hue: "soft",
+    art: "editor",
+    cs: {
+      cap: "Case study · Hospitality Backend",
+      problem:
+        "Hotel front desk operations suffered bottlenecks coordinating real-time room availability, guest check-in/out states, housekeeping logs, and reconciled billing statements.",
+      approach:
+        "Developed a robust FastAPI backend with role-based permissions, transactional booking endpoints, automated invoice and tax calculations, and status queues for room cleaning teams.",
+      outcome:
+        "Provided front desk staff and administrators with low-latency API services for instant room allocation, payment records, and operational audit reports.",
+      stats: [
+        ["Architecture", "Clean API"],
+        ["Security", "Role-Based RBAC"],
+        ["Core", "Billing & Booking"],
+      ],
+    },
+  },
+  {
+    no: "09",
+    kind: "Full-Stack Portal",
+    name: "Enterprise Job Search Platform",
+    blurb: "Recruitment portal with jobseeker profiles, employer management, and listing APIs.",
+    meta: "Python · SQLite · JavaScript · 2025",
+    hue: "coral",
+    art: "records",
+    cs: {
+      cap: "Case study · Job Recruitment Platform",
+      problem:
+        "Job seekers and local employers lacked a unified board that bridged lightweight browser access with structured candidate management and local SQLite database fallbacks.",
+      approach:
+        "Combined backend listing services (jobs-backend) and responsive role-based frontend portals (job_search, jobportal-v3.1) supporting employer postings, resume screening, and applicant tracking.",
+      outcome:
+        "Delivered a complete recruitment ecosystem with separate employer, candidate, and administrative moderation panels, operational offline and online.",
+      stats: [
+        ["Modules", "API + Multi-Role Portal"],
+        ["Database", "SQLite Fallback"],
+        ["Stack", "Python / Web"],
+      ],
+    },
+  },
+  {
+    no: "10",
+    kind: "Machine Learning & CV",
+    name: "Document Layout & DOCX Parser",
+    blurb: "Deep learning document layout detection, OCR extraction, and DOCX reconstruction.",
+    meta: "PyTorch · Transformers · YOLO · 2025",
+    hue: "forest",
+    art: "editor",
+    cs: {
+      cap: "Case study · Document AI",
+      problem:
+        "Digitizing complex document scans frequently destroys formatting, tables, columns, and embedded headers when converting scanned images back to editable documents.",
+      approach:
+        "Implemented YOLO-based bounding box detection for layout regions (paragraphs, tables, figures) paired with OCR pipelines and AST-based DOCX document rebuilding.",
+      outcome:
+        "Accurately reconstructed scanned papers and multi-column documents into structured Word (.docx) files preserving layout and typography fidelity.",
+      stats: [
+        ["Models", "YOLO + Transformers"],
+        ["Pipeline", "OCR to DOCX"],
+        ["Framework", "PyTorch"],
+      ],
+    },
+  },
+  {
+    no: "11",
+    kind: "Data Engineering",
+    name: "Dorapac Data Intelligence",
+    blurb: "Automated data harvesting, deduplication, image verification, and catalog dashboard.",
+    meta: "Flask · Python ETL · 2025",
+    hue: "mustard",
+    art: "editor",
+    cs: {
+      cap: "Case study · Data Engineering",
+      problem:
+        "Aggregating large inventories from external catalogs led to corrupted image references, redundant entries, misclassified categories, and broken database schemas.",
+      approach:
+        "Built automated crawling scripts, image integrity validators, and fuzzy deduplication algorithms orchestrated through a Flask administrative monitoring dashboard.",
+      outcome:
+        "Cleaned, normalized, and validated thousands of catalog items with automated health checks, reducing catalog maintenance overhead to zero.",
+      stats: [
+        ["Pipeline", "Scrape & Dedupe"],
+        ["Validation", "Image & Schema"],
+        ["Interface", "Flask Admin"],
+      ],
+    },
+  },
 ];
 
 export const certificates: Certificate[] = [
   {
-    title: "Responsive Web Design",
-    issuer: "freeCodeCamp",
+    title: "Developing Designs for a Logo",
+    issuer: "TESDA",
     year: "2024",
-    id: "fcc-rwd-2024-8842",
+    id: "7Da6onsA6G",
     hue: "cream",
     ink: "#aa2d00",
+    pdfUrl: "/certs/Certificate_of_Completion.pdf",
   },
   {
-    title: "Introduction to Cybersecurity",
-    issuer: "Cisco Networking Academy",
-    year: "2025",
-    id: "cisco-cyber-2025-3310",
+    title: "Developing Designs for Print Media",
+    issuer: "TESDA",
+    year: "2024",
+    id: "V3hqPakF2c",
     hue: "mint",
     ink: "#0a2e0e",
+    pdfUrl: "/certs/Certificate_of_Completion_2.pdf",
   },
   {
-    title: "Python (Basic) Certificate",
-    issuer: "HackerRank",
-    year: "2025",
-    id: "hr-py-2025-7719",
+    title: "Developing Designs for User Experience",
+    issuer: "TESDA",
+    year: "2024",
+    id: "M5bHio68HY",
     hue: "peach",
     ink: "#d9a441",
+    pdfUrl: "/certs/Certificate_of_Completion_3.pdf",
+  },
+  {
+    title: "Developing Designs for User Interface",
+    issuer: "TESDA",
+    year: "2024",
+    id: "mubr7yttk0",
+    hue: "coral",
+    ink: "#b83b14",
+    pdfUrl: "/certs/Certificate_of_Completion_4.pdf",
+  },
+  {
+    title: "Introduction to CSS",
+    issuer: "TESDA",
+    year: "2025",
+    id: "xPMAVaQ1yg",
+    hue: "yellow",
+    ink: "#b58900",
+    pdfUrl: "/certs/Certificate_of_Completion_5.pdf",
+  },
+  {
+    title: "Introduction to Visual Graphic Design",
+    issuer: "TESDA",
+    year: "2024",
+    id: "xuITMLrUxz",
+    hue: "forest",
+    ink: "#1b4d3e",
+    pdfUrl: "/certs/Certificate_of_Completion_6.pdf",
+  },
+  {
+    title: "Setting Up Computer Networks",
+    issuer: "TESDA",
+    year: "2025",
+    id: "NWCAzGwmAa",
+    hue: "mustard",
+    ink: "#9b5e08",
+    pdfUrl: "/certs/Certificate_of_Completion_7.pdf",
+  },
+  {
+    title: "Installing and Configuring Computer Systems",
+    issuer: "TESDA",
+    year: "2025",
+    id: "LtE5Q6sVhD",
+    hue: "soft",
+    ink: "#385072",
+    pdfUrl: "/certs/Certificate_of_Completion_NEW.pdf",
+  },
+  {
+    title: "Maintaining Computer Systems and Networks",
+    issuer: "TESDA",
+    year: "2025",
+    id: "Eel2jcSO09",
+    hue: "cream",
+    ink: "#aa2d00",
+    pdfUrl: "/certs/Certificate_of_Completion_NEW_2.pdf",
+  },
+  {
+    title: "Setting Up Computer Servers",
+    issuer: "TESDA",
+    year: "2025",
+    id: "Y9AnXMrarG",
+    hue: "mint",
+    ink: "#0a2e0e",
+    pdfUrl: "/certs/Certificate_of_Completion_NEW_4.pdf",
+  },
+  {
+    title: "Performing Solid Waste Management in the Workplace",
+    issuer: "TESDA",
+    year: "2024",
+    id: "fjLGOpzjFF",
+    hue: "forest",
+    ink: "#1b4d3e",
+    pdfUrl: "/certs/Certificate_of_Completion_new_3.pdf",
+  },
+  {
+    title: "Designing Booth and Product/Window Display",
+    issuer: "TESDA",
+    year: "2024",
+    id: "JV3NQtYyr3",
+    hue: "peach",
+    ink: "#d9a441",
+    pdfUrl: "/certs/desingi%7Fbooth.pdf",
+  },
+  {
+    title: "Blockchain is not just Crypto",
+    issuer: "ICpEP",
+    year: "2025",
+    id: "icpep-blockchain-2025",
+    hue: "yellow",
+    ink: "#b58900",
+    pdfUrl: "/certs/Jem%20Carlo%20Austria_Certificate%20of%20Participation_June%2014%2C%202025.pdf",
+  },
+  {
+    title: "Formulating Competitive Marketing Strategies in the Digital Age",
+    issuer: "ICpEP",
+    year: "2025",
+    id: "icpep-marketing-2025",
+    hue: "coral",
+    ink: "#b83b14",
+    pdfUrl: "/certs/Jemcarlo%20Austria_Certificate%20of%20Participation_June%2028%2C%202025.pdf",
+  },
+  {
+    title: "Formulating Competitive Marketing Strategies in the Digital Age (Session 2)",
+    issuer: "ICpEP",
+    year: "2025",
+    id: "icpep-marketing-2025-2",
+    hue: "mustard",
+    ink: "#9b5e08",
+    pdfUrl: "/certs/Jemcarlo%20Austria_Certificate%20of%20Participation_June%2028%2C%202025_2.pdf",
+  },
+  {
+    title: "Next-Gen Tech Talks: IoT Applications and Data-Driven Governance",
+    issuer: "ICpEP",
+    year: "2025",
+    id: "icpep-iot-2025",
+    hue: "soft",
+    ink: "#385072",
+    pdfUrl: "/certs/Jemcarlo%20Austria_Certificate%20of%20Participation_August%202%2C%202025.pdf",
+  },
+  {
+    title: "All About Cybersecurity",
+    issuer: "We Learn Solutions by J&J",
+    year: "2025",
+    id: "WL-CYBER-00127",
+    hue: "forest",
+    ink: "#1b4d3e",
+    pdfUrl: "/certs/PDFMailer10115026.pdf",
   },
 ];
 
@@ -221,8 +535,8 @@ export const resumeInfo = {
   highlights: [
     "Led capstone: Interactive Digital Cultural Map & Local Tourism Information System — database design and system architecture.",
     "IT internship at the Local Government Unit (Feb 2026): data management and digital record-keeping for the Civil Registry.",
-    "Shipped 3 real-world projects — StudyStack, Barangay Records, and Sari-Sari POS — deployed and serving local users.",
-    "Built custom AI agents (n8n) to automate planning, documentation, and coding.",
+    "Shipped 11 full-stack & prototype systems — across civic records, AI tooling, GIS maps, and local POS systems.",
+    "Built custom AI agents (n8n, MCP, Playwright) to automate planning, documentation, and model orchestration.",
   ],
 } as const;
 
@@ -271,7 +585,7 @@ export const sections: Section[] = [
     num: "01",
     label: "Selected Work",
     title: "Selected Work & Projects",
-    subtitle: "Jump to 3 shipped real-world projects",
+    subtitle: "Jump to 11 shipped production & prototype systems",
     icon: "💼",
     topBar: true,
   },

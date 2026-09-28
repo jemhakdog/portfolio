@@ -102,27 +102,27 @@ export function HeroBento() {
         data-hero
         data-hero-tile
         style={hueVar("cream")}
-        className={`${TILE} flex flex-col justify-between gap-6 lg:col-span-4 lg:min-h-[196px]`}
+        className={`${TILE} flex flex-col justify-between gap-4 lg:col-span-4 lg:min-h-[196px]`}
       >
         <HueBar />
-        <span className="eyebrow text-ink/80 calm:text-ink-muted">
-          Currently building
-        </span>
         <div>
-          <h3 className="text-title-lg text-ink">{currentlyBuilding.name}</h3>
+          <span className="eyebrow text-ink/80 calm:text-ink-muted">
+            Currently building
+          </span>
+          <h3 className="mt-2 text-title-lg text-ink">{currentlyBuilding.name}</h3>
           <p className="mt-2 text-body-md leading-[1.5] text-body">
             {currentlyBuilding.body}
           </p>
-          <div className="mt-3.5 flex flex-wrap gap-1.5">
-            {currentlyBuilding.chips.map((chip) => (
-              <span
-                key={chip}
-                className="chip calm:border-hairline calm:bg-surface-soft"
-              >
-                {chip}
-              </span>
-            ))}
-          </div>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {currentlyBuilding.chips.map((chip) => (
+            <span
+              key={chip}
+              className="chip calm:border-hairline calm:bg-surface-soft"
+            >
+              {chip}
+            </span>
+          ))}
         </div>
       </article>
 

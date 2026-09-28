@@ -145,6 +145,19 @@ function TerminalDesk() {
   );
 }
 
+function hasWebGLSupport(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    return Boolean(
+      window.WebGLRenderingContext &&
+        (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 /**
  * WebGL is client-only, so the canvas waits for mount. This is the
  * `useSyncExternalStore` hydration probe rather than a `useEffect` + setState —
@@ -156,6 +169,13 @@ export default function Scene3D() {
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const hostRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(true);
+
+  useEffect(() => {
+    if (mounted && !hasWebGLSupport()) {
+      setWebGLSupported(false);
+    }
+  }, [mounted]);
 
   /*
    * R3F's default frameloop is "always": this canvas renders 60fps even while
@@ -177,6 +197,16 @@ export default function Scene3D() {
     return (
       <div className="flex h-[250px] w-full items-center justify-center rounded-[14px] border border-hairline/20 bg-surface-dark-elevated font-mono text-[11px] text-canvas/40">
         Loading WebGL...
+      </div>
+    );
+  }
+
+  if (!webGLSupported) {
+    return (
+      <div className="flex h-[250px] w-full flex-col items-center justify-center gap-2 rounded-[14px] border border-hairline/20 bg-surface-dark-elevated p-4 text-center font-mono text-canvas/60">
+        <div className="size-2 rounded-full bg-amber-500/60" />
+        <span className="text-[12px] font-medium text-canvas/80">3D Sandbox Offline</span>
+        <span className="text-[10px] text-canvas/40">WebGL disabled or unsupported by your browser/device</span>
       </div>
     );
   }
