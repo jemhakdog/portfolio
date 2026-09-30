@@ -27,7 +27,7 @@ export function ContactBand() {
         </div>
         <a
           href={`mailto:${profile.email}`}
-          className="inline-flex items-center gap-2.5 self-start rounded-lg bg-white px-6 py-3 text-button font-medium text-slate-950 no-underline hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center gap-2.5 self-start rounded-lg bg-canvas px-6 py-3 text-button font-medium text-ink no-underline hover:bg-surface-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring transition-colors"
         >
           {contact.cta} <span aria-hidden>→</span>
         </a>
@@ -93,19 +93,22 @@ export function SiteFooter() {
         {/* Quick Navigation */}
         <div className="md:col-span-3">
           <span className="eyebrow text-ink-muted">Navigation</span>
-          <ul className="mt-3.5 flex flex-col gap-2.5 text-body-md">
+          <ul className="mt-3.5 flex flex-col gap-1 text-body-md">
             {topNav.map((section) => (
               <li key={section.id}>
                 <a
                   href={`#${section.id}`}
-                  className="text-ink-muted hover:text-ink no-underline"
+                  className="flex min-h-[44px] items-center text-ink-muted hover:text-ink no-underline py-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
                   {section.label}
                 </a>
               </li>
             ))}
             <li>
-              <a href="#" className="text-ink-muted hover:text-ink no-underline">
+              <a 
+                href="#" 
+                className="flex min-h-[44px] items-center text-ink-muted hover:text-ink no-underline py-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
                 Back to top ↑
               </a>
             </li>
@@ -115,13 +118,13 @@ export function SiteFooter() {
         {/* Social Media & Direct Links */}
         <div className="md:col-span-4">
           <span className="eyebrow text-ink-muted">Connect & Social</span>
-          <ul className="mt-3.5 flex flex-col gap-2.5 text-body-md">
+          <ul className="mt-3.5 flex flex-col gap-1 text-body-md">
             <li>
               <a
                 href={profile.github}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-ink-muted hover:text-ink no-underline"
+                className="inline-flex min-h-[44px] items-center gap-1.5 text-ink-muted hover:text-ink no-underline py-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 GitHub <span aria-hidden="true">↗</span>
               </a>
@@ -131,7 +134,7 @@ export function SiteFooter() {
                 href={profile.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-ink-muted hover:text-ink no-underline"
+                className="inline-flex min-h-[44px] items-center gap-1.5 text-ink-muted hover:text-ink no-underline py-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 LinkedIn <span aria-hidden="true">↗</span>
               </a>
@@ -139,7 +142,7 @@ export function SiteFooter() {
             <li>
               <a
                 href={`mailto:${profile.email}`}
-                className="inline-flex items-center gap-1.5 text-ink-muted hover:text-ink no-underline"
+                className="inline-flex min-h-[44px] items-center gap-1.5 text-ink-muted hover:text-ink no-underline py-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 Email ({profile.email}) <span aria-hidden="true">↗</span>
               </a>

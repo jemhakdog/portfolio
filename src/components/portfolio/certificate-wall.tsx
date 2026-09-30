@@ -136,6 +136,7 @@ export function CertificateWall() {
       {/* Native <dialog>: Esc, focus trap and the top layer come for free. */}
       <dialog
         ref={dialog}
+        aria-labelledby="cert-dialog-title"
         onClose={() => setOpen(false)}
         onClick={(event) => {
           if (event.target === dialog.current) dialog.current?.close();
@@ -150,6 +151,9 @@ export function CertificateWall() {
         >
           ✕
         </button>
+        <h3 id="cert-dialog-title" className="sr-only">
+          {cert?.title} — {cert?.issuer} ({cert?.year})
+        </h3>
         <div data-cert-art>
           <CertSheet cert={cert} />
         </div>

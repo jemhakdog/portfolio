@@ -109,8 +109,18 @@ export function WorkGallery() {
           >
             <article
               data-reveal-child
+              role="button"
+              tabIndex={0}
+              aria-expanded={open === index}
+              aria-controls="case-strip"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  select(index);
+                }
+              }}
               style={hueVar(project.hue)}
-              className={`group relative flex h-full min-h-[280px] flex-col justify-between gap-3.5 overflow-hidden rounded-xl border border-transparent bg-[var(--hue)] p-[26px] transition-[background-color,border-color,box-shadow] duration-300 hover:shadow-lift calm:border-hairline calm:bg-canvas focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring cursor-pointer ${
+              className={`group relative flex h-full min-h-[280px] flex-col justify-between gap-3.5 overflow-hidden rounded-xl border border-transparent bg-[var(--hue)] p-[26px] transition-[background-color,border-color,box-shadow] duration-300 hover:shadow-lift calm:border-hairline calm:bg-canvas focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring cursor-pointer ${
                 project.hue === "forest" || project.hue === "coral"
                   ? "text-canvas calm:text-ink"
                   : "text-ink"

@@ -129,11 +129,13 @@ export function Guestbook() {
               Sign Guestbook ✍️
             </button>
 
-            {submitted && (
-              <p className="text-center text-xs font-semibold text-emerald-600 animate-in fade-in">
-                ✓ Thank you! Your signature has been recorded.
-              </p>
-            )}
+            <div aria-live="polite" className="min-h-[20px]">
+              {submitted && (
+                <p className="text-center text-xs font-semibold text-emerald-600 animate-in fade-in">
+                  ✓ Thank you! Your signature has been recorded.
+                </p>
+              )}
+            </div>
           </form>
         </div>
 

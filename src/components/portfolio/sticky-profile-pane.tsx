@@ -33,7 +33,7 @@ export function StickyProfilePane({
   }, []);
 
   return (
-    <aside className="lg:sticky lg:top-14 lg:flex lg:max-h-[calc(100vh-3.5rem)] lg:w-[420px] lg:flex-none lg:flex-col lg:overflow-y-auto lg:py-6 scrollbar-none">
+    <aside className="pt-4 sm:pt-6 lg:pt-6 lg:pb-6 lg:sticky lg:top-14 lg:flex lg:max-h-[calc(100vh-3.5rem)] lg:w-[420px] lg:flex-none lg:flex-col lg:overflow-y-auto scrollbar-none">
       {/* Top Section: Photo card + Persona (from image) */}
       <div className="space-y-5">
         <div className="relative overflow-hidden rounded-2xl border border-transparent bg-signature-coral p-5 sm:p-6 text-canvas shadow-xl calm:bg-canvas calm:border-hairline calm:text-ink">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { profile, resumeInfo } from "@/content/portfolio";
 import { asset } from "@/lib/asset";
 import { sound } from "@/lib/audio-engine";
@@ -12,15 +12,44 @@ export function ResumeModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
+    if (!isOpen) return;
+
+    // Focus close button initially
+    const timer = setTimeout(() => closeBtnRef.current?.focus(), 50);
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
         sound.playClick();
         onClose();
+        return;
+      }
+
+      if (e.key === "Tab" && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length > 0) {
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -34,6 +63,7 @@ export function ResumeModal({
       onClick={onClose}
     >
       <div
+        ref={modalRef}
         className="flex h-[92vh] w-full max-w-[1000px] flex-col overflow-hidden rounded-2xl border border-hairline bg-surface-dark shadow-2xl animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
@@ -72,13 +102,14 @@ export function ResumeModal({
               <span aria-hidden="true">↓</span>
             </a>
             <button
+              ref={closeBtnRef}
               type="button"
               onClick={() => {
                 sound.playClick();
                 onClose();
               }}
               aria-label="Close resume viewer"
-              className="ml-2 flex size-8 items-center justify-center rounded-lg text-canvas/70 hover:bg-white/10 hover:text-canvas"
+              className="ml-2 flex size-8 items-center justify-center rounded-lg text-canvas/70 hover:bg-white/10 hover:text-canvas focus-visible:outline-2 focus-visible:outline-ring"
             >
               ✕
             </button>

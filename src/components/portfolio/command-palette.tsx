@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { profile, projects, sections } from "@/content/portfolio";
 import { sound } from "@/lib/audio-engine";
 import { toggleDark, togglePalette, toggleSound } from "@/lib/ui-state";
+import { asset } from "@/lib/asset";
 
 interface CommandItem {
   id: string;
@@ -30,7 +31,9 @@ export function CommandPalette({
 }) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [copiedNotification, setCopiedNotification] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Global keyboard shortcut: Cmd+K or Ctrl+K
   useEffect(() => {
@@ -99,7 +102,7 @@ export function CommandPalette({
         if (onOpenResume) {
           onOpenResume();
         } else {
-          window.open("/resume.pdf", "_blank");
+          window.open(asset("/resume.pdf"), "_blank");
         }
       },
     },
@@ -111,7 +114,7 @@ export function CommandPalette({
       icon: "📥",
       perform: () => {
         const link = document.createElement("a");
-        link.href = "/resume.pdf";
+        link.href = asset("/resume.pdf");
         link.download = "Jem_Carlo_Austria_Resume.pdf";
         link.click();
         onClose();
@@ -137,8 +140,12 @@ export function CommandPalette({
       icon: "📋",
       perform: () => {
         navigator.clipboard?.writeText(profile.email);
-        alert(`Copied ${profile.email} to clipboard!`);
-        onClose();
+        sound.playChime();
+        setCopiedNotification(true);
+        setTimeout(() => {
+          setCopiedNotification(false);
+          onClose();
+        }, 1200);
       },
     },
     {
@@ -217,6 +224,25 @@ export function CommandPalette({
     : items;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Tab") {
+      // Focus trap within modal
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'input, button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable && focusable.length > 0) {
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+      return;
+    }
+
     if (e.key === "ArrowDown") {
       e.preventDefault();
       sound.playKeypress();
@@ -243,16 +269,32 @@ export function CommandPalette({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[620px] overflow-hidden rounded-2xl border border-hairline bg-canvas shadow-2xl animate-in zoom-in-95 duration-150"
+        ref={modalRef}
+        className="w-full max-w-[620px] overflow-hidden rounded-2xl border border-hairline bg-canvas shadow-2xl animate-in zoom-in-95 duration-150 relative"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
+        {copiedNotification && (
+          <div 
+            aria-live="assertive" 
+            className="absolute top-3 left-1/2 -translate-x-1/2 z-30 rounded-full bg-signature-forest px-4 py-1.5 text-xs font-semibold text-white shadow-lg animate-in fade-in zoom-in-90"
+          >
+            ✓ Copied email to clipboard!
+          </div>
+        )}
+
         {/* Search Header */}
         <div className="flex items-center border-b border-hairline px-4 py-3">
-          <span className="text-ink-muted text-base mr-3 font-mono">🔍</span>
+          <span className="text-ink-muted text-base mr-3 font-mono" aria-hidden="true">🔍</span>
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded={isOpen}
+            aria-autocomplete="list"
+            aria-controls="cmd-palette-list"
+            aria-activedescendant={filtered[selectedIndex] ? `cmd-item-${filtered[selectedIndex].id}` : undefined}
+            aria-label="Search portfolio commands, projects, and actions"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -267,7 +309,7 @@ export function CommandPalette({
         </div>
 
         {/* Results List */}
-        <div className="max-h-[380px] overflow-y-auto p-2">
+        <div id="cmd-palette-list" role="listbox" aria-label="Search suggestions" className="max-h-[380px] overflow-y-auto p-2">
           {filtered.length === 0 ? (
             <div className="p-8 text-center text-sm text-ink-muted">
               No results found for <span className="font-semibold text-ink">&ldquo;{query}&rdquo;</span>
@@ -279,6 +321,9 @@ export function CommandPalette({
                 return (
                   <button
                     key={item.id}
+                    id={`cmd-item-${item.id}`}
+                    role="option"
+                    aria-selected={isSelected}
                     type="button"
                     onClick={() => {
                       sound.playClick();

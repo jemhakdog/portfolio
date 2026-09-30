@@ -21,7 +21,7 @@ const TILE =
 
 export function HeroBento() {
   return (
-    <section className="grid grid-cols-1 gap-3.5 pt-5.5 lg:grid-cols-12">
+    <section className="grid grid-cols-1 gap-3.5 pt-4 lg:pt-5.5 lg:grid-cols-12">
       <article
         data-hero
         style={hueVar("coral")}
