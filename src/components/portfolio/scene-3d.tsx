@@ -92,8 +92,10 @@ function TerminalDesk() {
         <Text
           font={TERMINAL_FONT}
           position={[-0.8, 0.45, 0.62]}
-          fontSize={0.14}
-          color="#0d1218"
+          fontSize={0.15}
+          color="#000000"
+          outlineWidth={0.005}
+          outlineColor="#000000"
           anchorX="left"
           anchorY="middle"
         >
@@ -102,8 +104,10 @@ function TerminalDesk() {
         <Text
           font={TERMINAL_FONT}
           position={[-0.8, 0.22, 0.62]}
-          fontSize={0.11}
-          color="#123d19"
+          fontSize={0.12}
+          color="#000000"
+          outlineWidth={0.004}
+          outlineColor="#000000"
           anchorX="left"
           anchorY="middle"
         >
@@ -195,7 +199,7 @@ export default function Scene3D() {
 
   if (!mounted) {
     return (
-      <div className="flex h-[250px] w-full items-center justify-center rounded-[14px] border border-hairline/20 bg-surface-dark-elevated font-mono text-[11px] text-canvas/40">
+      <div className="flex h-[250px] w-full items-center justify-center rounded-[14px] border border-hairline/20 bg-surface-dark-elevated font-mono text-[11px] text-white/70">
         Loading WebGL...
       </div>
     );
@@ -203,10 +207,10 @@ export default function Scene3D() {
 
   if (!webGLSupported) {
     return (
-      <div className="flex h-[250px] w-full flex-col items-center justify-center gap-2 rounded-[14px] border border-hairline/20 bg-surface-dark-elevated p-4 text-center font-mono text-canvas/60">
-        <div className="size-2 rounded-full bg-amber-500/60" />
-        <span className="text-[12px] font-medium text-canvas/80">3D Sandbox Offline</span>
-        <span className="text-[10px] text-canvas/40">WebGL disabled or unsupported by your browser/device</span>
+      <div className="flex h-[250px] w-full flex-col items-center justify-center gap-2 rounded-[14px] border border-hairline/20 bg-surface-dark-elevated p-4 text-center font-mono text-white/80">
+        <div className="size-2 rounded-full bg-amber-500/80" />
+        <span className="text-[12px] font-semibold text-white">3D Sandbox Offline</span>
+        <span className="text-[10px] text-white/70">WebGL disabled or unsupported by your browser/device</span>
       </div>
     );
   }
@@ -216,7 +220,7 @@ export default function Scene3D() {
       ref={hostRef}
       className="relative h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated shadow-md"
     >
-      <div className="pointer-events-none absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded bg-black/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-canvas/70 backdrop-blur-xs">
+      <div className="pointer-events-none absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded bg-black/60 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-white backdrop-blur-xs">
         <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
         <span>3D Sandbox (R3F)</span>
       </div>
@@ -233,7 +237,7 @@ export default function Scene3D() {
         <TerminalDesk />
       </Canvas>
 
-      <div className="pointer-events-none absolute bottom-2 right-3 font-mono text-[9px] text-canvas/40">
+      <div className="pointer-events-none absolute bottom-2 right-3 font-mono text-[10px] font-medium text-white/80">
         Drag to rotate · Click monitor
       </div>
     </div>

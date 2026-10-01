@@ -4,9 +4,11 @@ import type { NextConfig } from "next";
 const subPath = process.env.NEXT_PUBLIC_BASE_PATH;
 const basePath = subPath ? `/${subPath}` : "";
 
+const isExport = process.env.STATIC_EXPORT === "true";
+
 const nextConfig: NextConfig = {
   transpilePackages: ["three"],
-  output: "export",
+  ...(isExport ? { output: "export" as const } : {}),
   basePath,
   assetPrefix: basePath || undefined,
   images: { unoptimized: true },

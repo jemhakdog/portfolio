@@ -16,21 +16,47 @@ export function ContactBand() {
   const [name, setName] = useState("");
   const [senderEmail, setSenderEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [formSent, setFormSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    sound.playChime();
-    setFormSent(true);
+    if (status === "submitting") return;
 
-    const subject = encodeURIComponent(`Project Inquiry from ${name || "Portfolio Visitor"}`);
-    const body = encodeURIComponent(
-      `${message}\n\n—\nFrom: ${name}\nEmail: ${senderEmail}`
-    );
+    setStatus("submitting");
+    setErrorMessage("");
 
-    setTimeout(() => {
-      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-    }, 600);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email: senderEmail,
+          message,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to dispatch brief. Please try again.");
+      }
+
+      sound.playChime();
+      setStatus("success");
+      setName("");
+      setSenderEmail("");
+      setMessage("");
+    } catch (err: unknown) {
+      console.error("Failed to submit contact brief:", err);
+      setStatus("error");
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "Failed to dispatch brief. Please try again or email directly."
+      );
+    }
   };
 
   return (
@@ -107,17 +133,104 @@ export function ContactBand() {
             />
           </div>
 
+          {status === "error" && errorMessage && (
+            <div
+              role="alert"
+              className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-xs text-rose-200"
+            >
+              <div className="font-semibold mb-0.5">Failed to dispatch brief</div>
+              <div>{errorMessage}</div>
+            </div>
+          )}
+
+          {status === "success" && (
+            <div
+              role="status"
+              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-xs text-emerald-200 flex items-start justify-between gap-3"
+            >
+              <div>
+                <div className="font-semibold text-emerald-300 mb-0.5">✓ Brief dispatched directly to Jem&apos;s inbox</div>
+                <div>Thank you! I will review your project requirements and reply to your email shortly.</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStatus("idle")}
+                className="shrink-0 text-[11px] underline text-emerald-300 hover:text-white cursor-pointer"
+              >
+                Send another
+              </button>
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
             <button
               type="submit"
-              className="inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-canvas px-6 py-3 text-button font-medium text-ink no-underline hover:bg-surface-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring transition-all active:scale-[0.98]"
+              disabled={status === "submitting"}
+              className="inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-white px-6 py-3 text-button font-semibold text-slate-950 no-underline hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring transition-all active:scale-[0.98] shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <span>{formSent ? "Opening mail client..." : "Send direct brief"}</span>
-              <span aria-hidden>⚡</span>
+              {status === "submitting" ? (
+                <>
+                  <svg
+                    className="size-4 animate-spin text-slate-950"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Sending brief...</span>
+                </>
+              ) : status === "success" ? (
+                <>
+                  <span>Brief Sent!</span>
+                  <svg
+                    aria-hidden="true"
+                    className="size-4 shrink-0 fill-emerald-600 text-emerald-600"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+                    />
+                  </svg>
+                </>
+              ) : (
+                <>
+                  <span>Send direct brief</span>
+                  <svg
+                    aria-hidden="true"
+                    className="size-4 shrink-0 fill-amber-400 text-amber-400"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                    />
+                  </svg>
+                </>
+              )}
             </button>
 
             <span className="font-mono text-[11px] text-white/60">
-              Direct to: <span className="text-white underline">{profile.email}</span>
+              Direct to:{" "}
+              <a
+                href={`mailto:${profile.email}`}
+                className="text-white underline hover:text-white/80"
+              >
+                {profile.email}
+              </a>
             </span>
           </div>
         </form>

@@ -736,7 +736,7 @@ export const siteVersions: SiteVersion[] = [
 ];
 
 /* ---------------------------------------------------------------------------
-   Guestbook — the three seeded notes. Visitors can only add to these.
+   Guestbook — live entries are loaded from Supabase database.
    --------------------------------------------------------------------------- */
 export type GuestbookEntry = {
   id: string;
@@ -747,35 +747,7 @@ export type GuestbookEntry = {
   avatarColor: string;
 };
 
-export const guestbookEntries: GuestbookEntry[] = [
-  {
-    id: "g-1",
-    name: "Teresa Morales",
-    role: "Local Sari-Sari Store Owner, Mangatarem",
-    message:
-      "Kuya Jem, the Bluetooth POS app on our tablet hasn't lost a single credit record or crashed once in six months. Maraming salamat!",
-    date: "Aug 2025",
-    avatarColor: "bg-emerald-600",
-  },
-  {
-    id: "g-2",
-    name: "Mark Villanueva",
-    role: "BS IT Classmate & StudyStack User",
-    message:
-      "Being able to review reviewer flashcards on the long bus commute with zero signal saved our finals grade. The offline sync is magic.",
-    date: "Dec 2025",
-    avatarColor: "bg-amber-600",
-  },
-  {
-    id: "g-3",
-    name: "Danilo Santos",
-    role: "Barangay Admin Staff",
-    message:
-      "Issuing clearances used to take 15 minutes of paging through handwritten books. With Jem's system, we print in 90 seconds. Solid software!",
-    date: "Jan 2026",
-    avatarColor: "bg-blue-600",
-  },
-];
+export const guestbookEntries: GuestbookEntry[] = [];
 
 /** `[command, what it prints]` — rendered as the terminal's `help` grid. */
 export const terminalHelp: [string, string][] = [
