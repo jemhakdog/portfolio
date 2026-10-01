@@ -80,21 +80,32 @@ export function HeroBento() {
             {availability.body}
           </p>
         </div>
-        <div>
-          <div className="mb-3.5 flex items-center gap-2.5">
-            <span aria-hidden className="relative size-2 rounded-full bg-canvas calm:bg-success">
-              <span className="absolute inset-[-5px] animate-live-pulse rounded-full bg-canvas/25 calm:bg-success/22" />
-            </span>
-            <span className="text-legal text-canvas calm:text-ink">
-              {availability.reply}
-            </span>
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <div className="mb-3.5 flex items-center gap-2.5">
+              <span aria-hidden className="relative size-2 rounded-full bg-canvas calm:bg-success">
+                <span className="absolute inset-[-5px] animate-live-pulse rounded-full bg-canvas/25 calm:bg-success/22" />
+              </span>
+              <span className="text-legal text-canvas calm:text-ink">
+                {availability.reply}
+              </span>
+            </div>
+            <a
+              className="text-legal underline underline-offset-3 text-background text-canvas calm:text-link"
+              href={`mailto:${profile.email}`}
+            >
+              {profile.email} →
+            </a>
           </div>
-          <a
-            className="text-legal underline underline-offset-3 text-background text-canvas calm:text-link"
-            href={`mailto:${profile.email}`}
+
+          {/* Rotating Stamp inspired by HORMACHUELOS */}
+          <div
+            aria-hidden="true"
+            className="hidden sm:flex size-16 flex-none items-center justify-center rounded-full border border-canvas/40 bg-canvas/10 text-center font-mono text-[9px] font-bold tracking-wider text-canvas uppercase shadow-xs transition-transform duration-700 hover:rotate-45 calm:border-hairline calm:bg-surface-soft calm:text-ink"
+            style={{ animation: "spin-slow 16s linear infinite" }}
           >
-            {profile.email} →
-          </a>
+            ★ OPEN ★<br />FOR WORK
+          </div>
         </div>
       </article>
 

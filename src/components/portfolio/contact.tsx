@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import { contact, profile, topNav } from "@/content/portfolio";
 import { hueVar, HueBar } from "@/components/portfolio/hue";
+import { sound } from "@/lib/audio-engine";
 
 const LINK_ROWS = [
   { label: "Email", href: `mailto:${profile.email}`, value: profile.email },
@@ -9,28 +13,114 @@ const LINK_ROWS = [
 ];
 
 export function ContactBand() {
+  const [name, setName] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [formSent, setFormSent] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sound.playChime();
+    setFormSent(true);
+
+    const subject = encodeURIComponent(`Project Inquiry from ${name || "Portfolio Visitor"}`);
+    const body = encodeURIComponent(
+      `${message}\n\n—\nFrom: ${name}\nEmail: ${senderEmail}`
+    );
+
+    setTimeout(() => {
+      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+    }, 600);
+  };
+
   return (
     <section
       id="contact"
       data-reveal-group
       className="mt-13 grid scroll-mt-[86px] grid-cols-1 gap-3.5 lg:grid-cols-12"
     >
+      {/* Left side: Interactive message dispatch directly inspired by HORMACHUELOS */}
       <article
         data-reveal-child
-        className="flex flex-col justify-between gap-8 rounded-xl border border-transparent bg-surface-dark p-10 text-white lg:col-span-8 lg:min-h-[300px] calm:border-hairline"
+        className="flex flex-col justify-between gap-6 rounded-xl border border-transparent bg-surface-dark p-7 sm:p-10 text-white lg:col-span-8 calm:border-hairline"
       >
         <div>
-          <span className="eyebrow text-white/80">Contact</span>
+          <div className="flex items-center gap-2">
+            <span className="eyebrow text-white/80">Contact</span>
+            <span className="inline-flex items-center rounded-full bg-emerald-500/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">
+              ● Ready to build
+            </span>
+          </div>
           <h2 className="mt-3.5 max-w-[22ch] text-display-lg text-white">
             {contact.headline}
           </h2>
+          <p className="mt-2 text-body-md text-white/70 max-w-[50ch]">
+            Have an offline system, municipal platform, API integration, or data pipeline in mind? Send a direct brief below.
+          </p>
         </div>
-        <a
-          href={`mailto:${profile.email}`}
-          className="inline-flex items-center gap-2.5 self-start rounded-lg bg-canvas px-6 py-3 text-button font-medium text-ink no-underline hover:bg-surface-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring transition-colors"
-        >
-          {contact.cta} <span aria-hidden>→</span>
-        </a>
+
+        {/* Quick Message Form */}
+        <form onSubmit={handleSubmit} className="space-y-3.5 pt-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label htmlFor="contact-name" className="block font-mono text-[11px] font-semibold text-white/70 mb-1">
+                Your Name
+              </label>
+              <input
+                id="contact-name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Juan Dela Cruz"
+                className="w-full rounded-lg border border-white/15 bg-white/5 px-3.5 py-2.5 font-sans text-sm text-white placeholder-white/40 focus:border-signature-coral focus:bg-white/10 focus:outline-none transition-colors"
+              />
+            </div>
+            <div>
+              <label htmlFor="contact-email" className="block font-mono text-[11px] font-semibold text-white/70 mb-1">
+                Your Email
+              </label>
+              <input
+                id="contact-email"
+                type="email"
+                required
+                value={senderEmail}
+                onChange={(e) => setSenderEmail(e.target.value)}
+                placeholder="you@domain.com"
+                className="w-full rounded-lg border border-white/15 bg-white/5 px-3.5 py-2.5 font-sans text-sm text-white placeholder-white/40 focus:border-signature-coral focus:bg-white/10 focus:outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="contact-message" className="block font-mono text-[11px] font-semibold text-white/70 mb-1">
+              What do you want to build?
+            </label>
+            <textarea
+              id="contact-message"
+              required
+              rows={3}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="e.g. Offline-ready inventory, civic registration portal, Python automation..."
+              className="w-full rounded-lg border border-white/15 bg-white/5 px-3.5 py-2.5 font-sans text-sm text-white placeholder-white/40 focus:border-signature-coral focus:bg-white/10 focus:outline-none transition-colors resize-none"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <button
+              type="submit"
+              className="inline-flex cursor-pointer items-center gap-2.5 rounded-lg bg-canvas px-6 py-3 text-button font-medium text-ink no-underline hover:bg-surface-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring transition-all active:scale-[0.98]"
+            >
+              <span>{formSent ? "Opening mail client..." : "Send direct brief"}</span>
+              <span aria-hidden>⚡</span>
+            </button>
+
+            <span className="font-mono text-[11px] text-white/60">
+              Direct to: <span className="text-white underline">{profile.email}</span>
+            </span>
+          </div>
+        </form>
       </article>
 
       <article

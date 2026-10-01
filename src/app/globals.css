@@ -112,6 +112,15 @@
     }
   }
 
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   /* Hover lift on work tiles — colour-block first, this is only an affordance. */
   --shadow-lift: 0 22px 44px -26px color-mix(in oklab, var(--color-ink) 45%, transparent);
 
