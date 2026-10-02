@@ -49,7 +49,6 @@ export function PortfolioMotion() {
       utils.set(".js-hero-eyebrow", { opacity: 0, y: 12 * shift });
       utils.set(".js-hero-cred > *", { opacity: 0, y: 14 * shift });
       utils.set("[data-hero-tile]", { opacity: 0, y: 26 * shift });
-      utils.set(".js-hero-fig", { opacity: 0, y: 22 * shift });
 
       // The headline is hidden by CSS as [data-hero]. With motion we reveal the
       // parent and let the split words carry the animation; without it the heading
@@ -85,8 +84,7 @@ export function PortfolioMotion() {
           "[data-hero-tile]",
           { opacity: 1, y: 0, delay: reduced ? 0 : stagger(80) },
           at("-=420"),
-        )
-        .add(".js-hero-fig", { opacity: 1, y: 0 }, at("-=520"));
+        );
 
       root.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
         const value = Number(el.dataset.count ?? 0);
@@ -112,24 +110,25 @@ export function PortfolioMotion() {
           ? [...target.querySelectorAll<HTMLElement>("[data-reveal-child]")]
           : [target];
         if (!nodes.length) return;
-        utils.set(nodes, { opacity: 0, y: 24 * shift });
+        utils.set(nodes, { opacity: 0, y: 20 * shift });
         animate(nodes, {
           opacity: 1,
           y: 0,
-          duration: reduced ? 300 : 720,
-          delay: reduced ? 0 : stagger(80),
+          duration: reduced ? 300 : 650,
+          delay: reduced ? 0 : stagger(60),
           ease: "out(3)",
         });
       };
 
       const observer = new IntersectionObserver(
-        (entries) => {
+        (entries, obs) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             reveal(entry.target as HTMLElement);
+            obs.unobserve(entry.target);
           });
         },
-        { rootMargin: "0px 0px -12% 0px", threshold: 0.15 },
+        { rootMargin: "50px 0px 0px 0px", threshold: 0.01 },
       );
       root
         .querySelectorAll<HTMLElement>("[data-reveal],[data-reveal-group]")

@@ -105,10 +105,10 @@ export function WorkGallery() {
             key={project.name}
             intensity={8}
             onClick={() => select(index)}
+            data-reveal-child
             className="h-full"
           >
             <article
-              data-reveal-child
               role="button"
               tabIndex={0}
               aria-expanded={open === index}
