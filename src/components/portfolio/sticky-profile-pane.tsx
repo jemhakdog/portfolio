@@ -50,7 +50,7 @@ export function StickyProfilePane({
 
             <div className="relative size-[76px] flex-none overflow-hidden rounded-2xl border-2 border-canvas/40 shadow-md calm:border-hairline">
               <Image
-                src={asset("/avatar.jpg")}
+                src={asset("/avatar.png")}
                 alt={profile.name}
                 width={80}
                 height={80}
