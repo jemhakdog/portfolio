@@ -616,16 +616,8 @@ export const sections: Section[] = [
     topBar: true,
   },
   {
-    id: "lab",
-    num: "05",
-    label: "The Lab & Archive",
-    title: "The Lab & Version Archive",
-    subtitle: "Explore interactive prototypes & design history",
-    icon: "🧪",
-  },
-  {
     id: "guestbook",
-    num: "06",
+    num: "05",
     label: "Guestbook",
     title: "Public Guestbook",
     subtitle: "Sign the visitor guestbook",
@@ -633,7 +625,7 @@ export const sections: Section[] = [
   },
   {
     id: "contact",
-    num: "07",
+    num: "06",
     label: "Contact",
     title: "Contact Information",
     subtitle: "Direct email and professional profiles",

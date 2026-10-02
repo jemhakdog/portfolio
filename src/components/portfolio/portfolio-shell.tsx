@@ -7,7 +7,6 @@ import { ContactBand, SiteFooter } from "@/components/portfolio/contact";
 import { FluidBackground } from "@/components/portfolio/fluid-background";
 import { Guestbook } from "@/components/portfolio/guestbook";
 import { HeroBento } from "@/components/portfolio/hero-bento";
-import { LabArchive } from "@/components/portfolio/lab-archive";
 import { MilestoneRunner } from "@/components/portfolio/milestone-runner";
 import { PortfolioMotion } from "@/components/portfolio/motion";
 import { ResumeModal, ResumeSection } from "@/components/portfolio/resume-section";
@@ -68,9 +67,6 @@ export function PortfolioShell() {
 
           {/* Resume & Curriculum Vitae Section */}
           <ResumeSection onOpenModal={() => setResumeModalOpen(true)} />
-
-          {/* The Lab & Version Archive with Offline Sync Visualizer [Lynn Fisher] */}
-          <LabArchive />
 
           {/* Public Verified Guestbook [Lee Robinson] */}
           <Guestbook />
