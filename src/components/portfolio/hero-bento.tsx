@@ -1,6 +1,3 @@
-import Image from "next/image";
-
-import { asset } from "@/lib/asset";
 import {
   availability,
   currentlyBuilding,
@@ -8,7 +5,6 @@ import {
   record,
 } from "@/content/portfolio";
 import { hueVar, HueBar } from "@/components/portfolio/hue";
-import Scene3D from "@/components/portfolio/scene-3d";
 import { HeroTyping } from "@/components/portfolio/hero-typing";
 
 /*
@@ -187,64 +183,6 @@ export function HeroBento() {
         </p>
       </article>
 
-      <figure
-        data-hero
-        className="js-hero-fig rounded-[20px] bg-surface-dark p-[26px] lg:col-span-12"
-      >
-        <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-12">
-          <div className="flex h-[250px] w-full flex-col justify-between rounded-[14px] border border-hairline/20 bg-surface-dark-elevated p-4 font-mono text-[11px] shadow-md lg:col-span-3">
-            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-              <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                SYSTEM // LIVE
-              </span>
-              <span className="text-white/40">v1.2.0</span>
-            </div>
-            <div className="space-y-2 text-white/80">
-              <div className="flex justify-between">
-                <span className="text-white/50">Runtime:</span>
-                <span className="text-white">Python 3.12</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/50">Database:</span>
-                <span className="text-white">SQLite + WAL</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/50">Offline sync:</span>
-                <span className="text-emerald-300">IndexedDB</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/50">Target HW:</span>
-                <span className="text-white">₱3k Tablet</span>
-              </div>
-            </div>
-            <div className="rounded border border-white/10 bg-black/40 px-2.5 py-1.5 text-[10px] text-white/60">
-              $ ping localhost:8000 → 0.4ms
-            </div>
-          </div>
-          <div className="h-[250px] w-full lg:col-span-4">
-            <Scene3D />
-          </div>
-          <div className="h-[250px] w-full overflow-hidden rounded-[14px] border border-hairline/20 bg-surface-dark-elevated md:col-span-2 lg:col-span-5">
-            <Image
-              src={asset("/art/editor.svg")}
-              alt="Mock image of a code editor running app.py"
-              width={400}
-              height={300}
-              className="size-full object-cover"
-            />
-          </div>
-        </div>
-        <figcaption className="mt-3.5 flex flex-col justify-between gap-2 text-[13px] font-semibold text-canvas sm:flex-row sm:items-center">
-          <span>
-            Fig. 01 — System telemetry, interactive WebGL 3D wireframe, and app.py running locally: one
-            Python service, SQLite on disk, no build step.
-          </span>
-          <span className="flex-none tracking-[1.1px] uppercase opacity-70">
-            Developer Studio
-          </span>
-        </figcaption>
-      </figure>
     </section>
   );
 }
